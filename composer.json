@@ -1,0 +1,21 @@
+{
+    "name": "shiyun/php-wechat",
+    "description": "wechat related libs",
+    "authors": [
+        {
+            "name": "10yun.com"
+        },
+        {
+            "name": "trystan"
+        }
+    ],
+    "license": "MIT",
+    "require": {
+        "php": ">=7.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "shiyun\\wechat\\": "src/"
+        }
+    }
+}
