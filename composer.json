@@ -1,12 +1,19 @@
 {
     "name": "shiyun/php-wechat",
-    "description": "wechat related libs",
+    "description": "php wechat libs for shiyun",
+    "version": "1.0.0",
     "authors": [
         {
-            "name": "10yun.com"
+            "name": "10yun",
+            "email": "240337740@qq.com",
+            "homepage": "https://www.10yun.com/"
         },
         {
             "name": "trystan"
+        },
+        {
+            "name": "ctocode",
+            "email": "343196936@qq.com"
         }
     ],
     "license": "MIT",
