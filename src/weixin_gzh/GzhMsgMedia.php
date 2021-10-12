@@ -4,7 +4,6 @@ namespace shiyunSdk\wechatGzh;
 
 class GzhMsgMedia extends GzhBase
 {
-
     /**
      * 上传临时素材，有效期为3天(认证后的订阅号可用)
      * 注意：上传大文件时可能需要先调用 set_time_limit(0) 避免超时

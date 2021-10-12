@@ -12,7 +12,6 @@ class WxInit
 {
     use TraitBaseXml, TraitWxCurl, TraitWxLog, TraitWxToken;
 
-
     public $debug = false;
     public $logcallback;
     protected $_logcallback;

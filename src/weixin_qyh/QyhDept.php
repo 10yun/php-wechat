@@ -1,6 +1,10 @@
 <?php
 
-class GzhQyDept
+namespace shiyunSdk\wechatQyh;
+
+use shiyunSdk\wechatQyh\QyhBase;
+
+class GzhQyDept extends QyhBase
 {
     /**
      * 创建部门

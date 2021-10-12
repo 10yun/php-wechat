@@ -1,7 +1,10 @@
 <?php
 
+namespace shiyunSdk\wechatQyh;
 
-class GzhMsgMedia2
+use shiyunSdk\wechatQyh\QyhBase;
+
+class GzhMsgMedia extends QyhBase
 {
     /**
      * 上传多媒体文件 (只有三天的有效期，过期自动被删除)
@@ -46,7 +49,7 @@ class GzhMsgMedia2
         if (!$this->access_token && !$this->checkAuth())
             return false;
         $result = $this->curlHttpGet(
-            self::URL_API_PREFIX . '/media/get?access_token=' . $this->access_token . '&media_id=' . $media_id
+            'https://api.weixin.qq.com/cgi-bin/media/get?access_token=' . $this->access_token . '&media_id=' . $media_id
         );
         if ($result) {
             $json = json_decode($result, true);

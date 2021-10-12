@@ -3,56 +3,8 @@
 
 class WxJssdk2
 {
-    /**
-     * 删除JSAPI授权TICKET
-     * @param string $appid 用于多个appid时使用
-     */
-    public function resetJsTicket($appid = '')
-    {
-        if (!$appid)
-            $appid = $this->_appID;
-        $this->jsapi_ticket = '';
-        $authname = 'wechat_jsapi_ticket' . $appid;
-        $this->removeCache($authname);
-        return true;
-    }
-    /**
-     * 获取JSAPI授权TICKET
-     * @param string $appid 用于多个appid时使用,可空
-     * @param string $jsapi_ticket 手动指定jsapi_ticket，非必要情况不建议用
-     */
-    public function getJsTicket($appid = '', $jsapi_ticket = '')
-    {
-        if (!$this->access_token && !$this->checkAuth())
-            return false;
-        if (!$appid)
-            $appid = $this->_appID;
-        if ($jsapi_ticket) { // 手动指定token，优先使用
-            $this->jsapi_ticket = $jsapi_ticket;
-            return $this->jsapi_ticket;
-        }
-        $authname = 'wechat_jsapi_ticket' . $appid;
-        if ($rs = $this->getCache($authname)) {
-            $this->jsapi_ticket = $rs;
-            return $rs;
-        }
-        $result = $this->curlHttpGet(
-            self::URL_API_PREFIX .  'https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=' . $this->access_token . '&type=jsapi'
-        );
-        if ($result) {
-            $json = json_decode($result, true);
-            if (!$json || !empty($json['errcode'])) {
-                $this->errCode = $json['errcode'];
-                $this->errMsg = $json['errmsg'];
-                return false;
-            }
-            $this->jsapi_ticket = $json['ticket'];
-            $expire = $json['expires_in'] ? intval($json['expires_in']) - 100 : 3600;
-            $this->setCache($authname, $this->jsapi_ticket, $expire);
-            return $this->jsapi_ticket;
-        }
-        return false;
-    }
+
+
 
     /**
      * 获取JsApi使用签名
@@ -64,8 +16,9 @@ class WxJssdk2
      */
     public function getJsSign($url, $timestamp = 0, $noncestr = '', $appid = '')
     {
-        if (!$this->jsapi_ticket && !$this->getJsTicket($appid) || !$url)
+        if (!$this->jsapi_ticket && !$this->getJsApiTicket($appid) || !$url)
             return false;
+
         if (!$timestamp)
             $timestamp = time();
         if (!$noncestr)
@@ -94,6 +47,54 @@ class WxJssdk2
         );
         return $signPackage;
     }
+
+
+    public function getSignPackage()
+    {
+        /**
+         * 方式3
+         */
+        // $appid = $this->appId;
+        // $url = $this->url;
+        // if(! $appid || ! $this->token || ! $url){
+        // return FALSE;
+        // }
+        // // 处理超链接#
+        // $ret = strpos ( $url, '#' );
+        // if($ret){
+        // $url = substr ( $url, 0, $ret );
+        // }
+        // $url = trim ( $url );
+        /**
+         * 方式1
+         */
+        // 注意 URL 一定要动态获取，不能 hardcode.
+        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+        $url = "$protocol$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+
+        $jsapiTicket = $this->getJsApiTicket($this->token);
+
+        $timestamp = time();
+        $nonceStr = $this->createNonceStr(16);
+
+        // 这里参数的顺序要按照 key 值 ASCII 码升序排序
+        $string = "jsapi_ticket=$jsapiTicket&noncestr=$nonceStr&timestamp=$timestamp&url=$url";
+
+        $signature = sha1($string);
+
+        $signPackage = array(
+            "appId" => $this->appId,
+            "nonceStr" => $nonceStr,
+            "timestamp" => $timestamp,
+            "url" => $url,
+            "signature" => $signature,
+            "rawString" => $string
+        );
+        return $signPackage;
+    }
+
+
+
     /**
      * 生成随机字串
      * @param number $length 长度，默认为16，最长为32字节

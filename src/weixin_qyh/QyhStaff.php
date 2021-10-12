@@ -1,6 +1,10 @@
 <?php
 
-class GzhQyStaff
+namespace shiyunSdk\wechatQyh;
+
+use shiyunSdk\wechatQyh\QyhBase;
+
+class GzhQyStaff extends QyhBase
 {
     /**
      * 创建成员

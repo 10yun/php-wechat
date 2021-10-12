@@ -19,9 +19,17 @@ trait TraitBaseHelper
     }
     /**
      * 	作用：array转xml
+     * 将数组解析XML
      */
-    function arrayToXml($arr)
+    function arrayToXml($arr = null)
     {
+        // if (is_null($arr)) {
+        //     $arr = $this->parameters;
+        // }
+        // if (!is_array($arr) || empty($arr)) {
+        //     die("参数不为数组无法解析");
+        // }
+
         $xml = "<xml>";
         foreach ($arr as $key => $val) {
             if (is_numeric($val)) {

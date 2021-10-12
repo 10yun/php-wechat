@@ -1,6 +1,10 @@
 <?php
 
-class GzhTags
+namespace shiyunSdk\wechatQyh;
+
+use shiyunSdk\wechatQyh\QyhBase;
+
+class GzhTags extends QyhBase
 {
 
     /**

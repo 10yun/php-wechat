@@ -9,7 +9,7 @@
 
 namespace shiyunSdk\wechatGzh;
 
-use shiyunSdk\wechat\WxInit;
+use shiyunSdk\wechatSdk\WxInit;
 
 class GzhBase extends WxInit
 {

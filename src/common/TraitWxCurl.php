@@ -9,80 +9,97 @@ namespace shiyunSdk\wechatSdk\common;
 trait TraitWxCurl
 {
 
-    /*
-     * curl 请求
-     */
-    public function get_curl_json($url)
+    /****************************************************
+     *  微信提交API方法，返回微信指定JSON
+     *  通用请求微信接口 [ 微信通讯 Communication ]
+     ****************************************************/
+    protected function wxHttpsRequest($url, $data = null)
     {
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-
-        $result = curl_exec($ch);
-        if (curl_errno($ch)) {
-            print_r(curl_error($ch));
+        $chObj = curl_init();
+        curl_setopt($chObj, CURLOPT_URL, $url);
+        // curl_setopt($chObj,CURLOPT_HEADER,0);
+        curl_setopt($chObj, CURLOPT_SSL_VERIFYPEER, FALSE);
+        curl_setopt($chObj, CURLOPT_SSL_VERIFYHOST, FALSE);
+        if (!empty($data)) {
+            curl_setopt($chObj, CURLOPT_POST, 1);
+            curl_setopt($chObj, CURLOPT_POSTFIELDS, $data);
         }
-        curl_close($ch);
-        return json_decode($result, true);
+        curl_setopt($chObj, CURLOPT_RETURNTRANSFER, 1);
+        // curl_setopt ( $ch, CURLOPT_CONNECTTIMEOUT, 10 );
+
+        $output = curl_exec($chObj);
+        $is_errno = curl_errno($chObj);
+        if ($is_errno) {
+            return 'Errno' . $is_errno;
+        }
+        curl_close($chObj);
+        return $output;
     }
 
     // 执行第三方接口或取数据
     public function postUrl($url, $data)
     {
-        $guzzHttp = new \GuzzleHttp\Client();
+        // $guzzHttp = new \GuzzleHttp\Client();
         // $response = $http->get($apiUrl);
         // $result = json_decode($response->getBody(), true);
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+        $chObj = curl_init();
+        curl_setopt($chObj, CURLOPT_CUSTOMREQUEST, "POST");
         // 设置发送数据
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+        curl_setopt($chObj, CURLOPT_POSTFIELDS, $data);
         // TRUE 将curl_exec()获取的信息以字符串返回，而不是直接输出
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+        curl_setopt($chObj, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($chObj, CURLOPT_HTTPHEADER, array(
             'Content-Type: application/json'
         ));
 
         // 设置url
-        curl_setopt($curl, CURLOPT_URL, $postUrl);
+        curl_setopt($chObj, CURLOPT_URL, $postUrl);
         // 设置发送方式：post
-        curl_setopt($curl, CURLOPT_POST, true);
+        curl_setopt($chObj, CURLOPT_POST, true);
 
 
-        $result = curl_exec($ch);
-        if (curl_errno($ch)) {
-            print curl_error($ch);
+        $result = curl_exec($chObj);
+        if (curl_errno($chObj)) {
+            print curl_error($chObj);
         }
-        curl_close($ch);
+        curl_close($chObj);
         // return $result;
-        return analysJsonDecode($result, true);
+        return json_decode($result, true);
     }
 
 
 
     public function curlHttpGet($url)
     {
-        $curl = curl_init();
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true); // true或者1
-        curl_setopt($curl, CURLOPT_TIMEOUT, 500);
+        $chObj = curl_init();
+        curl_setopt($chObj, CURLOPT_URL, $url);
+        curl_setopt($chObj, CURLOPT_RETURNTRANSFER, true); // true或者1
+        curl_setopt($chObj, CURLOPT_TIMEOUT, 500);
         // 为保证第三方服务器与微信服务器之间数据传输的安全性，所有微信接口采用https方式调用，必须使用下面2行代码打开ssl安全校验。
         // 如果在部署过程中代码在此处验证失败，请到 http://curl.haxx.se/ca/cacert.pem 下载新的证书判别文件。
-        // curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, true);
-        // curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 2);
+        // curl_setopt($chObj, CURLOPT_SSL_VERIFYPEER, true);
+        // curl_setopt($chObj, CURLOPT_SSL_VERIFYHOST, 2);
 
         // 无证书
-        if (stripos($url, "https://") !== FALSE) {
-            curl_setopt($curl, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1); // CURL_SSLVERSION_TLSv1 或者1
-            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, FALSE);
-            curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, FALSE);
+        if (stripos($url, "https://") !== false) {
+            curl_setopt($chObj, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1); // CURL_SSLVERSION_TLSv1 或者1
+            curl_setopt($chObj, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($chObj, CURLOPT_SSL_VERIFYHOST, false);
         }
-        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($chObj, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($chObj, CURLOPT_SSL_VERIFYPEER, false);
 
-        $res = curl_exec($curl);
-        $aStatus = curl_getinfo($curl);
-        curl_close($curl);
+        $res = curl_exec($chObj);
+
+        $aStatus = curl_getinfo($chObj);
+
+        // if (curl_errno($chObj)) {
+        //     print_r(curl_error($chObj));
+        // }
+        curl_close($chObj);
+
+
+        // return json_decode($result, true);
         if (intval($aStatus["http_code"]) == 200) {
             return $res;
         } else {
@@ -99,11 +116,11 @@ trait TraitWxCurl
      */
     public function curlHttpPost($url, $param, $post_file = false)
     {
-        $oCurl = curl_init();
+        $chObj = curl_init();
         if (stripos($url, "https://") !== FALSE) {
-            curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
-            curl_setopt($oCurl, CURLOPT_SSL_VERIFYHOST, false);
-            curl_setopt($oCurl, CURLOPT_SSLVERSION, 1); // CURL_SSLVERSION_TLSv1
+            curl_setopt($chObj, CURLOPT_SSL_VERIFYPEER, FALSE);
+            curl_setopt($chObj, CURLOPT_SSL_VERIFYHOST, false);
+            curl_setopt($chObj, CURLOPT_SSLVERSION, 1); // CURL_SSLVERSION_TLSv1
         }
         if (is_string($param) || $post_file) {
             $strPOST = $param;
@@ -114,14 +131,13 @@ trait TraitWxCurl
             }
             $strPOST = join("&", $aPOST);
         }
-        curl_setopt($oCurl, CURLOPT_SAFE_UPLOAD, false);
-        curl_setopt($oCurl, CURLOPT_URL, $url);
-        curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($oCurl, CURLOPT_POST, true);
-        curl_setopt($oCurl, CURLOPT_POSTFIELDS, $strPOST);
-        $sContent = curl_exec($oCurl);
-        $aStatus = curl_getinfo($oCurl);
-        curl_close($oCurl);
+        curl_setopt($chObj, CURLOPT_URL, $url);
+        curl_setopt($chObj, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($chObj, CURLOPT_POST, true);
+        curl_setopt($chObj, CURLOPT_POSTFIELDS, $strPOST);
+        $sContent = curl_exec($chObj);
+        $aStatus = curl_getinfo($chObj);
+        curl_close($chObj);
         if (intval($aStatus["http_code"]) == 200) {
             return $sContent;
         } else {

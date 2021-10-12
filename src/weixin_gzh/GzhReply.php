@@ -10,23 +10,57 @@ namespace shiyunSdk\wechatGzh;
  * @copyright    版权所有   2015-2027，并保留所有权利。
  * @link         网站地址   https://www.10yun.com
  * @contact      联系方式   QQ:343196936
- * ----------------------------------------------------------------------------
- * 这不是一个自由软件！您只能在不用于商业目的的前提下对程序代码进行修改和使用 .
- * 不允许对程序代码以任何形式任何目的的再发布。
- * 如果商业用途务必到官方购买正版授权, 以免引起不必要的法律纠纷.
- * ============================================================================
  */
 class GzhReply extends GzhCommon
 {
     public function __construct($config = [])
     {
         parent::__construct($config);
+    }
+
+    /**
+     * 一下是定义微信的回调方法
+     */
+    // @action:验证签名 一下是定义微信的回调方法
+    public function valid($xxx = false)
+    {
+
         $echoStr = isset($_GET["echostr"]) && !empty($_GET["echostr"]) ? addslashes($_GET["echostr"]) : NULL;
-        if (isset($echoStr)) {
-            $this->valid($echoStr);
-        } else {
-            $this->responseMsg();
+        // if (isset($echoStr)) {
+        //     $this->valid($echoStr);
+        // } else {
+        //     $this->responseMsg();
+        // }
+
+        $token = $this->_token;
+        if (empty($token)) {
+            exit('Token不能为空');
+            // throw new Exception ( 'TOKEN is not defined!' );
         }
+        // try
+        // {
+        $echoStr = $_GET["echostr"];
+        $signature = $_GET["signature"];
+        $timestamp = $_GET["timestamp"];
+        $nonce = $_GET["nonce"];
+        $tmpArr = array(
+            $token,
+            $timestamp,
+            $nonce
+        );
+        sort($tmpArr);
+        // sort ( $tmpArr, SORT_STRING );
+        $tmpStr = implode($tmpArr);
+        $tmpStr = sha1($tmpStr);
+        if ($tmpStr == $signature) {
+            echo $echoStr;
+            exit();
+        }
+        // }
+        // catch ( Exception $e )
+        // {
+        // echo 'Message: ' . $e->getMessage ();
+        // }
     }
     // 响应消息
     public function responseMsg()

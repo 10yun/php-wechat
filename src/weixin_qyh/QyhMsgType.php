@@ -1,6 +1,10 @@
 <?php
 
-class QyhMsgType
+namespace shiyunSdk\wechatQyh;
+
+use shiyunSdk\wechatQyh\QyhBase;
+
+class QyhMsgType extends QyhBase
 {
     private $_text_filter = true;
 
