@@ -28,10 +28,10 @@ class UniformMessage extends WechatCommon
      */
     public function send($config = array(), $template = array(), $touser = '', $type = 'weapp_template_msg')
     {
-        dump($config);
-        dump($template);
-        dump($touser);
-        dump($type);
+        // var_dump($config);
+        // var_dump($template);
+        // var_dump($touser);
+        // var_dump($type);
         //         属性	类型	默认值	必填	说明
         // access_token	string		是	接口调用凭证
         // touser	string		是	用户openid，可以是小程序的openid，也可以是mp_template_msg.appid对应的公众号的openid

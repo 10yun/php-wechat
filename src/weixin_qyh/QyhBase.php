@@ -23,6 +23,7 @@ namespace shiyunSdk\wechatQyh;
 use shiyunSdk\wechatSdk\WxInit;
 use shiyunSdk\wechatSdk\libs\HelperCurl;
 use shiyunSdk\wechatSdk\libs\HelperCache;
+use shiyunSdk\wechatSdk\libs\HelperLog;
 use shiyunSdk\wechatSdk\libs\Prpcrypt;
 
 class QyhBase extends WxInit
@@ -87,7 +88,7 @@ class QyhBase extends WxInit
         if ($_SERVER['REQUEST_METHOD'] == "POST") {
             $postStr = file_get_contents("php://input");
             $array = (array) simplexml_load_string($postStr, 'SimpleXMLElement', LIBXML_NOCDATA);
-            $this->log($postStr);
+            HelperLog::setLog($postStr);
             if (isset($array['Encrypt'])) {
                 $encryptStr = $array['Encrypt'];
                 $this->agentidxml = isset($array['AgentID']) ? $array['AgentID'] : '';
@@ -129,7 +130,7 @@ class QyhBase extends WxInit
         return false;
     }
 
-     
+
     /**
      * 微信api不支持中文转义的json结构
      * @param array $arr
