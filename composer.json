@@ -1,5 +1,5 @@
 {
-    "name": "shiyun-sdk/php-wechat",
+    "name": "shiyun/php-wechat",
     "description": "php wechat libs for shiyun",
     "version": "1.0.0",
     "authors": [
@@ -23,8 +23,6 @@
     "autoload": {
         "psr-4": {
             "shiyunSdk\\wechatSdk\\": "src/",
-            "shiyunSdk\\wechatLibs\\": "src/libs/",
-            "shiyunSdk\\wechatTrait\\": "src/trait/",
             "shiyunSdk\\wechatGzh\\": "src/weixin_gzh/",
             "shiyunSdk\\wechatPay\\": "src/weixin_pay/",
             "shiyunSdk\\wechatQyh\\": "src/weixin_qyh/",
