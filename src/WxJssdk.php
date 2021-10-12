@@ -4,39 +4,34 @@ namespace shiyunSdk\wechatSdk;
 
 use think\facade\Cache;
 
-use shiyunSdk\wechatSdk\common\TraitBaseHelper;
-use shiyunSdk\wechatSdk\common\TraitWxCurl;
-use shiyunSdk\wechatSdk\common\TraitWxCache;
+use shiyunSdk\wechatSdk\libs\HelperCurl;
+use shiyunSdk\wechatSdk\libs\HelperStr;
+use shiyunSdk\wechatSdk\libs\HelperCache;
 
 /**
  * App优化 
  */
 class WxJssdk extends WechatCommon
 {
-    use TraitBaseHelper, TraitWxCurl, TraitWxCache;
-    private $appId;
-    private $appSecret;
+    private $_appID;
+    private $_appSecret;
     private $path;
-    private $token; // access_token
+    private $access_token; // access_token
     private $url;
-    private $cacheType = 'file'; // 缓存类型
-    public function __construct($appId, $appSecret)
+    public function __construct($appId = '', $appSecret = '')
     {
-        $this->appId = $appId;
-        $this->appSecret = $appSecret;
-        $this->path = __DIR__ . DS;
-    }
-    public function construct2($options = [])
-    {
-        $this->appId = isset($options['appId']) ? $options['appId'] : '';
-        $this->token = isset($options['token']) ? $options['token'] : '';
+        $this->_appID = $appId;
+        $this->_appSecret = $appSecret;
+        $this->path = __DIR__ . '/';
+
+        $this->_appID = isset($options['appId']) ? $options['appId'] : '';
+        $this->access_token = isset($options['token']) ? $options['token'] : '';
         $this->url = isset($options['url']) ? $options['url'] : '';
     }
-
     /*******************************************************
      *      微信jsApi整合方法 - 通过调用此方法获得jsapi数据
      *******************************************************/
-    public function wxJsapiPackage()
+    public function wxJsApiPackage()
     {
         $jsapi_ticket = $this->wxVerifyJsApiTicket();
 
@@ -45,7 +40,7 @@ class WxJssdk extends WechatCommon
         $url = $protocol . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"];
 
         $timestamp = time();
-        $nonceStr = $this->wxNonceStr();
+        $nonceStr = HelperStr::createNoncestr(16);
 
         $signPackage = array(
             "jsapi_ticket" => $jsapi_ticket,
@@ -71,81 +66,75 @@ class WxJssdk extends WechatCommon
         if (!empty($this->jsApiTime) && intval($this->jsApiTime) > time() && !empty($this->jsApiTicket)) {
             $ticket = $this->jsApiTicket;
         } else {
-            $ticket = $this->wxJsApiTicket($appId, $appSecret);
+            $ticket = $this->getJsApiTicket($appId, $appSecret);
             $this->jsApiTicket = $ticket;
             $this->jsApiTime = time() + 7200;
         }
         return $ticket;
     }
+
     /****************************************************
      *  微信获取ApiTicket 返回指定微信公众号的at信息
      ****************************************************/
-    public function wxJsApiTicket($appId = NULL, $appSecret = NULL)
-    {
-        $appId = is_null($appId) ? $this->_appID : $appId;
-        $appSecret = is_null($appSecret) ? $this->_appSecret : $appSecret;
-
-        $wxAccessToken = $this->wxAccessToken();
-
-        $url = self::URL_API_PREFIX . "/ticket/getticket?type=jsapi&access_token=" . $wxAccessToken;
-        $result = $this->wxHttpsRequest($url);
-        $jsoninfo = json_decode($result, true);
-        $ticket = $jsoninfo['ticket'];
-        // echo $ticket . "<br >";
-        return $ticket;
-    }
-
     /**
      * 获取JSAPI授权TICKET
      * @param string $appid 用于多个appid时使用,可空
      * @param string $jsapi_ticket 手动指定jsapi_ticket，非必要情况不建议用
      */
-    private function getJsApiTicket($accessToken = '')
+    public function getJsApiTicket()
     {
         // jsapi_ticket 应该全局存储与更新，以下代码以写入到文件中做示例
-        $data = $this->getJsApiData();
-        if ($data['jsapi_expire_time'] < time()) {
-            if (empty($accessToken)) {
-                $accessToken = $this->wxAccessToken();
-            }
-            // 如果是企业号用以下 URL 获取 ticket
-            // $url = "https://qyapi.weixin.qq.com/cgi-bin/get_jsapi_ticket?access_token=$accessToken";
-
-            $url = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?type=jsapi&access_token=$accessToken";
-            $res = json_decode($this->httpGet($url));
-            if ($res->errcode == 0) {
-                // $ticket = $res->ticket;
-            }
-            $ticket = $res->ticket;
-            if (!empty($ticket)) {
-                $data['jsapi_expire_time'] = time() + 7000;
-                $data['jsapi_ticket'] = $ticket;
-                $this->saveJsApiData($data);
-            } else {
-                die('no ticket!');
-            }
-        } else {
+        $data = HelperCache::getCache('wechat_jsapi_ticket' . $this->_appID);
+        if ($data['jsapi_expire_time'] > time()) {
             $ticket = $data['jsapi_ticket'];
+            return $ticket;
+        }
+        if (empty($wxAccToken)) {
+            $wxAccToken = $this->wxAccessToken();
+        }
+        $wxAccToken = $this->wxAccessToken();
+
+        // 如果是企业号用以下 URL 获取 ticket
+        // $url = "https://qyapi.weixin.qq.com/cgi-bin/get_jsapi_ticket?access_token=$wxAccToken";
+
+        $result = HelperCurl::wxHttpsRequest(
+            self::URL_API_PREFIX . "/ticket/getticket?type=jsapi&access_token={$wxAccToken}"
+        );
+        $jsonInfo = json_decode($result, true);
+        $ticket = $jsonInfo['jsapi_ticket'];
+        if (!empty($ticket)) {
+            $data['jsapi_expire_time'] = time() + 7000;
+            $data['jsapi_ticket'] = $ticket;
+            HelperCache::setCache($data);
+        } else {
+            die('no ticket!');
         }
         return $ticket;
     }
-    public function getJsApiTicket2($appid = '', $jsapi_ticket = '')
+    // 直接优先设置
+    public function setJsApiTicket($new_str)
     {
-        if (!$this->access_token && !$this->checkAuth())
+        $this->jsapi_ticket = $new_str;
+        return $this;
+    }
+    public function getJsApiTicket3($appid = '')
+    {
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
         if (!$appid)
             $appid = $this->_appID;
-        if ($jsapi_ticket) { // 手动指定token，优先使用
-            $this->jsapi_ticket = $jsapi_ticket;
+
+        // 手动指定token，优先使用
+        if (!empty($this->jsapi_ticket)) {
             return $this->jsapi_ticket;
         }
-        $authname = 'wechat_jsapi_ticket' . $appid;
-        if ($rs = $this->getCache($authname)) {
+        $cache_name = 'wechat_jsapi_ticket' . $appid;
+        if ($rs = HelperCache::getCache()) {
             $this->jsapi_ticket = $rs;
             return $rs;
         }
-        $result = $this->curlHttpGet(
-            self::URL_API_PREFIX .  'https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=' . $this->access_token . '&type=jsapi'
+        $result = HelperCurl::curlHttpGet(
+            '/ticket/getticket?access_token=' . $this->access_token . '&type=jsapi'
         );
         if ($result) {
             $json = json_decode($result, true);
@@ -156,56 +145,12 @@ class WxJssdk extends WechatCommon
             }
             $this->jsapi_ticket = $json['ticket'];
             $expire = $json['expires_in'] ? intval($json['expires_in']) - 100 : 3600;
-            $this->setCache($authname, $this->jsapi_ticket, $expire);
+            HelperCache::setCache($cache_name, $this->jsapi_ticket, $expire);
             return $this->jsapi_ticket;
         }
         return false;
     }
-    private function getJsApiData()
-    {
-        switch ($this->cacheType) {
-            case 'cache':
-                $data = Cache::get('jsapi_ticket');
-                break;
-            case 'curl':
-                $cacheData = ctoHttpCurl(_URL_API_ . "wx/opt", array(
-                    'type' => 'getSet',
-                    'wx_id' => _TOOL_WX_SETT_ID_
-                ));
-                $data = json_decode($cacheData, true)['data'];
-                break;
-            case 'file':
-                // ==== 文件存储方式
-                $cacheData = trim(substr(file_get_contents(__DIR__ . '/jsapi_ticket.php'), 15));
-                $data = json_decode($cacheData);
-                break;
-            default:;
-                break;
-        }
 
-        return $data;
-    }
-    private function saveJsApiData($data)
-    {
-        switch ($this->cacheType) {
-            case 'cache':
-                Cache::set('jsapi_ticket', $data, 110); // jsapi_ticket有效期2小时，提前10分钟获取
-                break;
-            case 'curl':
-                ctoHttpCurl(_URL_API_ . "wx/opt", array(
-                    'type' => 'updateSet',
-                    'wx_id' => _TOOL_WX_SETT_ID_,
-                    'data' => $data
-                ));
-            case 'file':
-                // ==== 文件存储方式
-                $this->set_php_file("jsapi_ticket.php", json_encode($data));
-                break;
-
-            default:;
-                break;
-        }
-    }
     /**
      * 删除JSAPI授权TICKET
      * @param string $appid 用于多个appid时使用
@@ -215,16 +160,7 @@ class WxJssdk extends WechatCommon
         if (!$appid)
             $appid = $this->_appID;
         $this->jsapi_ticket = '';
-        $authname = 'wechat_jsapi_ticket' . $appid;
-        $this->removeCache($authname);
+        HelperCache::removeCache('wechat_jsapi_ticket' . $appid);
         return true;
-    }
-    private function set_php_file($filename, $content)
-    {
-        // file_put_contents("./Data/jsapi_ticket.json", json_encode($data));
-        $fp = fopen($filename, "w");
-        fwrite($fp, "<?php exit();?>" . $content);
-        // fwrite($fp, json_encode($data));
-        fclose($fp);
     }
 }

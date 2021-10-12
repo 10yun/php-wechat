@@ -2,6 +2,8 @@
 
 namespace shiyunSdk\wechatSdk;
 
+use shiyunSdk\wechatSdk\libs\HelperCurl;
+
 class WxOauth extends WxInit
 {
 
@@ -12,7 +14,7 @@ class WxOauth extends WxInit
      */
     public function getOauthRefreshToken($refresh_token)
     {
-        $result = $this->curlHttpGet(
+        $result = HelperCurl::curlHttpGet(
             'https://api.weixin.qq.com/sns/oauth2/refresh_token?appid='
                 . $this->_appID . '&grant_type=refresh_token&refresh_token=' . $refresh_token
         );
@@ -23,7 +25,7 @@ class WxOauth extends WxInit
                 $this->errMsg = $json['errmsg'];
                 return false;
             }
-            $this->user_token = $json['access_token'];
+            $this->access_token = $json['access_token'];
             return $json;
         }
         return false;
@@ -38,7 +40,7 @@ class WxOauth extends WxInit
      */
     public function getOauthUserinfo($access_token, $openid)
     {
-        $result = $this->curlHttpGet(
+        $result = HelperCurl::curlHttpGet(
             'https://api.weixin.qq.com/sns/userinfo?access_token=' . $access_token . '&openid=' . $openid
         );
         if ($result) {
@@ -61,7 +63,7 @@ class WxOauth extends WxInit
      */
     public function getOauthAuth($access_token, $openid)
     {
-        $result = $this->curlHttpGet(
+        $result = HelperCurl::curlHttpGet(
             'https://api.weixin.qq.com/sns/auth?access_token=' . $access_token . '&openid=' . $openid
         );
         if ($result) {
@@ -86,11 +88,12 @@ class WxOauth extends WxInit
      * @param string $state 重定向后会带上state参数，企业可以填写a-zA-Z0-9的参数值
      * @return string
      */
-    public function wxOauthRedirectBase($redirectUrl, $state = "", $appId = NULL)
+    public function wxOauthRedirectBase($redirectUrl, $state = "")
     {
-        $appId = is_null($appId) ? $this->_appID : $appId;
         // $redirectUrl =  urlencode($redirectUrl) ;
-        $url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" . $appId . "&redirect_uri=" . $redirectUrl . "&response_type=code&scope=snsapi_base&state=" . $state . "#wechat_redirect";
+        $url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" . $this->_appID
+            . "&redirect_uri=" . $redirectUrl
+            . "&response_type=code&scope=snsapi_base&state=" . $state . "#wechat_redirect";
         return $url;
     }
 
@@ -98,11 +101,12 @@ class WxOauth extends WxInit
     /****************************************************
      *  微信设置OAUTH跳转URL，返回字符串信息 - SCOPE = snsapi_userinfo //获取用户完整信息
      ****************************************************/
-    public function wxOauthRedirectUserinfo($redirectUrl, $state = "", $appId = null)
+    public function wxOauthRedirectUserinfo($redirectUrl, $state = "")
     {
-        $appId = is_null($appId) ? $this->_appID : $appId;
         $redirectUrl =  urlencode($redirectUrl);
-        $url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" . $appId . "&redirect_uri=" . $redirectUrl . "&response_type=code&scope=snsapi_userinfo&state=" . $state . "#wechat_redirect";
+        $url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" . $this->_appID
+            . "&redirect_uri=" . $redirectUrl
+            . "&response_type=code&scope=snsapi_userinfo&state=" . $state . "#wechat_redirect";
         return $url;
     }
 
@@ -116,52 +120,41 @@ class WxOauth extends WxInit
     /****************************************************
      *  微信通过OAUTH返回页面中获取AT信息
      ****************************************************/
-    public function wxOauthAccessToken($code, $appId = null, $appSecret = null)
-    {
-        $appId = is_null($appId) ? $this->_appID : $appId;
-        $appSecret = is_null($appSecret) ? $this->_appSecret : $appSecret;
-
-        $url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid="
-            . $appId
-            . "&secret=" . $appSecret
-            . "&code=" . $code
-            . "&grant_type=authorization_code";
-
-        $result = $this->wxHttpsRequest($url);
-        // print_r($result);
-        $jsoninfo = json_decode($result, true);
-        // $access_token = $jsoninfo["access_token"];
-        return $jsoninfo;
-    }
     /**
      * 通过code获取Access Token
      * @return array {access_token,expires_in,refresh_token,openid,scope}
      */
-    public function wxOauthAccessToken2()
+    public function wxOauthAccessToken($code = '')
     {
-        $code = isset($_GET['code']) ? $_GET['code'] : '';
-        if (!$code)
+        if (empty($code)) {
+            $code = isset($_GET['code']) ? $_GET['code'] : '';
+        }
+        if (!$code) {
             return false;
-        $result = $this->curlHttpGet(
-            'https://api.weixin.qq.com/sns/oauth2/access_token?appid='
-                . $this->_appID
-                . '&secret=' . $this->appsecret
-                . '&code=' . $code
-                . '&grant_type=authorization_code'
-        );
+        }
+        $url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=" . $this->_appID
+            . "&secret=" . $this->_appSecret
+            . "&code=" . $code
+            . "&grant_type=authorization_code";
+
+        $result = HelperCurl::wxHttpsRequest($url);
+        // $result = HelperCurl::curlHttpGet($url);
+
         if ($result) {
-            $json = json_decode($result, true);
-            if (!$json || !empty($json['errcode'])) {
-                $this->errCode = $json['errcode'];
-                $this->errMsg = $json['errmsg'];
+            $jsonInfo = json_decode($result, true);
+            // print_r($result);
+            $jsonInfo = json_decode($result, true);
+
+            if (!$jsonInfo || !empty($jsonInfo['errcode'])) {
+                $this->errCode = $jsonInfo['errcode'];
+                $this->errMsg = $jsonInfo['errmsg'];
                 return false;
             }
-            $this->user_token = $json['access_token'];
-            return $json;
+            $this->access_token = $jsonInfo['access_token'];
+            return $jsonInfo;
         }
         return false;
     }
-
 
     /****************************************************
      *  微信通过OAUTH的Access_Token的信息获取当前用户信息 // 只执行在snsapi_userinfo模式运行
@@ -169,7 +162,7 @@ class WxOauth extends WxInit
     public function wxOauthUser($OauthAT, $openId)
     {
         $url = "https://api.weixin.qq.com/sns/userinfo?access_token=" . $OauthAT . "&openid=" . $openId . "&lang=zh_CN";
-        $result = $this->wxHttpsRequest($url);
+        $result = HelperCurl::wxHttpsRequest($url);
         $jsoninfo = json_decode($result, true);
         return $jsoninfo;
     }

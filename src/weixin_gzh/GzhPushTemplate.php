@@ -2,6 +2,8 @@
 
 namespace shiyunSdk\wechatGzh;
 
+use shiyunSdk\wechatSdk\libs\HelperCurl;
+
 class GzhPushTemplate extends GzhBase
 {
 
@@ -17,9 +19,9 @@ class GzhPushTemplate extends GzhBase
             $data['industry_id1'] = $id1;
         if ($id2)
             $data['industry_id2'] = $id2;
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpPost(
+        $result = HelperCurl::curlHttpPost(
             self::URL_API_PREFIX . '/message/template/api_set_industry?access_token=' . $this->access_token,
             self::json_encode($data)
         );
@@ -45,9 +47,9 @@ class GzhPushTemplate extends GzhBase
         $data = array(
             'template_id_short' => $tpl_id
         );
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpPost(
+        $result = HelperCurl::curlHttpPost(
             self::URL_API_PREFIX . '/message/template/api_add_template?access_token=' . $this->access_token,
             self::json_encode($data)
         );
@@ -94,9 +96,9 @@ class GzhPushTemplate extends GzhBase
      */
     public function sendTemplateMessage($data)
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpPost(
+        $result = HelperCurl::curlHttpPost(
             self::URL_API_PREFIX .  '/message/template/send?access_token=' . $this->access_token,
             self::json_encode($data)
         );

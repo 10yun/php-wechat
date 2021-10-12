@@ -2,6 +2,8 @@
 
 namespace shiyunSdk\wechatGzh;
 
+use shiyunSdk\wechatSdk\libs\HelperCurl;
+
 class GzhMessage extends GzhBase
 {
     const EVENT_SEND_MASS = 'MASSSENDJOBFINISH'; // 发送结果 - 高级群发完成
@@ -26,9 +28,9 @@ class GzhMessage extends GzhBase
      */
     public function sendMassMessage($data)
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpPost(
+        $result = HelperCurl::curlHttpPost(
             self::URL_API_PREFIX . '/message/mass/send?access_token=' . $this->access_token,
             self::json_encode($data)
         );
@@ -63,9 +65,9 @@ class GzhMessage extends GzhBase
      */
     public function sendGroupMassMessage($data)
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpPost(
+        $result = HelperCurl::curlHttpPost(
             self::URL_API_PREFIX . '/message/mass/sendall?access_token=' . $this->access_token,
             self::json_encode($data)
         );
@@ -88,9 +90,9 @@ class GzhMessage extends GzhBase
      */
     public function deleteMassMessage($msg_id)
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpPost(
+        $result = HelperCurl::curlHttpPost(
             self::URL_API_PREFIX . '/message/mass/delete?access_token=' . $this->access_token,
             self::json_encode(array(
                 'msg_id' => $msg_id
@@ -124,9 +126,9 @@ class GzhMessage extends GzhBase
      */
     public function previewMassMessage($data)
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpPost(
+        $result = HelperCurl::curlHttpPost(
             self::URL_API_PREFIX . '/message/mass/preview?access_token=' . $this->access_token,
             self::json_encode($data)
         );
@@ -153,9 +155,9 @@ class GzhMessage extends GzhBase
      */
     public function queryMassMessage($msg_id)
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpPost(
+        $result = HelperCurl::curlHttpPost(
             self::URL_API_PREFIX . '/message/mass/get?access_token=' . $this->access_token,
             self::json_encode(array(
                 'msg_id' => $msg_id

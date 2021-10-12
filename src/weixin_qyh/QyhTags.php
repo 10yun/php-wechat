@@ -3,6 +3,7 @@
 namespace shiyunSdk\wechatQyh;
 
 use shiyunSdk\wechatQyh\QyhBase;
+use shiyunSdk\wechatSdk\libs\HelperCurl;
 
 class GzhTags extends QyhBase
 {
@@ -23,9 +24,9 @@ class GzhTags extends QyhBase
      */
     public function createTag($data)
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpPost(
+        $result = HelperCurl::curlHttpPost(
             self::URL_API_PREFIX .  '/tag/create?access_token=' . $this->access_token,
             self::json_encode($data)
         );
@@ -56,9 +57,9 @@ class GzhTags extends QyhBase
      */
     public function updateTag($data)
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpPost(
+        $result = HelperCurl::curlHttpPost(
             self::URL_API_PREFIX . '/tag/update?access_token=' . $this->access_token,
             self::json_encode($data)
         );
@@ -85,9 +86,9 @@ class GzhTags extends QyhBase
      */
     public function deleteTag($tagid)
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpGet(
+        $result = HelperCurl::curlHttpGet(
             self::URL_API_PREFIX .  '/tag/delete?access_token=' . $this->access_token . '&tagid=' . $tagid
         );
         if ($result) {
@@ -119,9 +120,9 @@ class GzhTags extends QyhBase
      */
     public function getTag($tagid)
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpGet(
+        $result = HelperCurl::curlHttpGet(
             self::URL_API_PREFIX . '/tag/get?access_token=' . $this->access_token . '&tagid=' . $tagid
         );
         if ($result) {
@@ -156,9 +157,9 @@ class GzhTags extends QyhBase
      */
     public function addTagUser($data)
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpPost(
+        $result = HelperCurl::curlHttpPost(
             self::URL_API_PREFIX . '/tag/addtagusers?access_token=' . $this->access_token,
             self::json_encode($data)
         );
@@ -194,9 +195,9 @@ class GzhTags extends QyhBase
      */
     public function delTagUser($data)
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpPost(
+        $result = HelperCurl::curlHttpPost(
             self::URL_API_PREFIX . '/tag/deltagusers?access_token=' . $this->access_token,
             self::json_encode($data)
         );
@@ -226,9 +227,9 @@ class GzhTags extends QyhBase
      */
     public function getTagList()
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpGet(
+        $result = HelperCurl::curlHttpGet(
             self::URL_API_PREFIX . '/tag/list?access_token=' . $this->access_token
         );
         if ($result) {

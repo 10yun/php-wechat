@@ -21,6 +21,9 @@
 namespace shiyunSdk\wechatQyh;
 
 use shiyunSdk\wechatSdk\WxInit;
+use shiyunSdk\wechatSdk\libs\HelperCurl;
+use shiyunSdk\wechatSdk\libs\HelperCache;
+use shiyunSdk\wechatSdk\libs\Prpcrypt;
 
 class QyhBase extends WxInit
 {
@@ -32,6 +35,7 @@ class QyhBase extends WxInit
     private $appid; // 也就是企业号的CorpID
     private $appsecret;
     private $access_token;
+    protected $token_cache_sign = 'qywechat_access_token';
     private $agentid; // 应用id AgentID
     private $postxml;
     private $agentidxml; // 接收的应用id AgentID
@@ -125,6 +129,7 @@ class QyhBase extends WxInit
         return false;
     }
 
+     
     /**
      * 微信api不支持中文转义的json结构
      * @param array $arr
@@ -193,60 +198,6 @@ class QyhBase extends WxInit
         } else {
             return $this->_msg;
         }
-    }
-
-
-    /**
-     * 通用auth验证方法
-     * @param string $appid
-     * @param string $appsecret
-     * @param string $token 手动指定access_token，非必要情况不建议用
-     */
-    public function checkAuth($appid = '', $appsecret = '', $token = '')
-    {
-        if (!$appid || !$appsecret) {
-            $appid = $this->_appID;
-            $appsecret = $this->appsecret;
-        }
-
-        if ($token) { // 手动指定token，优先使用
-            $this->access_token = $token;
-            return $this->access_token;
-        }
-        $authname = 'qywechat_access_token' . $appid;
-        if ($rs = $this->getCache($authname)) {
-            $this->access_token = $rs;
-            return $rs;
-        }
-        $result = $this->curlHttpGet(
-            self::URL_API_PREFIX . '/gettoken?corpid=' . $appid . '&corpsecret=' . $appsecret
-        );
-        if ($result) {
-            $json = json_decode($result, true);
-            if (!$json || isset($json['errcode'])) {
-                $this->errCode = $json['errcode'];
-                $this->errMsg = $json['errmsg'];
-                return false;
-            }
-            $this->access_token = $json['access_token'];
-            $expire = $json['expires_in'] ? intval($json['expires_in']) - 100 : 3600;
-            $this->setCache($authname, $this->access_token, $expire);
-            return $this->access_token;
-        }
-        return false;
-    }
-
-    /**
-     * 删除验证数据
-     * @param string $appid
-     */
-    public function resetAuth($appid = '')
-    {
-        if (!$appid)
-            $appid = $this->_appID;
-        $this->access_token = '';
-        // TODO: remove cache
-        return true;
     }
 
     /**
@@ -323,9 +274,9 @@ class QyhBase extends WxInit
      */
     public function sendMessage($data)
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpPost(
+        $result = HelperCurl::curlHttpPost(
             self::URL_API_PREFIX .  '/message/send?access_token=' . $this->access_token,
             self::json_encode($data)
         );
@@ -357,9 +308,9 @@ class QyhBase extends WxInit
      */
     public function authSucc($userid)
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpGet(
+        $result = HelperCurl::curlHttpGet(
             self::URL_API_PREFIX . '/user/authsucc?access_token=' . $this->access_token . '&userid=' . $userid
         );
         if ($result) {

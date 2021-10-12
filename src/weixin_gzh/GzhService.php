@@ -2,6 +2,8 @@
 
 namespace shiyunSdk\wechatGzh;
 
+use shiyunSdk\wechatSdk\libs\HelperCurl;
+
 /**
  * 【ctocode】      微信 - 客服类、
  * ============================================================================
@@ -18,9 +20,9 @@ class GzhService extends GzhCommon
      ****************************************************/
     public function wxServiceAdd($jsonData)
     {
-        $wxAccessToken = $this->wxAccessToken();
-        $url = "https://api.weixin.qq.com/customservice/kfaccount/add?access_token=" . $wxAccessToken;
-        $result = $this->wxHttpsRequest($url, $jsonData);
+        $wxAccToken = $this->wxAccessToken();
+        $url = "https://api.weixin.qq.com/customservice/kfaccount/add?access_token=" . $wxAccToken;
+        $result = HelperCurl::wxHttpsRequest($url, $jsonData);
         $jsoninfo = json_decode($result, true);
         return $jsoninfo;
     }
@@ -30,9 +32,9 @@ class GzhService extends GzhCommon
      ****************************************************/
     public function wxServiceUpdate($jsonData)
     {
-        $wxAccessToken = $this->wxAccessToken();
-        $url = "https://api.weixin.qq.com/customservice/kfaccount/update?access_token=" . $wxAccessToken;
-        $result = $this->wxHttpsRequest($url, $jsonData);
+        $wxAccToken = $this->wxAccessToken();
+        $url = "https://api.weixin.qq.com/customservice/kfaccount/update?access_token=" . $wxAccToken;
+        $result = HelperCurl::wxHttpsRequest($url, $jsonData);
         $jsoninfo = json_decode($result, true);
         return $jsoninfo;
     }
@@ -42,9 +44,9 @@ class GzhService extends GzhCommon
      ****************************************************/
     public function wxServiceDelete($jsonData)
     {
-        $wxAccessToken = $this->wxAccessToken();
-        $url = "https://api.weixin.qq.com/customservice/kfaccount/del?access_token=" . $wxAccessToken;
-        $result = $this->wxHttpsRequest($url, $jsonData);
+        $wxAccToken = $this->wxAccessToken();
+        $url = "https://api.weixin.qq.com/customservice/kfaccount/del?access_token=" . $wxAccToken;
+        $result = HelperCurl::wxHttpsRequest($url, $jsonData);
         $jsoninfo = json_decode($result, true);
         return $jsoninfo;
     }
@@ -54,11 +56,11 @@ class GzhService extends GzhCommon
      *******************************************************/
     public function wxServiceUpdateCover($kf_account, $media = '')
     {
-        $wxAccessToken = $this->wxAccessToken();
-        // $data['access_token'] = $wxAccessToken;
+        $wxAccToken = $this->wxAccessToken();
+        // $data['access_token'] = $wxAccToken;
         $data['media'] = '@D:\\workspace\\htdocs\\yky_test\\logo.jpg';
-        $url = "https://api.weixin.qq.com/customservice/kfaccount/uploadheadimg?access_token=" . $wxAccessToken . "&kf_account=" . $kf_account;
-        $result = $this->wxHttpsRequest($url, $data);
+        $url = "https://api.weixin.qq.com/customservice/kfaccount/uploadheadimg?access_token=" . $wxAccToken . "&kf_account=" . $kf_account;
+        $result = HelperCurl::wxHttpsRequest($url, $data);
         $jsoninfo = json_decode($result, true);
         return $jsoninfo;
     }
@@ -68,9 +70,9 @@ class GzhService extends GzhCommon
      ****************************************************/
     public function wxServiceList()
     {
-        $wxAccessToken = $this->wxAccessToken();
-        $url = self::URL_API_PREFIX . "/customservice/getkflist?access_token=" . $wxAccessToken;
-        $result = $this->wxHttpsRequest($url);
+        $wxAccToken = $this->wxAccessToken();
+        $url = self::URL_API_PREFIX . "/customservice/getkflist?access_token=" . $wxAccToken;
+        $result = HelperCurl::wxHttpsRequest($url);
         $jsoninfo = json_decode($result, true);
         return $jsoninfo;
     }
@@ -80,9 +82,9 @@ class GzhService extends GzhCommon
      ****************************************************/
     public function wxServiceOnlineList()
     {
-        $wxAccessToken = $this->wxAccessToken();
-        $url = self::URL_API_PREFIX . "/customservice/getonlinekflist?access_token=" . $wxAccessToken;
-        $result = $this->wxHttpsRequest($url);
+        $wxAccToken = $this->wxAccessToken();
+        $url = self::URL_API_PREFIX . "/customservice/getonlinekflist?access_token=" . $wxAccToken;
+        $result = HelperCurl::wxHttpsRequest($url);
         $jsoninfo = json_decode($result, true);
         return $jsoninfo;
     }
@@ -92,9 +94,9 @@ class GzhService extends GzhCommon
      ****************************************************/
     public function wxServiceSend($jsonData)
     {
-        $wxAccessToken = $this->wxAccessToken();
-        $url = self::URL_API_PREFIX . "/message/custom/send?access_token=" . $wxAccessToken;
-        $result = $this->wxHttpsRequest($url, $jsonData);
+        $wxAccToken = $this->wxAccessToken();
+        $url = self::URL_API_PREFIX . "/message/custom/send?access_token=" . $wxAccToken;
+        $result = HelperCurl::wxHttpsRequest($url, $jsonData);
         $jsoninfo = json_decode($result, true);
         return $jsoninfo;
     }
@@ -104,9 +106,9 @@ class GzhService extends GzhCommon
      ****************************************************/
     public function wxServiceSessionAdd($jsonData)
     {
-        $wxAccessToken = $this->wxAccessToken();
-        $url = "https://api.weixin.qq.com/customservice/kfsession/create?access_token=" . $wxAccessToken;
-        $result = $this->wxHttpsRequest($url, $jsonData);
+        $wxAccToken = $this->wxAccessToken();
+        $url = "https://api.weixin.qq.com/customservice/kfsession/create?access_token=" . $wxAccToken;
+        $result = HelperCurl::wxHttpsRequest($url, $jsonData);
         $jsoninfo = json_decode($result, true);
         return $jsoninfo;
     }
@@ -116,9 +118,9 @@ class GzhService extends GzhCommon
      ****************************************************/
     public function wxServiceSessionClose()
     {
-        $wxAccessToken = $this->wxAccessToken();
-        $url = "https://api.weixin.qq.com/customservice/kfsession/close?access_token=" . $wxAccessToken;
-        $result = $this->wxHttpsRequest($url);
+        $wxAccToken = $this->wxAccessToken();
+        $url = "https://api.weixin.qq.com/customservice/kfsession/close?access_token=" . $wxAccToken;
+        $result = HelperCurl::wxHttpsRequest($url);
         $jsoninfo = json_decode($result, true);
         return $jsoninfo;
     }
@@ -128,9 +130,9 @@ class GzhService extends GzhCommon
      ****************************************************/
     public function wxServiceSessionGet($openId)
     {
-        $wxAccessToken = $this->wxAccessToken();
-        $url = "https://api.weixin.qq.com/customservice/kfsession/getsession?access_token=" . $wxAccessToken . "&openid=" . $openId;
-        $result = $this->wxHttpsRequest($url);
+        $wxAccToken = $this->wxAccessToken();
+        $url = "https://api.weixin.qq.com/customservice/kfsession/getsession?access_token=" . $wxAccToken . "&openid=" . $openId;
+        $result = HelperCurl::wxHttpsRequest($url);
         $jsoninfo = json_decode($result, true);
         return $jsoninfo;
     }
@@ -140,9 +142,9 @@ class GzhService extends GzhCommon
      ****************************************************/
     public function wxServiceSessionList($kf_account)
     {
-        $wxAccessToken = $this->wxAccessToken();
-        $url = "https://api.weixin.qq.com/customservice/kfsession/getsessionlist?access_token=" . $wxAccessToken . "&kf_account=" . $kf_account;
-        $result = $this->wxHttpsRequest($url);
+        $wxAccToken = $this->wxAccessToken();
+        $url = "https://api.weixin.qq.com/customservice/kfsession/getsessionlist?access_token=" . $wxAccToken . "&kf_account=" . $kf_account;
+        $result = HelperCurl::wxHttpsRequest($url);
         $jsoninfo = json_decode($result, true);
         return $jsoninfo;
     }
@@ -152,9 +154,9 @@ class GzhService extends GzhCommon
      ****************************************************/
     public function wxServiceSessionWaitCase()
     {
-        $wxAccessToken = $this->wxAccessToken();
-        $url = "https://api.weixin.qq.com/customservice/kfsession/getwaitcase?access_token=" . $wxAccessToken;
-        $result = $this->wxHttpsRequest($url);
+        $wxAccToken = $this->wxAccessToken();
+        $url = "https://api.weixin.qq.com/customservice/kfsession/getwaitcase?access_token=" . $wxAccToken;
+        $result = HelperCurl::wxHttpsRequest($url);
         $jsoninfo = json_decode($result, true);
         return $jsoninfo;
     }

@@ -1,19 +1,18 @@
 <?php
 
-namespace shiyunSdk\wechatSdk\common;
+namespace shiyunSdk\wechatSdk\libs;
 
 /**
  * 微信通用 curl 常用方法
  *
  */
-trait TraitWxCurl
+class HelperCurl
 {
-
     /****************************************************
      *  微信提交API方法，返回微信指定JSON
      *  通用请求微信接口 [ 微信通讯 Communication ]
      ****************************************************/
-    protected function wxHttpsRequest($url, $data = null)
+    public static function wxHttpsRequest($url, $data = null)
     {
         $chObj = curl_init();
         curl_setopt($chObj, CURLOPT_URL, $url);
@@ -36,40 +35,9 @@ trait TraitWxCurl
         return $output;
     }
 
-    // 执行第三方接口或取数据
-    public function postUrl($url, $data)
-    {
-        // $guzzHttp = new \GuzzleHttp\Client();
-        // $response = $http->get($apiUrl);
-        // $result = json_decode($response->getBody(), true);
-        $chObj = curl_init();
-        curl_setopt($chObj, CURLOPT_CUSTOMREQUEST, "POST");
-        // 设置发送数据
-        curl_setopt($chObj, CURLOPT_POSTFIELDS, $data);
-        // TRUE 将curl_exec()获取的信息以字符串返回，而不是直接输出
-        curl_setopt($chObj, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($chObj, CURLOPT_HTTPHEADER, array(
-            'Content-Type: application/json'
-        ));
-
-        // 设置url
-        curl_setopt($chObj, CURLOPT_URL, $postUrl);
-        // 设置发送方式：post
-        curl_setopt($chObj, CURLOPT_POST, true);
 
 
-        $result = curl_exec($chObj);
-        if (curl_errno($chObj)) {
-            print curl_error($chObj);
-        }
-        curl_close($chObj);
-        // return $result;
-        return json_decode($result, true);
-    }
-
-
-
-    public function curlHttpGet($url)
+    public static function curlHttpGet($url)
     {
         $chObj = curl_init();
         curl_setopt($chObj, CURLOPT_URL, $url);
@@ -98,7 +66,6 @@ trait TraitWxCurl
         // }
         curl_close($chObj);
 
-
         // return json_decode($result, true);
         if (intval($aStatus["http_code"]) == 200) {
             return $res;
@@ -114,8 +81,12 @@ trait TraitWxCurl
      * @param boolean $post_file 是否文件上传
      * @return string content
      */
-    public function curlHttpPost($url, $param, $post_file = false)
+    public static function curlHttpPost($url, $param, $post_file = false)
     {
+        // $guzzHttp = new \GuzzleHttp\Client();
+        // $response = $http->get($apiUrl);
+        // $result = json_decode($response->getBody(), true);
+        $chObj = curl_init();
         $chObj = curl_init();
         if (stripos($url, "https://") !== FALSE) {
             curl_setopt($chObj, CURLOPT_SSL_VERIFYPEER, FALSE);
@@ -131,13 +102,32 @@ trait TraitWxCurl
             }
             $strPOST = join("&", $aPOST);
         }
+        // 设置url
         curl_setopt($chObj, CURLOPT_URL, $url);
-        curl_setopt($chObj, CURLOPT_RETURNTRANSFER, 1);
+        // TRUE 将curl_exec()获取的信息以字符串返回，而不是直接输出
+        curl_setopt($chObj, CURLOPT_RETURNTRANSFER, true);
+        // 设置发送方式：post
         curl_setopt($chObj, CURLOPT_POST, true);
+        curl_setopt($chObj, CURLOPT_CUSTOMREQUEST, "POST");
+        // 设置发送数据
         curl_setopt($chObj, CURLOPT_POSTFIELDS, $strPOST);
+
+        //
+        // curl_setopt($chObj, CURLOPT_HTTPHEADER, array(
+        //     'Content-Type: application/json'
+        // ));
+
         $sContent = curl_exec($chObj);
+        $result = curl_exec($chObj);
         $aStatus = curl_getinfo($chObj);
+
+        // if (curl_errno($chObj)) {
+        //     print curl_error($chObj);
+        // }
         curl_close($chObj);
+
+        // return $result;
+        // return json_decode($result, true);
         if (intval($aStatus["http_code"]) == 200) {
             return $sContent;
         } else {

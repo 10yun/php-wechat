@@ -3,6 +3,7 @@
 namespace shiyunSdk\wechatQyh;
 
 use shiyunSdk\wechatQyh\QyhBase;
+use shiyunSdk\wechatSdk\libs\HelperCurl;
 
 class GzhMsgMedia extends QyhBase
 {
@@ -20,9 +21,9 @@ class GzhMsgMedia extends QyhBase
      */
     public function uploadMedia($data, $type)
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpPost(
+        $result = HelperCurl::curlHttpPost(
             self::URL_API_PREFIX . self::MEDIA_UPLOAD . 'access_token=' . $this->access_token . '&type=' . $type,
             $data,
             true
@@ -46,9 +47,9 @@ class GzhMsgMedia extends QyhBase
      */
     public function getMedia($media_id)
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpGet(
+        $result = HelperCurl::curlHttpGet(
             'https://api.weixin.qq.com/cgi-bin/media/get?access_token=' . $this->access_token . '&media_id=' . $media_id
         );
         if ($result) {

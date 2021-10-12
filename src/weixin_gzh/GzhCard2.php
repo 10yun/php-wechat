@@ -3,6 +3,8 @@
 namespace shiyunSdk\wechatGzh;
 
 use shiyunSdk\wechatSdk\WechatCommon;
+use shiyunSdk\wechatSdk\libs\HelperCurl;
+use shiyunSdk\wechatSdk\libs\HelperStr;
 
 /**
  * 【ctocode】      微信 - 卡券类
@@ -74,7 +76,7 @@ class WechatCard extends WechatCommon
         // $api_ticket = $this->wxVerifyJsApiTicket();
         $resultArray = array();
         $timestamp = time();
-        $nonceStr = $this->wxNonceStr();
+        $nonceStr = HelperStr::createNoncestr(16);
         // $strings =
         $arrays = array(
             $this->_appID,
@@ -98,11 +100,11 @@ class WechatCard extends WechatCommon
      *******************************************************/
     public function wxCardUpdateImg()
     {
-        $wxAccessToken = $this->wxAccessToken();
-        // $data['access_token'] = $wxAccessToken;
+        $wxAccToken = $this->wxAccessToken();
+        // $data['access_token'] = $wxAccToken;
         $data['buffer'] = '@D:\\workspace\\htdocs\\yky_test\\logo.jpg';
-        $url = self::URL_API_PREFIX . "/media/uploadimg?access_token=" . $wxAccessToken;
-        $result = $this->wxHttpsRequest($url, $data);
+        $url = self::URL_API_PREFIX . "/media/uploadimg?access_token=" . $wxAccToken;
+        $result = HelperCurl::wxHttpsRequest($url, $data);
         $jsoninfo = json_decode($result, true);
         return $jsoninfo;
         // array(1) { ["url"]=> string(121) "http://mmbiz.qpic.cn/mmbiz/ibuYxPHqeXePNTW4ATKyias1Cf3zTKiars9PFPzF1k5icvXD7xW0kXUAxHDzkEPd9micCMCN0dcTJfW6Tnm93MiaAfRQ/0" }
@@ -113,9 +115,9 @@ class WechatCard extends WechatCommon
      *******************************************************/
     public function wxCardColor()
     {
-        $wxAccessToken = $this->wxAccessToken();
-        $url = "https://api.weixin.qq.com/card/getcolors?access_token=" . $wxAccessToken;
-        $result = $this->wxHttpsRequest($url);
+        $wxAccToken = $this->wxAccessToken();
+        $url = "https://api.weixin.qq.com/card/getcolors?access_token=" . $wxAccToken;
+        $result = HelperCurl::wxHttpsRequest($url);
         $jsoninfo = json_decode($result, true);
         return $jsoninfo;
     }
@@ -129,9 +131,9 @@ class WechatCard extends WechatCommon
             'offset' => intval($offset),
             'count' => intval($count)
         ));
-        $wxAccessToken = $this->wxAccessToken();
-        $url = "https://api.weixin.qq.com/card/location/batchget?access_token=" . $wxAccessToken;
-        $result = $this->wxHttpsRequest($url, $jsonData);
+        $wxAccToken = $this->wxAccessToken();
+        $url = "https://api.weixin.qq.com/card/location/batchget?access_token=" . $wxAccToken;
+        $result = HelperCurl::wxHttpsRequest($url, $jsonData);
         $jsoninfo = json_decode($result, true);
         return $jsoninfo;
     }
@@ -141,9 +143,9 @@ class WechatCard extends WechatCommon
      *******************************************************/
     public function wxCardCreated($jsonData)
     {
-        $wxAccessToken = $this->wxAccessToken();
-        $url = "https://api.weixin.qq.com/card/create?access_token=" . $wxAccessToken;
-        $result = $this->wxHttpsRequest($url, $jsonData);
+        $wxAccToken = $this->wxAccessToken();
+        $url = "https://api.weixin.qq.com/card/create?access_token=" . $wxAccToken;
+        $result = HelperCurl::wxHttpsRequest($url, $jsonData);
         $jsoninfo = json_decode($result, true);
         return $jsoninfo;
     }
@@ -153,9 +155,9 @@ class WechatCard extends WechatCommon
      *******************************************************/
     public function wxCardGetInfo($jsonData)
     {
-        $wxAccessToken = $this->wxAccessToken();
-        $url = "https://api.weixin.qq.com/card/get?access_token=" . $wxAccessToken;
-        $result = $this->wxHttpsRequest($url, $jsonData);
+        $wxAccToken = $this->wxAccessToken();
+        $url = "https://api.weixin.qq.com/card/get?access_token=" . $wxAccToken;
+        $result = HelperCurl::wxHttpsRequest($url, $jsonData);
         $jsoninfo = json_decode($result, true);
         return $jsoninfo;
     }
@@ -165,9 +167,9 @@ class WechatCard extends WechatCommon
      *******************************************************/
     public function wxCardWhiteList($jsonData)
     {
-        $wxAccessToken = $this->wxAccessToken();
-        $url = "https://api.weixin.qq.com/card/testwhitelist/set?access_token=" . $wxAccessToken;
-        $result = $this->wxHttpsRequest($url, $jsonData);
+        $wxAccToken = $this->wxAccessToken();
+        $url = "https://api.weixin.qq.com/card/testwhitelist/set?access_token=" . $wxAccToken;
+        $result = HelperCurl::wxHttpsRequest($url, $jsonData);
         $jsoninfo = json_decode($result, true);
         return $jsoninfo;
     }
@@ -177,9 +179,9 @@ class WechatCard extends WechatCommon
      *******************************************************/
     public function wxCardConsume($jsonData)
     {
-        $wxAccessToken = $this->wxAccessToken();
-        $url = "https://api.weixin.qq.com/card/code/consume?access_token=" . $wxAccessToken;
-        $result = $this->wxHttpsRequest($url, $jsonData);
+        $wxAccToken = $this->wxAccessToken();
+        $url = "https://api.weixin.qq.com/card/code/consume?access_token=" . $wxAccToken;
+        $result = HelperCurl::wxHttpsRequest($url, $jsonData);
         $jsoninfo = json_decode($result, true);
         return $jsoninfo;
     }
@@ -189,9 +191,9 @@ class WechatCard extends WechatCommon
      *******************************************************/
     public function wxCardDelete($jsonData)
     {
-        $wxAccessToken = $this->wxAccessToken();
-        $url = "https://api.weixin.qq.com/card/delete?access_token=" . $wxAccessToken;
-        $result = $this->wxHttpsRequest($url, $jsonData);
+        $wxAccToken = $this->wxAccessToken();
+        $url = "https://api.weixin.qq.com/card/delete?access_token=" . $wxAccToken;
+        $result = HelperCurl::wxHttpsRequest($url, $jsonData);
         $jsoninfo = json_decode($result, true);
         return $jsoninfo;
     }
@@ -201,9 +203,9 @@ class WechatCard extends WechatCommon
      *******************************************************/
     public function wxCardDecryptCode($jsonData)
     {
-        $wxAccessToken = $this->wxAccessToken();
-        $url = "https://api.weixin.qq.com/card/code/decrypt?access_token=" . $wxAccessToken;
-        $result = $this->wxHttpsRequest($url, $jsonData);
+        $wxAccToken = $this->wxAccessToken();
+        $url = "https://api.weixin.qq.com/card/code/decrypt?access_token=" . $wxAccToken;
+        $result = HelperCurl::wxHttpsRequest($url, $jsonData);
         $jsoninfo = json_decode($result, true);
         return $jsoninfo;
     }
@@ -223,9 +225,9 @@ class WechatCard extends WechatCommon
             'reduce_stock_value' => intval($reduce_stock_value)
         ));
 
-        $wxAccessToken = $this->wxAccessToken();
-        $url = "https://api.weixin.qq.com/card/modifystock?access_token=" . $wxAccessToken;
-        $result = $this->wxHttpsRequest($url, $jsonData);
+        $wxAccToken = $this->wxAccessToken();
+        $url = "https://api.weixin.qq.com/card/modifystock?access_token=" . $wxAccToken;
+        $result = HelperCurl::wxHttpsRequest($url, $jsonData);
         $jsoninfo = json_decode($result, true);
         return $jsoninfo;
     }
@@ -240,9 +242,9 @@ class WechatCard extends WechatCommon
             'card_id' => $cardId
         ));
 
-        $wxAccessToken = $this->wxAccessToken();
-        $url = "https://api.weixin.qq.com/card/code/get?access_token=" . $wxAccessToken;
-        $result = $this->wxHttpsRequest($url, $jsonData);
+        $wxAccToken = $this->wxAccessToken();
+        $url = "https://api.weixin.qq.com/card/code/get?access_token=" . $wxAccToken;
+        $result = HelperCurl::wxHttpsRequest($url, $jsonData);
         $jsoninfo = json_decode($result, true);
         return $jsoninfo;
     }

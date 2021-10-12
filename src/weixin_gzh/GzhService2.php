@@ -2,6 +2,8 @@
 
 namespace shiyunSdk\wechatGzh;
 
+use shiyunSdk\wechatSdk\libs\HelperCurl;
+
 class GzhService2 extends GzhBase
 {
     const EVENT_KF_SEESION_CREATE = 'kfcreatesession'; // 多客服 - 接入会话
@@ -14,9 +16,9 @@ class GzhService2 extends GzhBase
      */
     public function sendCustomMessage($data)
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpPost(
+        $result = HelperCurl::curlHttpPost(
             self::URL_API_PREFIX . '/message/custom/send?access_token=' . $this->access_token,
             self::json_encode($data)
         );
@@ -40,9 +42,9 @@ class GzhService2 extends GzhBase
      */
     public function getCustomServiceMessage($data)
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpPost(
+        $result = HelperCurl::curlHttpPost(
             self::URL_API_PREFIX . '/customservice/getrecord?access_token=' . $this->access_token,
             self::json_encode($data)
         );
@@ -87,9 +89,9 @@ class GzhService2 extends GzhBase
      */
     public function getCustomServiceKFlist()
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpGet(
+        $result = HelperCurl::curlHttpGet(
             self::URL_API_PREFIX . '/customservice/getkflist?access_token=' . $this->access_token
         );
         if ($result) {
@@ -121,9 +123,9 @@ class GzhService2 extends GzhBase
      */
     public function getCustomServiceOnlineKFlist()
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpGet(
+        $result = HelperCurl::curlHttpGet(
             self::URL_API_PREFIX . '/customservice/getonlinekflist?access_token=' . $this->access_token
         );
         if ($result) {
@@ -158,9 +160,9 @@ class GzhService2 extends GzhBase
         );
         if ($text)
             $data["text"] = $text;
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpPost(
+        $result = HelperCurl::curlHttpPost(
             self::URL_API_BASE_PREFIX .  '/customservice/kfsession/create?access_token=' . $this->access_token,
             self::json_encode($data)
         );
@@ -196,9 +198,9 @@ class GzhService2 extends GzhBase
         );
         if ($text)
             $data["text"] = $text;
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpPost(
+        $result = HelperCurl::curlHttpPost(
             self::URL_API_BASE_PREFIX . '/customservice/kfsession/close?access_token=' . $this->access_token,
             self::json_encode($data)
         );
@@ -227,9 +229,9 @@ class GzhService2 extends GzhBase
      */
     public function getKFSession($openid)
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpGet(
+        $result = HelperCurl::curlHttpGet(
             self::URL_API_BASE_PREFIX . '/customservice/kfsession/getsession?access_token=' . $this->access_token . '&openid=' . $openid
         );
         if ($result) {
@@ -263,9 +265,9 @@ class GzhService2 extends GzhBase
      */
     public function getKFSessionlist($kf_account)
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpGet(
+        $result = HelperCurl::curlHttpGet(
             self::URL_API_BASE_PREFIX . '/customservice/kfsession/getsessionlist?access_token=' . $this->access_token . '&kf_account=' . $kf_account
         );
         if ($result) {
@@ -302,9 +304,9 @@ class GzhService2 extends GzhBase
      */
     public function getKFSessionWait()
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpGet(
+        $result = HelperCurl::curlHttpGet(
             self::URL_API_BASE_PREFIX . '/customservice/kfsession/getwaitcase?access_token=' . $this->access_token
         );
         if ($result) {
@@ -339,9 +341,9 @@ class GzhService2 extends GzhBase
             "nickname" => $nickname,
             "password" => md5($password)
         );
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpPost(
+        $result = HelperCurl::curlHttpPost(
             self::URL_API_BASE_PREFIX .  '/customservice/kfaccount/add?access_token=' . $this->access_token,
             self::json_encode($data)
         );
@@ -377,9 +379,9 @@ class GzhService2 extends GzhBase
             "nickname" => $nickname,
             "password" => md5($password)
         );
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpPost(
+        $result = HelperCurl::curlHttpPost(
             self::URL_API_BASE_PREFIX . '/customservice/kfaccount/update?access_token=' . $this->access_token,
             self::json_encode($data)
         );
@@ -408,9 +410,9 @@ class GzhService2 extends GzhBase
      */
     public function deleteKFAccount($account)
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpGet(
+        $result = HelperCurl::curlHttpGet(
             self::URL_API_BASE_PREFIX .  '/customservice/kfaccount/del?access_token=' . $this->access_token . '&kf_account=' . $account
         );
         if ($result) {
@@ -439,9 +441,9 @@ class GzhService2 extends GzhBase
      */
     public function setKFHeadImg($account, $imgfile)
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpPost(
+        $result = HelperCurl::curlHttpPost(
             self::URL_API_BASE_PREFIX . '/customservice/kfaccount/uploadheadimg?access_token=' . $this->access_token . '&kf_account=' . $account,
             array(
                 'media' => '@' . $imgfile

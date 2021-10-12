@@ -2,17 +2,15 @@
 
 namespace shiyunSdk\wechatPay;
 
+use shiyunSdk\wechatSdk\libs\HelperStr;
+use shiyunSdk\wechatSdk\libs\HelperXml;
+
+
 /**
  * App专属微信支付类
  */
-
-use shiyunSdk\wechatSdk\common\TraitBaseHelper;
-use shiyunSdk\wechatSdk\common\TraitBaseXml;
-
-class Wxpaysdk
+class WxPaySdk
 {
-
-    use TraitBaseXml, TraitBaseHelper;
     const UFORDER_URL = 'https://api.mch.weixin.qq.com/pay/unifiedorder'; // 获取预支付URL,prepayid.
     private $mchid; // 微信支付商户号
     private $mchkey; // 微信支付商户KEY
@@ -23,8 +21,13 @@ class Wxpaysdk
     private $total_fee; // 总金额
     private $notify_url; // ND地址
     private $trade_type; // JSAPI
+
+    // 微信参数设置
+    public $set;
+
     private $curl_timeout;
-    // 动态参数
+    public $data; // 接收到的数据，类型为关联数组
+    // 动态参数,返回参数，类型为关联数组
     private $parameters;
     // 非必填参数，商户可根据实际情况选填
     // $unifiedOrder->setParameter("sub_mch_id","XXXX");//子商户号
@@ -44,6 +47,8 @@ class Wxpaysdk
     private $prepay_id; // 获取prepay_id
     public function __construct($options)
     {
+        // $this->set = M('set')->find();
+
         $this->mchid = isset($options['mchid']) ? $options['mchid'] : '';
         $this->mchkey = isset($options['mchkey']) ? $options['mchkey'] : '';
         $this->openid = isset($options['openid']) ? $options['openid'] : '';
@@ -64,7 +69,7 @@ class Wxpaysdk
     {
         $url = 'https://api.mch.weixin.qq.com/pay/unifiedorder';
         $this->postXml($url); // 追入获取链接
-        $this->result = $this->xmlToArray($this->response);
+        $this->result = HelperXml::xmlToArray($this->response);
         $prepay_id = $this->result["prepay_id"];
         return $prepay_id;
     }
@@ -82,41 +87,77 @@ class Wxpaysdk
      */
     public function getJSAPI()
     {
-        // $jsApiObj["appId"] = $this->_appID;
-        // $jsApiObj["appId"]='wx59ac86047a622526';
-        // $timeStamp = time();
-        // $jsApiObj["timeStamp"] = "$timeStamp";
-        // $jsApiObj["nonceStr"] = $this->createNoncestr();
-        // $jsApiObj["package"] = "prepay_id=$this->prepay_id";
-        // $jsApiObj["signType"] = "MD5";
-        // $jsApiObj["paySign"] = $this->getSign($jsApiObj);
-        // return $jsApiObj;
-        // $this->parameters = json_encode($jsApiObj);
+        // return $wOpt;
+        // $this->parameters = json_encode($wOpt);
         // return $this->parameters;
-        $wOpt['appId'] = $this->_appID;
         $timeStamp = time();
+        $wOpt['appId'] = $this->_appID;
         $wOpt['timeStamp'] = "$timeStamp";
-        $wOpt['nonceStr'] = $this->createNoncestr(8);
+        // $wOpt["nonceStr"] = HelperStr::createNoncestr(32);
+        $wOpt['nonceStr'] = HelperStr::createNoncestr(8);
         $wOpt['package'] = 'prepay_id=' . $this->prepay_id;
         $wOpt['signType'] = 'MD5';
         ksort($wOpt, SORT_STRING);
+        $string = '';
         foreach ($wOpt as $key => $v) {
             $string .= "{$key}={$v}&";
         }
         $string .= "key=" . $this->mchkey;
-        echo $string . "<br><br>";
+        // $wOpt["paySign"] = $this->getSign($wOpt);
         $wOpt['paySign'] = strtoupper(md5($string));
-        echo $wOpt['paySign'];
         return $wOpt;
     }
+
+
+    /**
+     * 	作用：生成签名
+     */
+    public function getSign($Obj)
+    {
+        foreach ($Obj as $k => $v) {
+            $Parameters[$k] = $v;
+        }
+        // 签名步骤一：按字典序排序参数
+        ksort($Parameters);
+        $String = $this->formatBizQueryParaMap($Parameters, false);
+        // echo '【string1】'.$String.'</br>';
+        // 签名步骤二：在string后加入KEY
+        // $String = $String . "&key=13903072727139030727271390307272";
+        // $String = $String . "&key=" . $this->mchkey;
+        $String = $String . "&key=" . $this->set['wxmchkey'];
+
+        // echo "【string2】".$String."</br>";
+        // 签名步骤三：MD5加密
+        $String = md5($String);
+        // echo "【string3】 ".$String."</br>";
+        // 签名步骤四：所有字符转为大写
+        $result_ = strtoupper($String);
+        // echo "【result】 ".$result_."</br>";
+        return $result_;
+    }
+    function checkSign()
+    {
+        $tmpData = $this->data;
+        unset($tmpData['sign']);
+        $sign = $this->getSign($tmpData); // 本地签名
+        if ($this->data['sign'] == $sign) {
+            return TRUE;
+        }
+        return FALSE;
+    }
+
     /**
      * 	作用：设置请求参数
      */
+    /**
+     * 设置返回微信的xml数据
+     */
     function setParameter($parameter, $parameterValue)
     {
-        $this->parameters[$this->trimString($parameter)] = $this->trimString($parameterValue);
+        $str_1 = HelperStr::trimString($parameter);
+        $str_2 = HelperStr::trimString($parameterValue);
+        $this->parameters[$str_1] = $str_2;
     }
-
     /**
      * 	作用：设置标配的请求参数，生成签名，生成接口参数xml
      */
@@ -124,10 +165,26 @@ class Wxpaysdk
     {
         $this->parameters["appid"] = $this->_appID; // 公众账号ID
         $this->parameters["mch_id"] = $this->mchid; // 商户号
-        $this->parameters["nonce_str"] = $this->createNoncestr(); // 随机字符串
+        $this->parameters["nonce_str"] = HelperStr::createNoncestr(32); // 随机字符串
         $this->parameters["spbill_create_ip"] = $_SERVER['REMOTE_ADDR']; // 终端ip
         $this->parameters["sign"] = $this->getSign($this->parameters); // 签名
-        return $this->arrayToXml($this->parameters);
+        return HelperXml::arrayToXml($this->parameters);
+    }
+
+    /**
+     * 生成接口参数xml
+     */
+    function createXml2()
+    {
+        return HelperXml::arrayToXml($this->parameters);
+    }
+    /**
+     * 将xml数据返回微信
+     */
+    function returnXml()
+    {
+        $returnXml = $this->createXml();
+        return $returnXml;
     }
     /**
      * 	作用：post请求xml

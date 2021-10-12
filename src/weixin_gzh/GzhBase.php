@@ -10,6 +10,8 @@
 namespace shiyunSdk\wechatGzh;
 
 use shiyunSdk\wechatSdk\WxInit;
+use shiyunSdk\wechatSdk\libs\HelperCurl;
+use shiyunSdk\wechatSdk\libs\HelperCache;
 
 class GzhBase extends WxInit
 {
@@ -28,8 +30,8 @@ class GzhBase extends WxInit
     private $_appID;
     private $appsecret;
     private $access_token;
+    protected $token_cache_sign = 'wechat_access_token';
     private $jsapi_ticket;
-    private $user_token;
     private $postxml;
     private $_msg;
     public $errCode = 40001;
@@ -144,60 +146,8 @@ class GzhBase extends WxInit
             return $this->_msg;
         }
     }
-    /**
-     * 获取access_token
-     * @param string $appid 如在类初始化时已提供，则可为空
-     * @param string $appsecret 如在类初始化时已提供，则可为空
-     * @param string $token 手动指定access_token，非必要情况不建议用
-     */
-    public function checkAuth($appid = '', $appsecret = '', $token = '')
-    {
-        if (!$appid || !$appsecret) {
-            $appid = $this->_appID;
-            $appsecret = $this->appsecret;
-        }
-        if ($token) { // 手动指定token，优先使用
-            $this->access_token = $token;
-            return $this->access_token;
-        }
 
-        $authname = 'wechat_access_token' . $appid;
-        if ($rs = $this->getCache($authname)) {
-            $this->access_token = $rs;
-            return $rs;
-        }
 
-        $result = $this->curlHttpGet(
-            'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=' . $appid . '&secret=' . $appsecret
-        );
-        if ($result) {
-            $json = json_decode($result, true);
-            if (!$json || isset($json['errcode'])) {
-                $this->errCode = $json['errcode'];
-                $this->errMsg = $json['errmsg'];
-                return false;
-            }
-            $this->access_token = $json['access_token'];
-            $expire = $json['expires_in'] ? intval($json['expires_in']) - 100 : 3600;
-            $this->setCache($authname, $this->access_token, $expire);
-            return $this->access_token;
-        }
-        return false;
-    }
-
-    /**
-     * 删除验证数据
-     * @param string $appid
-     */
-    public function resetAuth($appid = '')
-    {
-        if (!$appid)
-            $appid = $this->_appID;
-        $this->access_token = '';
-        $authname = 'wechat_access_token' . $appid;
-        $this->removeCache($authname);
-        return true;
-    }
 
 
     /**
@@ -256,9 +206,9 @@ class GzhBase extends WxInit
      */
     public function getServerIp()
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpGet(
+        $result = HelperCurl::curlHttpGet(
             'https://api.weixin.qq.com/cgi-bin/getcallbackip?access_token=' . $this->access_token
         );
         if ($result) {
@@ -291,9 +241,9 @@ class GzhBase extends WxInit
      */
     public function uploadMpVideo($data)
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpPost(
+        $result = HelperCurl::curlHttpPost(
             self::URL_UPLOAD_MEDIA .  '/media/uploadvideo?access_token=' . $this->access_token,
             self::json_encode($data)
         );
@@ -319,7 +269,7 @@ class GzhBase extends WxInit
      */
     public function getQRCode($scene_id, $type = 0, $expire = 1800)
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
         $type = ($type && is_string($scene_id)) ? 2 : $type;
         $data = array(
@@ -336,7 +286,7 @@ class GzhBase extends WxInit
         if ($type == 1) {
             unset($data['expire_seconds']);
         }
-        $result = $this->curlHttpPost(
+        $result = HelperCurl::curlHttpPost(
             'https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=' . $this->access_token,
             self::json_encode($data)
         );
@@ -369,13 +319,13 @@ class GzhBase extends WxInit
      */
     public function getShortUrl($long_url)
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
         $data = array(
             'action' => 'long2short',
             'long_url' => $long_url
         );
-        $result = $this->curlHttpPost(
+        $result = HelperCurl::curlHttpPost(
             self::URL_API_PREFIX . 'https://api.weixin.qq.com/cgi-bin/shorturl?access_token=' . $this->access_token,
             self::json_encode($data)
         );
@@ -401,7 +351,7 @@ class GzhBase extends WxInit
      */
     public function getDatacube($type, $subtype, $begin_date, $end_date = '')
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
 
         // /数据分析接口
@@ -439,7 +389,7 @@ class GzhBase extends WxInit
             'begin_date' => $begin_date,
             'end_date' => $end_date ? $end_date : $begin_date
         );
-        $result = $this->curlHttpPost(
+        $result = HelperCurl::curlHttpPost(
             self::URL_API_BASE_PREFIX . $DATACUBE_URL_ARR[$type][$subtype] . 'access_token=' . $this->access_token,
             self::json_encode($data)
         );
@@ -469,7 +419,7 @@ class GzhBase extends WxInit
      */
     public function querySemantic($uid, $query, $category, $latitude = 0, $longitude = 0, $city = "", $region = "")
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
         $data = array(
             'query' => $query,
@@ -486,7 +436,7 @@ class GzhBase extends WxInit
         } elseif ($region) {
             $data['region'] = $region;
         }
-        $result = $this->curlHttpPost(
+        $result = HelperCurl::curlHttpPost(
             self::URL_API_BASE_PREFIX .  '/semantic/semproxy/search?access_token=' . $this->access_token,
             self::json_encode($data)
         );

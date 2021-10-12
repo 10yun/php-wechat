@@ -2,6 +2,8 @@
 
 namespace shiyunSdk\wechatGzh;
 
+use shiyunSdk\wechatSdk\libs\HelperCurl;
+
 class GzhShake extends GzhBase
 {
 
@@ -47,9 +49,9 @@ class GzhShake extends GzhBase
      */
     public function applyShakeAroundDevice($data)
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpPost(
+        $result = HelperCurl::curlHttpPost(
             self::URL_API_BASE_PREFIX . '/shakearound/device/applyid?access_token=' . $this->access_token,
             self::json_encode($data)
         );
@@ -91,9 +93,9 @@ class GzhShake extends GzhBase
      */
     public function updateShakeAroundDevice($data)
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpPost(
+        $result = HelperCurl::curlHttpPost(
             self::URL_API_BASE_PREFIX .  '/shakearound/device/update?access_token=' . $this->access_token,
             self::json_encode($data)
         );
@@ -183,9 +185,9 @@ class GzhShake extends GzhBase
      */
     public function searchShakeAroundDevice($data)
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpPost(
+        $result = HelperCurl::curlHttpPost(
             self::URL_API_BASE_PREFIX . '/shakearound/device/search?access_token=' . $this->access_token,
             self::json_encode($data)
         );
@@ -224,7 +226,7 @@ class GzhShake extends GzhBase
      */
     public function bindLocationShakeAroundDevice($device_id, $poi_id, $uuid = '', $major = 0, $minor = 0)
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
         if (!$device_id) {
             if (!$uuid || !$major || !$minor) {
@@ -244,7 +246,7 @@ class GzhShake extends GzhBase
             'device_identifier' => $device_identifier,
             'poi_id' => $poi_id
         );
-        $result = $this->curlHttpPost(
+        $result = HelperCurl::curlHttpPost(
             self::URL_API_BASE_PREFIX . '/shakearound/device/bindlocation?access_token=' . $this->access_token,
             self::json_encode($data)
         );
@@ -288,7 +290,7 @@ class GzhShake extends GzhBase
      */
     public function bindPageShakeAroundDevice($device_id, $page_ids = array(), $bind = 1, $append = 1, $uuid = '', $major = 0, $minor = 0)
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
         if (!$device_id) {
             if (!$uuid || !$major || !$minor) {
@@ -310,7 +312,7 @@ class GzhShake extends GzhBase
             'bind' => $bind,
             'append' => $append
         );
-        $result = $this->curlHttpPost(
+        $result = HelperCurl::curlHttpPost(
             self::URL_API_BASE_PREFIX . '/shakearound/device/bindpage?access_token=' . $this->access_token,
             self::json_encode($data)
         );
@@ -345,9 +347,9 @@ class GzhShake extends GzhBase
      */
     public function uploadShakeAroundMedia($data)
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpPost(
+        $result = HelperCurl::curlHttpPost(
             self::URL_API_PREFIX . '/shakearound/material/add?access_token=' . $this->access_token,
             $data,
             true
@@ -387,7 +389,7 @@ class GzhShake extends GzhBase
      */
     public function addShakeAroundPage($title, $description, $icon_url, $page_url, $comment = '')
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
         $data = array(
             "title" => $title,
@@ -396,7 +398,7 @@ class GzhShake extends GzhBase
             "page_url" => $page_url,
             "comment" => $comment
         );
-        $result = $this->curlHttpPost(
+        $result = HelperCurl::curlHttpPost(
             self::URL_API_BASE_PREFIX . '/shakearound/page/add?access_token=' . $this->access_token,
             self::json_encode($data)
         );
@@ -437,7 +439,7 @@ class GzhShake extends GzhBase
      */
     public function updateShakeAroundPage($page_id, $title, $description, $icon_url, $page_url, $comment = '')
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
         $data = array(
             "page_id" => $page_id,
@@ -447,7 +449,7 @@ class GzhShake extends GzhBase
             "page_url" => $page_url,
             "comment" => $comment
         );
-        $result = $this->curlHttpPost(
+        $result = HelperCurl::curlHttpPost(
             self::URL_API_BASE_PREFIX . '/shakearound/page/update?access_token=' . $this->access_token,
             self::json_encode($data)
         );
@@ -523,7 +525,7 @@ class GzhShake extends GzhBase
      */
     public function searchShakeAroundPage($page_ids = array(), $begin = 0, $count = 1)
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
         if (!empty($page_ids)) {
             $data = array(
@@ -535,7 +537,7 @@ class GzhShake extends GzhBase
                 'count' => $count
             );
         }
-        $result = $this->curlHttpPost(
+        $result = HelperCurl::curlHttpPost(
             self::URL_API_BASE_PREFIX . '/shakearound/page/search?access_token=' . $this->access_token,
             self::json_encode($data)
         );
@@ -574,12 +576,12 @@ class GzhShake extends GzhBase
      */
     public function deleteShakeAroundPage($page_ids = array())
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
         $data = array(
             'page_ids' => $page_ids
         );
-        $result = $this->curlHttpPost(
+        $result = HelperCurl::curlHttpPost(
             self::URL_API_BASE_PREFIX . '/shakearound/page/delete?access_token=' . $this->access_token,
             self::json_encode($data)
         );
@@ -629,12 +631,12 @@ class GzhShake extends GzhBase
      */
     public function getShakeInfoShakeAroundUser($ticket)
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
         $data = array(
             'ticket' => $ticket
         );
-        $result = $this->curlHttpPost(
+        $result = HelperCurl::curlHttpPost(
             self::URL_API_BASE_PREFIX .   '/shakearound/user/getshakeinfo?access_token=' . $this->access_token,
             self::json_encode($data)
         );
@@ -695,7 +697,7 @@ class GzhShake extends GzhBase
      */
     public function deviceShakeAroundStatistics($device_id, $begin_date, $end_date, $uuid = '', $major = 0, $minor = 0)
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
         if (!$device_id) {
             if (!$uuid || !$major || !$minor) {
@@ -716,7 +718,7 @@ class GzhShake extends GzhBase
             'begin_date' => $begin_date,
             'end_date' => $end_date
         );
-        $result = $this->curlHttpPost(
+        $result = HelperCurl::curlHttpPost(
             self::URL_API_BASE_PREFIX . '/shakearound/statistics/device?access_token=' . $this->access_token,
             self::json_encode($data)
         );
@@ -772,14 +774,14 @@ class GzhShake extends GzhBase
      */
     public function pageShakeAroundStatistics($page_id, $begin_date, $end_date)
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
         $data = array(
             'page_id' => $page_id,
             'begin_date' => $begin_date,
             'end_date' => $end_date
         );
-        $result = $this->curlHttpPost(
+        $result = HelperCurl::curlHttpPost(
             self::URL_API_BASE_PREFIX . '/shakearound/statistics/page?access_token=' . $this->access_token,
             self::json_encode($data)
         );

@@ -2,6 +2,8 @@
 
 namespace shiyunSdk\wechatGzh;
 
+use shiyunSdk\wechatSdk\libs\HelperCurl;
+
 class GzhUserGroup extends GzhBase
 {
 
@@ -11,9 +13,9 @@ class GzhUserGroup extends GzhBase
      */
     public function getGroup()
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpGet(
+        $result = HelperCurl::curlHttpGet(
             self::URL_API_PREFIX .  '/groups/get?access_token=' . $this->access_token
         );
         if ($result) {
@@ -35,12 +37,12 @@ class GzhUserGroup extends GzhBase
      */
     public function getUserGroup($openid)
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
         $data = array(
             'openid' => $openid
         );
-        $result = $this->curlHttpPost(
+        $result = HelperCurl::curlHttpPost(
             self::URL_API_PREFIX . '/groups/getid?access_token=' . $this->access_token,
             self::json_encode($data)
         );
@@ -63,14 +65,14 @@ class GzhUserGroup extends GzhBase
      */
     public function createGroup($name)
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
         $data = array(
             'group' => array(
                 'name' => $name
             )
         );
-        $result = $this->curlHttpPost(
+        $result = HelperCurl::curlHttpPost(
             self::URL_API_PREFIX . '/groups/create?access_token=' . $this->access_token,
             self::json_encode($data)
         );
@@ -94,7 +96,7 @@ class GzhUserGroup extends GzhBase
      */
     public function updateGroup($groupid, $name)
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
         $data = array(
             'group' => array(
@@ -102,7 +104,7 @@ class GzhUserGroup extends GzhBase
                 'name' => $name
             )
         );
-        $result = $this->curlHttpPost(
+        $result = HelperCurl::curlHttpPost(
             self::URL_API_PREFIX . '/groups/update?access_token=' . $this->access_token,
             self::json_encode($data)
         );
@@ -126,13 +128,13 @@ class GzhUserGroup extends GzhBase
      */
     public function updateGroupMembers($groupid, $openid)
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
         $data = array(
             'openid' => $openid,
             'to_groupid' => $groupid
         );
-        $result = $this->curlHttpPost(
+        $result = HelperCurl::curlHttpPost(
             self::URL_API_PREFIX . '/groups/members/update?access_token=' . $this->access_token,
             self::json_encode($data)
         );
@@ -156,13 +158,13 @@ class GzhUserGroup extends GzhBase
      */
     public function batchUpdateGroupMembers($groupid, $openid_list)
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
         $data = array(
             'openid_list' => $openid_list,
             'to_groupid' => $groupid
         );
-        $result = $this->curlHttpPost(
+        $result = HelperCurl::curlHttpPost(
             self::URL_API_PREFIX .  '/groups/members/batchupdate?access_token=' . $this->access_token,
             self::json_encode($data)
         );

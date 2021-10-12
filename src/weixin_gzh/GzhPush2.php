@@ -1,8 +1,11 @@
 <?php
+
+namespace shiyunSdk\wechatGzh;
 // 1.官方微信接口（全接口） - 微信小店接口/JSAPI
 // http://www.oschina.net/code/snippet_2276613_47422
 // 微信入口绑定，微信事件处理，微信API全部操作包含在这些文件中。 微信小店。
 // 2.
+use shiyunSdk\wechatSdk\libs\HelperCurl;
 
 /*
  * 调用方式简单说明：
@@ -16,6 +19,7 @@
  * $w->sendMessage('群发内容'); //群发给所有用户
  * $w->sendMessage('群发内容',$userId); //群发给特定用户,这里的$userId就是用户的fakeid，数组方式传递
  */
+
 class GzhPush2
 {
     public $userFakeid; // 所有粉丝的fakeid
@@ -48,7 +52,7 @@ class GzhPush2
         );
         $this->referer = "https://mp.weixin.qq.com/";
         $this->getHeader = 1;
-        $result = explode("\n", $this->curlHttpPost($url, $sendData));
+        $result = explode("\n", HelperCurl::curlHttpPost($url, $sendData));
         foreach ($result as $key => $value) {
             $value = trim($value);
             if (preg_match('/token=(\d+)/i', $value, $match)) { // 获取token
@@ -153,7 +157,7 @@ class GzhPush2
             'ajax' => 1
         );
         $this->referer = 'https://mp.weixin.qq.com/cgi-bin/singlemsgpage?token=' . $this->token . '&fromfakeid=' . $fakeid . '&msgid=&source=&count=20&t=wxm-singlechat&lang=zh_CN';
-        return $this->curlHttpPost($url, $sendData);
+        return HelperCurl::curlHttpPost($url, $sendData);
     }
 
     // 群发消息
@@ -210,7 +214,7 @@ class GzhPush2
             'token' => $this->token,
             'ajax' => 1
         );
-        $message_opt = $this->curlHttpPost($url, $sendData);
+        $message_opt = HelperCurl::curlHttpPost($url, $sendData);
         return $message_opt;
     }
 
@@ -221,7 +225,7 @@ class GzhPush2
         $pageSize = 1000000;
         $this->referer = "https://mp.weixin.qq.com/cgi-bin/home?t=home/index&lang=zh_CN&token={$this->token}";
         $url = "https://mp.weixin.qq.com/cgi-bin/contactmanage?t=user/index&pagesize={$pageSize}&pageidx=0&type=0&groupid=0&token={$this->token}&lang=zh_CN";
-        $user = $this->curlHttpGet($url);
+        $user = HelperCurl::curlHttpGet($url);
         $preg = "/\"id\":(\d+),\"nick_name\"/";
         preg_match_all($preg, $user, $b);
         $i = 0;

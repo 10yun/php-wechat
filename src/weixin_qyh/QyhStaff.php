@@ -3,6 +3,7 @@
 namespace shiyunSdk\wechatQyh;
 
 use shiyunSdk\wechatQyh\QyhBase;
+use shiyunSdk\wechatSdk\libs\HelperCurl;
 
 class GzhQyStaff extends QyhBase
 {
@@ -29,9 +30,9 @@ class GzhQyStaff extends QyhBase
      */
     public function createUser($data)
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpPost(
+        $result = HelperCurl::curlHttpPost(
             self::URL_API_PREFIX .  '/user/create?access_token=' . $this->access_token,
             self::json_encode($data)
         );
@@ -69,9 +70,9 @@ class GzhQyStaff extends QyhBase
      */
     public function updateUser($data)
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpPost(
+        $result = HelperCurl::curlHttpPost(
             self::URL_API_PREFIX . '/user/update?access_token=' . $this->access_token,
             self::json_encode($data)
         );
@@ -98,9 +99,9 @@ class GzhQyStaff extends QyhBase
      */
     public function deleteUser($userid)
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpGet(
+        $result = HelperCurl::curlHttpGet(
             self::URL_API_PREFIX .  '/user/delete?access_token=' . $this->access_token . '&userid=' . $userid
         );
         if ($result) {
@@ -137,9 +138,9 @@ class GzhQyStaff extends QyhBase
      */
     public function getUserInfo($userid)
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpGet(
+        $result = HelperCurl::curlHttpGet(
             self::URL_API_PREFIX . '/user/get?access_token=' . $this->access_token . '&userid=' . $userid
         );
         if ($result) {
@@ -173,9 +174,9 @@ class GzhQyStaff extends QyhBase
      */
     public function getUserList($department_id, $fetch_child = 0, $status = 0)
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpGet(
+        $result = HelperCurl::curlHttpGet(
             self::URL_API_PREFIX .  '/user/simplelist?access_token=' . $this->access_token . '&department_id=' . $department_id . '&fetch_child=' . $fetch_child . '&status=' . $status
         );
         if ($result) {
@@ -206,9 +207,9 @@ class GzhQyStaff extends QyhBase
     {
         if (!$agentid)
             $agentid = $this->agentid;
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpGet(
+        $result = HelperCurl::curlHttpGet(
             self::URL_API_PREFIX .  '/user/getuserinfo?access_token=' . $this->access_token . '&code=' . $code . '&agentid' . $agentid
         );
         if ($result) {

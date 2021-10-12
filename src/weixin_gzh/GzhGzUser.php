@@ -2,6 +2,8 @@
 
 namespace shiyunSdk\wechatGzh;
 
+use shiyunSdk\wechatSdk\libs\HelperCurl;
+
 /**
  * 关注
  */
@@ -14,9 +16,9 @@ class GzhGzUser extends GzhBase
      */
     public function getUserList($next_openid = '')
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpGet(
+        $result = HelperCurl::curlHttpGet(
             'https://api.weixin.qq.com/cgi-bin/user/get?access_token=' . $this->access_token . '&next_openid=' . $next_openid
         );
         if ($result) {
@@ -39,9 +41,9 @@ class GzhGzUser extends GzhBase
      */
     public function getUserInfo($openid)
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpGet(
+        $result = HelperCurl::curlHttpGet(
             'https://api.weixin.qq.com/cgi-bin/user/info?access_token=' . $this->access_token . '&openid=' . $openid
         );
         if ($result) {
@@ -64,13 +66,13 @@ class GzhGzUser extends GzhBase
      */
     public function updateUserRemark($openid, $remark)
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
         $data = array(
             'openid' => $openid,
             'remark' => $remark
         );
-        $result = $this->curlHttpPost(
+        $result = HelperCurl::curlHttpPost(
             self::URL_API_PREFIX . 'https://api.weixin.qq.com/cgi-bin/user/info/updateremark?access_token=' . $this->access_token,
             self::json_encode($data)
         );

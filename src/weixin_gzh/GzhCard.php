@@ -2,6 +2,8 @@
 
 namespace shiyunSdk\wechatGzh;
 
+use shiyunSdk\wechatSdk\libs\HelperCurl;
+
 class GzhCard extends GzhBase
 {
     const EVENT_CARD_PASS = 'card_pass_check'; // 卡券 - 审核通过
@@ -23,9 +25,9 @@ class GzhCard extends GzhBase
         $data = array(
             'encrypt_code' => $encrypt_code
         );
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpPost(
+        $result = HelperCurl::curlHttpPost(
             self::URL_API_BASE_PREFIX .  '/card/code/decrypt?access_token=' . $this->access_token,
             self::json_encode($data)
         );
@@ -47,9 +49,9 @@ class GzhCard extends GzhBase
      */
     public function createCard($data)
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpPost(
+        $result = HelperCurl::curlHttpPost(
             self::URL_API_BASE_PREFIX . '/card/create?access_token=' . $this->access_token,
             self::json_encode($data)
         );
@@ -73,9 +75,9 @@ class GzhCard extends GzhBase
      */
     public function updateCard($data)
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpPost(
+        $result = HelperCurl::curlHttpPost(
             self::URL_API_BASE_PREFIX . '/card/update?access_token=' . $this->access_token,
             self::json_encode($data)
         );
@@ -103,9 +105,9 @@ class GzhCard extends GzhBase
         $data = array(
             'card_id' => $card_id
         );
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpPost(
+        $result = HelperCurl::curlHttpPost(
             self::URL_API_BASE_PREFIX . '/card/delete?access_token=' . $this->access_token,
             self::json_encode($data)
         );
@@ -131,9 +133,9 @@ class GzhCard extends GzhBase
         $data = array(
             'card_id' => $card_id
         );
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpPost(
+        $result = HelperCurl::curlHttpPost(
             self::URL_API_BASE_PREFIX . '/card/get?access_token=' . $this->access_token,
             self::json_encode($data)
         );
@@ -156,9 +158,9 @@ class GzhCard extends GzhBase
      */
     public function getCardColors()
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpGet(
+        $result = HelperCurl::curlHttpGet(
             self::URL_API_BASE_PREFIX . '/card/getcolors?access_token=' . $this->access_token
         );
         if ($result) {
@@ -187,9 +189,9 @@ class GzhCard extends GzhBase
             'offset' => $offset,
             'count' => $count
         );
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpPost(
+        $result = HelperCurl::curlHttpPost(
             self::URL_API_BASE_PREFIX . '/card/location/batchget?access_token=' . $this->access_token,
             self::json_encode($data)
         );
@@ -213,9 +215,9 @@ class GzhCard extends GzhBase
      */
     public function addCardLocations($data)
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpPost(
+        $result = HelperCurl::curlHttpPost(
             self::URL_API_BASE_PREFIX . '/card/location/batchadd?access_token=' . $this->access_token,
             self::json_encode($data)
         );
@@ -264,9 +266,9 @@ class GzhCard extends GzhBase
                 'card' => $card
             )
         );
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpPost(
+        $result = HelperCurl::curlHttpPost(
             self::URL_API_BASE_PREFIX . '/card/qrcode/create?access_token=' . $this->access_token,
             self::json_encode($data)
         );
@@ -303,9 +305,9 @@ class GzhCard extends GzhBase
         );
         if ($card_id)
             $data['card_id'] = $card_id;
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpPost(
+        $result = HelperCurl::curlHttpPost(
             self::URL_API_BASE_PREFIX . '/card/code/consume?access_token=' . $this->access_token,
             self::json_encode($data)
         );
@@ -340,9 +342,9 @@ class GzhCard extends GzhBase
         $data = array(
             'code' => $code
         );
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpPost(
+        $result = HelperCurl::curlHttpPost(
             self::URL_API_BASE_PREFIX . '/card/code/get?access_token=' . $this->access_token,
             self::json_encode($data)
         );
@@ -378,9 +380,9 @@ class GzhCard extends GzhBase
             'offset' => $offset,
             'count' => $count
         );
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpPost(
+        $result = HelperCurl::curlHttpPost(
             self::URL_API_BASE_PREFIX . '/card/batchget?access_token=' . $this->access_token,
             self::json_encode($data)
         );
@@ -412,9 +414,9 @@ class GzhCard extends GzhBase
             'card_id' => $card_id,
             'new_code' => $new_code
         );
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpPost(
+        $result = HelperCurl::curlHttpPost(
             self::URL_API_BASE_PREFIX .  '/card/code/update?access_token=' . $this->access_token,
             self::json_encode($data)
         );
@@ -444,9 +446,9 @@ class GzhCard extends GzhBase
         );
         if ($card_id)
             $data['card_id'] = $card_id;
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpPost(
+        $result = HelperCurl::curlHttpPost(
             self::URL_API_BASE_PREFIX . '/card/code/unavailable?access_token=' . $this->access_token,
             self::json_encode($data)
         );
@@ -469,9 +471,9 @@ class GzhCard extends GzhBase
      */
     public function modifyCardStock($data)
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpPost(
+        $result = HelperCurl::curlHttpPost(
             self::URL_API_BASE_PREFIX . '/card/modifystock?access_token=' . $this->access_token,
             self::json_encode($data)
         );
@@ -494,9 +496,9 @@ class GzhCard extends GzhBase
      */
     public function activateMemberCard($data)
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpPost(
+        $result = HelperCurl::curlHttpPost(
             self::URL_API_BASE_PREFIX . '/card/membercard/activate?access_token=' . $this->access_token,
             self::json_encode($data)
         );
@@ -521,9 +523,9 @@ class GzhCard extends GzhBase
      */
     public function updateMemberCard($data)
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpPost(
+        $result = HelperCurl::curlHttpPost(
             self::URL_API_BASE_PREFIX .  '/card/membercard/updateuser?access_token=' . $this->access_token,
             self::json_encode($data)
         );
@@ -551,9 +553,9 @@ class GzhCard extends GzhBase
             $data['openid'] = $openid;
         if (count($user) > 0)
             $data['username'] = $user;
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpPost(
+        $result = HelperCurl::curlHttpPost(
             self::URL_API_BASE_PREFIX . '/card/testwhitelist/set?access_token=' . $this->access_token,
             self::json_encode($data)
         );
@@ -583,9 +585,9 @@ class GzhCard extends GzhBase
         );
         if ($card_id)
             $data['card_id'] = $card_id;
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpPost(
+        $result = HelperCurl::curlHttpPost(
             self::URL_API_BASE_PREFIX .  '/card/luckymoney/updateuserbalance?access_token=' . $this->access_token,
             self::json_encode($data)
         );

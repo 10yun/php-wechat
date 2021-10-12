@@ -2,15 +2,12 @@
 
 namespace shiyunSdk\wechatSdk;
 
-
-use shiyunSdk\wechatSdk\common\TraitBaseXml;
-use shiyunSdk\wechatSdk\common\TraitWxCurl;
 use shiyunSdk\wechatSdk\common\TraitWxLog;
 use shiyunSdk\wechatSdk\common\TraitWxToken;
 
-class WxInit
+class WxInit extends WechatCommon
 {
-    use TraitBaseXml, TraitWxCurl, TraitWxLog, TraitWxToken;
+    use TraitWxLog, TraitWxToken;
 
     public $debug = false;
     public $logcallback;

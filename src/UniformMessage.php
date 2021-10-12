@@ -2,6 +2,8 @@
 
 namespace shiyunSdk\wechatSdk;
 
+use shiyunSdk\wechatSdk\libs\HelperCurl;
+
 /**
  * TODO 统一服务消息
  * @Author sxd
@@ -37,7 +39,7 @@ class UniformMessage extends WechatCommon
         // mp_template_msg	Object		是	公众号模板消息相关的信息，可以参考公众号模板消息接口；有此节点并且没有weapp_template_msg节点时，发送公众号模板消息
 
         $data = array();
-        $access_token = $this->wxAccessToken($config['appid'], $config['appsecret']);
+        $access_token = $this->setAppId($config['appid'])->setAppSecret($config['appsecret'])->wxAccessToken();
         $data['touser'] = $touser;
 
         if ($type == 'weapp_template_msg') {
@@ -62,7 +64,7 @@ class UniformMessage extends WechatCommon
         \CTOCODE_Logger::debug($data, 'UniformMessage' . date("Y-m-d"));
         // $url =  "https://api.weixin.qq.com/cgi-bin/message/wxopen/template/uniform_send?access_token={$access_token}";
         $url =  "https://api.weixin.qq.com/cgi-bin/message/subscribe/send?access_token={$access_token}";
-        $result = $this->wxHttpsRequest($url, json_encode($data['weapp_template_msg']));
+        $result = HelperCurl::wxHttpsRequest($url, json_encode($data['weapp_template_msg']));
         $jsoninfo = json_decode($result, true);
         \CTOCODE_Logger::debug($jsoninfo, 'xcxTemplateMessage' . date("Y-m-d"));
         return $jsoninfo;
@@ -91,7 +93,7 @@ class UniformMessage extends WechatCommon
         // mp_template_msg	Object		是	公众号模板消息相关的信息，可以参考公众号模板消息接口；有此节点并且没有weapp_template_msg节点时，发送公众号模板消息
 
         $data = array();
-        $access_token = $this->wxAccessToken($config['appid'], $config['appsecret']);
+        $access_token = $this->setAppId($config['appid'])->setAppSecret($config['appsecret'])->wxAccessToken();
         $data['touser'] = $touser;
 
         $data['template_id'] = $template['template_id'];
@@ -111,7 +113,7 @@ class UniformMessage extends WechatCommon
         // dd(json_encode($data));
         \CTOCODE_Logger::debug($data, 'UniformMessage' . date("Y-m-d"));
         $url = self::URL_API_PREFIX . "/message/subscribe/send?access_token={$access_token}";
-        $result = $this->wxHttpsRequest($url, json_encode($data));
+        $result = HelperCurl::wxHttpsRequest($url, json_encode($data));
         $jsoninfo = json_decode($result, true);
         \CTOCODE_Logger::debug($jsoninfo, 'xcxTemplateMessage/sendXcxSubscribe' . date("Y-m-d"));
         return $jsoninfo;

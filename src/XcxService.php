@@ -2,6 +2,8 @@
 
 namespace shiyunSdk\wechatSdk;
 
+use shiyunSdk\wechatSdk\libs\HelperCurl;
+
 /**.
  * Author: ctocode-zhw
  * Date: 2019/2/26
@@ -62,7 +64,7 @@ class XcxService extends WechatCommon
     public function xcxGetBaseParam($APPID, $AppSecret, $code)
     {
         $url = "https://api.weixin.qq.com/sns/jscode2session?appid=" . $APPID . "&secret=" . $AppSecret . "&js_code=" . $code . "&grant_type=authorization_code";
-        $result = $this->wxHttpsRequest($url);
+        $result = HelperCurl::wxHttpsRequest($url);
         $jsoninfo = json_decode($result, true);
         return $jsoninfo;
     }
@@ -97,8 +99,8 @@ class XcxService extends WechatCommon
         $data['page'] = $page;
         $data['scene'] = $scene ?: 'default';
         $jsonData = json_encode($data);
-        $wxAccessToken = $this->wxAccessToken();
-        $url = "https://api.weixin.qq.com/wxa/getwxacodeunlimit?access_token=" . $wxAccessToken;
-        return $this->wxHttpsRequest($url, $jsonData);
+        $wxAccToken = $this->wxAccessToken();
+        $url = "https://api.weixin.qq.com/wxa/getwxacodeunlimit?access_token=" . $wxAccToken;
+        return HelperCurl::wxHttpsRequest($url, $jsonData);
     }
 }

@@ -2,6 +2,8 @@
 
 namespace shiyunSdk\wechatGzh;
 
+use shiyunSdk\wechatSdk\libs\HelperCurl;
+
 /**
  * 【ctocode】      微信 - 菜单类
  * ============================================================================
@@ -18,9 +20,9 @@ class GzhMenu extends GzhCommon
      ****************************************************/
     public function wxMenuCreate($jsonData)
     {
-        $wxAccessToken = $this->wxAccessToken();
-        $url = self::URL_API_PREFIX . "/menu/create?access_token=" . $wxAccessToken;
-        $result = $this->wxHttpsRequest($url, $jsonData);
+        $wxAccToken = $this->wxAccessToken();
+        $url = self::URL_API_PREFIX . "/menu/create?access_token=" . $wxAccToken;
+        $result = HelperCurl::wxHttpsRequest($url, $jsonData);
         $jsoninfo = json_decode($result, true);
         return $jsoninfo;
     }
@@ -30,9 +32,9 @@ class GzhMenu extends GzhCommon
      ****************************************************/
     public function wxMenuGet()
     {
-        $wxAccessToken = $this->wxAccessToken();
-        $url = self::URL_API_PREFIX . "/menu/get?access_token=" . $wxAccessToken;
-        $result = $this->wxHttpsRequest($url);
+        $wxAccToken = $this->wxAccessToken();
+        $url = self::URL_API_PREFIX . "/menu/get?access_token=" . $wxAccToken;
+        $result = HelperCurl::wxHttpsRequest($url);
         $jsoninfo = json_decode($result, true);
         return $jsoninfo;
     }
@@ -42,9 +44,9 @@ class GzhMenu extends GzhCommon
      ****************************************************/
     public function wxMenuDelete()
     {
-        $wxAccessToken = $this->wxAccessToken();
-        $url = self::URL_API_PREFIX . "/menu/delete?access_token=" . $wxAccessToken;
-        $result = $this->wxHttpsRequest($url);
+        $wxAccToken = $this->wxAccessToken();
+        $url = self::URL_API_PREFIX . "/menu/delete?access_token=" . $wxAccToken;
+        $result = HelperCurl::wxHttpsRequest($url);
         $jsoninfo = json_decode($result, true);
         return $jsoninfo;
     }
@@ -54,9 +56,9 @@ class GzhMenu extends GzhCommon
      ****************************************************/
     public function wxMenuGetInfo()
     {
-        $wxAccessToken = $this->wxAccessToken();
-        $url = self::URL_API_PREFIX . "/get_current_selfmenu_info?access_token=" . $wxAccessToken;
-        $result = $this->wxHttpsRequest($url);
+        $wxAccToken = $this->wxAccessToken();
+        $url = self::URL_API_PREFIX . "/get_current_selfmenu_info?access_token=" . $wxAccToken;
+        $result = HelperCurl::wxHttpsRequest($url);
         $jsoninfo = json_decode($result, true);
         return $jsoninfo;
     }
@@ -127,9 +129,9 @@ class GzhMenu extends GzhCommon
      */
     public function createMenu($data)
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpPost(
+        $result = HelperCurl::curlHttpPost(
             self::URL_API_PREFIX . '/menu/create?access_token=' . $this->access_token,
             self::json_encode($data)
         );
@@ -149,9 +151,9 @@ class GzhMenu extends GzhCommon
         if ($agentid == '') {
             $agentid = $this->agentid;
         }
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpPost(
+        $result = HelperCurl::curlHttpPost(
             self::URL_API_PREFIX . '/menu/create?access_token=' . $this->access_token . '&agentid=' . $agentid,
             self::json_encode($data)
         );
@@ -174,9 +176,9 @@ class GzhMenu extends GzhCommon
      */
     public function getMenu()
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpGet(
+        $result = HelperCurl::curlHttpGet(
             self::URL_API_PREFIX .  '/menu/get?access_token=' . $this->access_token
         );
         if ($result) {
@@ -195,9 +197,9 @@ class GzhMenu extends GzhCommon
         if ($agentid == '') {
             $agentid = $this->agentid;
         }
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpGet(
+        $result = HelperCurl::curlHttpGet(
             self::URL_API_PREFIX .  '/menu/get?access_token=' . $this->access_token . '&agentid=' . $agentid
         );
         if ($result) {
@@ -218,9 +220,9 @@ class GzhMenu extends GzhCommon
      */
     public function deleteMenu()
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpGet(
+        $result = HelperCurl::curlHttpGet(
             self::URL_API_PREFIX . '/menu/delete?access_token=' . $this->access_token
         );
         if ($result) {
@@ -239,9 +241,9 @@ class GzhMenu extends GzhCommon
         if ($agentid == '') {
             $agentid = $this->agentid;
         }
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpGet(
+        $result = HelperCurl::curlHttpGet(
             self::URL_API_PREFIX . '/menu/delete?access_token=' . $this->access_token . '&agentid=' . $agentid
         );
         if ($result) {

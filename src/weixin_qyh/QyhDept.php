@@ -3,6 +3,7 @@
 namespace shiyunSdk\wechatQyh;
 
 use shiyunSdk\wechatQyh\QyhBase;
+use shiyunSdk\wechatSdk\libs\HelperCurl;
 
 class GzhQyDept extends QyhBase
 {
@@ -24,9 +25,9 @@ class GzhQyDept extends QyhBase
      */
     public function createDepartment($data)
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpPost(
+        $result = HelperCurl::curlHttpPost(
             self::URL_API_PREFIX . '/department/create?access_token=' . $this->access_token,
             self::json_encode($data)
         );
@@ -59,9 +60,9 @@ class GzhQyDept extends QyhBase
      */
     public function updateDepartment($data)
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpPost(
+        $result = HelperCurl::curlHttpPost(
             self::URL_API_PREFIX . '/department/update?access_token=' . $this->access_token,
             self::json_encode($data)
         );
@@ -88,9 +89,9 @@ class GzhQyDept extends QyhBase
      */
     public function deleteDepartment($id)
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpGet(
+        $result = HelperCurl::curlHttpGet(
             self::URL_API_PREFIX .  '/department/delete?access_token=' . $this->access_token . '&id=' . $id
         );
         if ($result) {
@@ -121,9 +122,9 @@ class GzhQyDept extends QyhBase
      */
     public function moveDepartment($data)
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpGet(
+        $result = HelperCurl::curlHttpGet(
             self::URL_API_PREFIX .  '/department/move?access_token=' . $this->access_token,
             self::json_encode($data)
         );
@@ -161,9 +162,9 @@ class GzhQyDept extends QyhBase
      */
     public function getDepartment()
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = $this->curlHttpGet(
+        $result = HelperCurl::curlHttpGet(
             self::URL_API_PREFIX . '/department/list?access_token=' . $this->access_token
         );
         if ($result) {

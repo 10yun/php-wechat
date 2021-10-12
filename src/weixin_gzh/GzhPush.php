@@ -2,6 +2,8 @@
 
 namespace shiyunSdk\wechatGzh;
 
+use shiyunSdk\wechatSdk\libs\HelperCurl;
+
 /**
  * 【ctocode】      微信 - 消息接收和推送等功能类
  * ============================================================================
@@ -18,9 +20,9 @@ class GzhPush extends GzhCommon
      ****************************************************/
     public function wxSendTemplate($jsonData)
     {
-        $wxAccessToken = $this->wxAccessToken();
-        $url = self::URL_API_PREFIX . "/message/template/send?access_token=" . $wxAccessToken;
-        $result = $this->wxHttpsRequest($url, $jsonData);
+        $wxAccToken = $this->wxAccessToken();
+        $url = self::URL_API_PREFIX . "/message/template/send?access_token=" . $wxAccToken;
+        $result = HelperCurl::wxHttpsRequest($url, $jsonData);
         return $result;
     }
 
@@ -49,9 +51,9 @@ class GzhPush extends GzhCommon
     {
         $jsonData = json_encode($data);
 
-        $wxAccessToken = $this->wxAccessToken();
-        $url = self::URL_API_PREFIX . "/template/api_set_industry?access_token=" . $wxAccessToken;
-        $result = $this->wxHttpsRequest($url, $jsonData);
+        $wxAccToken = $this->wxAccessToken();
+        $url = self::URL_API_PREFIX . "/template/api_set_industry?access_token=" . $wxAccToken;
+        $result = HelperCurl::wxHttpsRequest($url, $jsonData);
         return $result;
     }
     /****************************************************
@@ -66,9 +68,9 @@ class GzhPush extends GzhCommon
             'template_id_short' => $template_id_short
         );
         $jsonData = json_encode($data);
-        $wxAccessToken = $this->wxAccessToken();
-        $url = self::URL_API_PREFIX . "/template/api_add_template?access_token=" . $wxAccessToken;
-        $result = $this->wxHttpsRequest($url, $jsonData);
+        $wxAccToken = $this->wxAccessToken();
+        $url = self::URL_API_PREFIX . "/template/api_add_template?access_token=" . $wxAccToken;
+        $result = HelperCurl::wxHttpsRequest($url, $jsonData);
         $jsoninfo = json_decode($result, true);
         return $jsoninfo;
     }
@@ -78,9 +80,9 @@ class GzhPush extends GzhCommon
      ****************************************************/
     public function wxTemplateGet($access_token)
     {
-        $wxAccessToken = $this->wxAccessToken();
-        $url = self::URL_API_PREFIX . "/template/get_all_private_template?access_token=" . $wxAccessToken;
-        $result = $this->wxHttpsRequest($url);
+        $wxAccToken = $this->wxAccessToken();
+        $url = self::URL_API_PREFIX . "/template/get_all_private_template?access_token=" . $wxAccToken;
+        $result = HelperCurl::wxHttpsRequest($url);
         $jsoninfo = json_decode($result, true);
         return $jsoninfo;
     }
@@ -96,8 +98,8 @@ class GzhPush extends GzhCommon
             'template_id' => $template_id
         );
         $jsonData = json_encode($data);
-        $url = self::URL_API_PREFIX . "/template/del_private_template?access_token=" . $wxAccessToken;
-        $result = $this->wxHttpsRequest($url, $jsonData);
+        $url = self::URL_API_PREFIX . "/template/del_private_template?access_token=" . $wxAccToken;
+        $result = HelperCurl::wxHttpsRequest($url, $jsonData);
         return $result;
     }
 
@@ -106,9 +108,9 @@ class GzhPush extends GzhCommon
      ****************************************************/
     public function wxTemplateGetIndustry()
     {
-        $wxAccessToken = $this->wxAccessToken();
-        $url = self::URL_API_PREFIX . "/template/get_industry?access_token=" . $wxAccessToken;
-        $result = $this->wxHttpsRequest($url);
+        $wxAccToken = $this->wxAccessToken();
+        $url = self::URL_API_PREFIX . "/template/get_industry?access_token=" . $wxAccToken;
+        $result = HelperCurl::wxHttpsRequest($url);
         return $result;
     }
 }

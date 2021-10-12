@@ -2,6 +2,9 @@
 
 namespace shiyunSdk\wechatSdk;
 
+use shiyunSdk\wechatSdk\libs\HelperCurl;
+use shiyunSdk\wechatSdk\libs\HelperCache;
+
 /**
  * 【ctocode】      微信 - 常用类
  * ============================================================================
@@ -43,66 +46,61 @@ class WechatCommon
         $this->access_token = !empty($config['access_token']) ? $config['access_token'] : '';
         $this->business_id = !empty($config['business_id']) ? $config['business_id'] : 0;
     }
-    /*
-	 * 获取accesstoken
-	 * 【请勿时时调用】;上层应用通过该接口来获取wxAccessToken,并将其保存到数据库中,仅当该access_token失效时去获取.
-	 */
+    public function setAppId($str = '')
+    {
+        $this->_appID = $str;
+        return $this;
+    }
+    public function setAppSecret($str = '')
+    {
+        $this->_appSecret = $str;
+        return $this;
+    }
+    /**
+     * 获取access_token
+     * 【请勿时时调用】;上层应用通过该接口来获取wxAccessToken,
+     * 并将其保存到数据库中,仅当该access_token失效时去获取.
+     * @param string $token 手动指定access_token，非必要情况不建议用
+     */
     /****************************************************
      *  微信获取AccessToken 返回指定微信公众号的at信息
      ****************************************************/
-    public function wxAccessToken($appId = NULL, $appSecret = NULL)
+    public function wxAccessToken($token = '')
     {
-        $appId = is_null($appId) ? $this->_appID : $appId;
-        $appSecret = is_null($appSecret) ? $this->_appSecret : $appSecret;
-        if (!empty($appId) && !empty($appSecret)) {
-            $access_token = \think\facade\Cache::get('WEIXIN_ACCESS_TOKEN_' . $appId);
-            if ($access_token) {
-                return $access_token;
-            }
-            $url = self::URL_API_PREFIX . "/token?grant_type=client_credential&appid=" . $appId . "&secret=" . $appSecret;
-            $result = $this->wxHttpsRequest($url);
-            // print_r($result);
-            $jsoninfo = json_decode($result, true);
-            $access_token = isset($jsoninfo["access_token"]) ? $jsoninfo["access_token"] : null;
-            $expires_in = isset($jsoninfo["expires_in"]) ? $jsoninfo["expires_in"] - 600 : 0; // 有效时间，单位：秒(安全起见，提前10分钟)
-            if ($access_token) { // 将$access_token存缓存，设置有效期
-                \think\facade\Cache::set('WEIXIN_ACCESS_TOKEN_' . $appId, $access_token, $expires_in);
-            }
-            $this->access_token = $access_token;
-            return $access_token;
-        } else {
+        if ($token) { // 手动指定token，优先使用
+            $this->access_token = $token;
             return $this->access_token;
         }
-    }
-    /**
-     * GET 请求
-     * @param string $url
-     */
-    private function wxAccessToken2()
-    {
-        // access_token 应该全局存储与更新，以下代码以写入到文件中做示例
-        $cacheData = trim(substr(file_get_contents(__DIR__ . '/access_token.php'), 15));
-        $data = json_decode($cacheData);
-        // var_dump($data);
-        // if(! Cache::has ( 'access_token' )){
-        if ($data->expire_time < time()) {
-            // 如果是企业号用以下URL获取access_token
-            // $url = "https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid=$this->appId&corpsecret=$this->appSecret";
-            // echo $this->appId,$this->appSecret;
-            $url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=$this->appId&secret=$this->appSecret";
-            $res = json_decode($this->httpGet($url));
-            $access_token = $res->access_token;
-            if ($access_token) {
-                $data->expire_time = time() + 7000;
-                $data->access_token = $access_token;
-                // Cache::set ( 'access_token', $access_token, 10 );
-                $this->set_php_file("access_token.php", json_encode($data));
-            }
-        } else {
-            // $access_token = Cache::get ( 'access_token' );
-            $access_token = $data->access_token;
+        if (empty($this->_appID) && empty($this->_appSecret)) {
+            return $this->access_token;
         }
-        return $access_token;
+        $cache_name = $this->token_cache_sign . $this->_appID;
+
+        $cache_arr = HelperCache::getCache($cache_name);
+        if ($cache_arr['access_token']) {
+            return $cache_arr['access_token'];
+        }
+        // 如果是企业号用以下URL获取access_token
+        // $url = self::URL_API_PREFIX ."/gettoken?corpid={$this->_appID}&corpsecret={$this->_appSecret}";
+
+        $url = self::URL_API_PREFIX . "/token?grant_type=client_credential&appid={$this->_appID}&secret={$this->_appSecret}";
+        $result = HelperCurl::wxHttpsRequest($url);
+
+        if ($result) {
+            $jsonInfo = json_decode($result, true);
+            if (!$jsonInfo || isset($jsonInfo['errcode'])) {
+                $this->errCode = $jsonInfo['errcode'];
+                $this->errMsg = $jsonInfo['errmsg'];
+                return false;
+            }
+            $access_token = isset($jsonInfo["access_token"]) ? $jsonInfo["access_token"] : null;
+            // 有效时间，单位：秒(安全起见，提前10分钟)
+            $expires_in = isset($jsonInfo["expires_in"]) ? intval($jsonInfo['expires_in']) - 600 : 3600;
+            // 将$access_token存缓存，设置有效期
+            HelperCache::setCache($cache_name, $access_token, $expires_in);
+            $this->access_token = $access_token;
+        }
+        return $this->access_token;
     }
 
     /****************************************************
@@ -110,9 +108,9 @@ class WechatCommon
      ****************************************************/
     public function wxGetUser($openId)
     {
-        $wxAccessToken = $this->wxAccessToken();
-        $url = self::URL_API_PREFIX . "/user/info?access_token=" . $wxAccessToken . "&openid=" . $openId . "&lang=zh_CN";
-        $result = $this->wxHttpsRequest($url);
+        $wxAccToken = $this->wxAccessToken();
+        $url = self::URL_API_PREFIX . "/user/info?access_token=" . $wxAccToken . "&openid=" . $openId . "&lang=zh_CN";
+        $result = HelperCurl::wxHttpsRequest($url);
         $jsoninfo = json_decode($result, true);
         return $jsoninfo;
     }
@@ -122,9 +120,9 @@ class WechatCommon
      ****************************************************/
     public function wxQrCodeTicket($jsonData)
     {
-        $wxAccessToken = $this->wxAccessToken();
-        $url = self::URL_API_PREFIX . "/qrcode/create?access_token=" . $wxAccessToken;
-        $result = $this->wxHttpsRequest($url, $jsonData);
+        $wxAccToken = $this->wxAccessToken();
+        $url = self::URL_API_PREFIX . "/qrcode/create?access_token=" . $wxAccToken;
+        $result = HelperCurl::wxHttpsRequest($url, $jsonData);
         return $result;
     }
 
@@ -135,23 +133,6 @@ class WechatCommon
     {
         $url = "https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=" . urlencode($ticket);
         return $url;
-    }
-
-    /*****************************************************
-     *      生成随机字符串 - 最长为32位字符串
-     *****************************************************/
-    public function wxNonceStr($length = 16, $type = FALSE)
-    {
-        $chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        $str = "";
-        for ($i = 0; $i < $length; $i++) {
-            $str .= substr($chars, mt_rand(0, strlen($chars) - 1), 1);
-        }
-        if ($type == TRUE) {
-            return strtoupper(md5(time() . $str));
-        } else {
-            return $str;
-        }
     }
 
     /*******************************************************

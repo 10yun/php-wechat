@@ -12,7 +12,7 @@
         $openId = $Info['openid'];
          
     }
-    $signPackage = $wx->wxJsapiPackage();
+    $signPackage = $wx->wxJsApiPackage();
 ?>
 <html>
 

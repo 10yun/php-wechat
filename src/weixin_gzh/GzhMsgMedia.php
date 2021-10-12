@@ -2,6 +2,8 @@
 
 namespace shiyunSdk\wechatGzh;
 
+use shiyunSdk\wechatSdk\libs\HelperCurl;
+
 class GzhMsgMedia extends GzhBase
 {
     /**
@@ -15,10 +17,10 @@ class GzhMsgMedia extends GzhBase
      */
     public function uploadMedia($data, $type)
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
         // 原先的上传多媒体文件接口使用 self::URL_UPLOAD_MEDIA 前缀
-        $result = $this->curlHttpPost(
+        $result = HelperCurl::curlHttpPost(
             self::URL_API_PREFIX .  '/media/upload?access_token=' . $this->access_token . '&type=' . $type,
             $data,
             true
@@ -43,12 +45,12 @@ class GzhMsgMedia extends GzhBase
      */
     public function getMedia($media_id, $is_video = false)
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
         // 原先的上传多媒体文件接口使用 self::URL_UPLOAD_MEDIA 前缀
         // 如果要获取的素材是视频文件时，不能使用https协议，必须更换成http协议
         $url_prefix = $is_video ? str_replace('https', 'http', self::URL_API_PREFIX) : self::URL_API_PREFIX;
-        $result = $this->curlHttpGet(
+        $result = HelperCurl::curlHttpGet(
             $url_prefix . '/media/get?access_token=' . $this->access_token . '&media_id=' . $media_id
         );
         if ($result) {
@@ -78,7 +80,7 @@ class GzhMsgMedia extends GzhBase
      */
     public function uploadForeverMedia($data, $type, $is_video = false, $video_info = array())
     {
-        if (!$this->access_token && !$this->checkAuth())
+        if (!$this->access_token && !$this->wxAccessToken())
             return false;
         // #TODO 暂不确定此接口是否需要让视频文件走http协议
         // 如果要获取的素材是视频文件时，不能使用https协议，必须更换成http协议
@@ -86,7 +88,7 @@ class GzhMsgMedia extends GzhBase
         // 当上传视频文件时，附加视频文件信息
         if ($is_video)
             $data['description'] = self::json_encode($video_info);
-        $result = $this->curlHttpPost(
+        $result = HelperCurl::curlHttpPost(
             self::URL_API_PREFIX . '/material/add_material?access_token=' . $this->access_token . '&type=' . $type,
             $data,
             true
