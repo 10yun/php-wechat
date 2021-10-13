@@ -3,18 +3,25 @@
 
 - 功能
 
-| 功能         | 说明       | 详情 |
-| :----------- | :--------- | :--- |
-| -            | -          | -    |
-| wxGzhConnect | 公众号连接 |      |
-| -            | -          | -    |
-| wxMenuGet    | 获取菜单   |      |
-| wxMenuCreate | 创建菜单   |      |
-| wxMenuDelete | 删除菜单   |      |
-| wxMenuDelete | 删除菜单   |      |
+| 方法         | 说明     | 详情 |
+| :----------- | :------- | :--- |
+| wxMenuGet    | 获取菜单 |      |
+| wxMenuCreate | 创建菜单 |      |
+| wxMenuDelete | 删除菜单 |      |
+| wxMenuDelete | 删除菜单 |      |
+
+- 使用
+- 
+```php
+
+use shiyunSdk\wechatApi\wxMenu;
+
+$wxObj = new wxMenu();
+
+$wxObj->setAppId()->setAppSecret()->getToken()->方法();
 
 
-
+```
 ## wxMenuCreate($jsonData)
 
 - 功能说明
