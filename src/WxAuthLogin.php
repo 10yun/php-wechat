@@ -2,6 +2,9 @@
 
 namespace shiyunSdk\wechatSdk;
 
+use shiyunSdk\wechatSdk\libs\Snoopy;
+use shiyunSdk\wechatSdk\libs\HelperCache;
+
 /**
  *	微信公众平台PHP-SDK
  *  Wechatauth为非官方微信登陆API
@@ -13,7 +16,6 @@ namespace shiyunSdk\wechatSdk;
  *  @version 1.1
  *  
  */
-include "Snoopy.class.php";
 class WxAuthLogin extends WxInit
 {
     private $cookie;
@@ -28,40 +30,8 @@ class WxAuthLogin extends WxInit
         $this->_account = isset($options['account']) ? $options['account'] : '';
         $this->_datapath = isset($options['datapath']) ? $options['datapath'] : $this->_datapath;
         $this->_cookiename = $this->_datapath . $this->_account;
-        $this->getCookie($this->_cookiename);
+        HelperCache::getCache($this->_cookiename);
     }
-    /**
-     * 把cookie写入缓存
-     * @param  string $filename 缓存文件名
-     * @param  string $content  文件内容
-     * @return bool
-     */
-    public function saveCookie($filename, $content)
-    {
-        return \think\facade\Cache::set($filename, $content, $this->_cookieexpired);
-    }
-    /**
-     * 读取cookie缓存内容
-     * @param  string $filename 缓存文件名
-     * @return string cookie
-     */
-    public function getCookie($filename)
-    {
-        $data = \think\facade\Cache::get($filename);
-        if ($data)
-            $this->cookie = $data;
-        return $this->cookie;
-    }
-    /*
-	 * 删除cookie
-	 */
-    public function deleteCookie($filename)
-    {
-        $this->cookie = '';
-        S($filename, null);
-        return true;
-    }
-
     /**
      * 获取登陆二维码对应的授权码
      * 获取登陆授权码, 通过授权码才能获取二维码
@@ -168,7 +138,7 @@ class WxAuthLogin extends WxInit
                         $this->cookie = $cookie;
                         $this->log('step3:' . $loginurl . ';cookie:' . $cookie . ';respond:' . $result);
 
-                        $this->saveCookie($this->_cookiename, $this->cookie);
+                        HelperCache::setCache($this->_cookiename, $this->cookie);
                     }
                 }
                 return $status;
@@ -279,7 +249,7 @@ class WxAuthLogin extends WxInit
             'uin' => $uid,
             'sid' => $sid
         ));
-        $this->deleteCookie($this->_cookiename);
+        HelperCache::deleteCache($this->_cookiename);
         return true;
     }
 }

@@ -3,13 +3,14 @@
 namespace shiyunSdk\wechatSdk;
 
 use shiyunSdk\wechatSdk\libs\HelperCurl;
+use shiyunSdk\wechatSdk\libs\HelperLog;
 
 /**
  * TODO 统一服务消息
  * @Author sxd
  * @Date 2019-08-06 10:02
  */
-class UniformMessage extends WechatCommon
+class UniformMessage extends WechatInit
 {
 
     /**
@@ -61,12 +62,12 @@ class UniformMessage extends WechatCommon
 
 
         // dd(json_encode($data[']));
-        \CTOCODE_Logger::debug($data, 'UniformMessage' . date("Y-m-d"));
+        HelperLog::debug($data, 'UniformMessage' . date("Y-m-d"));
         // $url =  "https://api.weixin.qq.com/cgi-bin/message/wxopen/template/uniform_send?access_token={$access_token}";
         $url =  "https://api.weixin.qq.com/cgi-bin/message/subscribe/send?access_token={$access_token}";
-        $result = HelperCurl::wxHttpsRequest($url, json_encode($data['weapp_template_msg']));
+        $result = HelperCurl::curlHttpPost($url, json_encode($data['weapp_template_msg']));
         $jsoninfo = json_decode($result, true);
-        \CTOCODE_Logger::debug($jsoninfo, 'xcxTemplateMessage' . date("Y-m-d"));
+        HelperLog::debug($jsoninfo, 'xcxTemplateMessage' . date("Y-m-d"));
         return $jsoninfo;
     }
 
@@ -111,11 +112,11 @@ class UniformMessage extends WechatCommon
 
 
         // dd(json_encode($data));
-        \CTOCODE_Logger::debug($data, 'UniformMessage' . date("Y-m-d"));
+        HelperLog::debug($data, 'UniformMessage' . date("Y-m-d"));
         $url = self::URL_API_PREFIX . "/message/subscribe/send?access_token={$access_token}";
-        $result = HelperCurl::wxHttpsRequest($url, json_encode($data));
+        $result = HelperCurl::curlHttpPost($url, json_encode($data));
         $jsoninfo = json_decode($result, true);
-        \CTOCODE_Logger::debug($jsoninfo, 'xcxTemplateMessage/sendXcxSubscribe' . date("Y-m-d"));
+        HelperLog::debug($jsoninfo, 'xcxTemplateMessage/sendXcxSubscribe' . date("Y-m-d"));
         return $jsoninfo;
     }
 }

@@ -1,6 +1,8 @@
 <?php
 
-namespace shiyunSdk\wechatSdk;
+namespace shiyunSdk\wechatApi;
+
+use shiyunSdk\wechatSdk\WechatCommon;
 
 /**
  * 【ctocode】      微信 - 红包类

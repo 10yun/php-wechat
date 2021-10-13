@@ -18,10 +18,9 @@ class GzhMsgArticle extends GzhBase
     {
         if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = HelperCurl::curlHttpPost(
-            self::URL_API_PREFIX . '/material/add_news?access_token=' . $this->access_token,
-            self::json_encode($data)
-        );
+        $url = self::URL_API_PREFIX . '/material/add_news?access_token=' . $this->access_token;
+        $result = HelperCurl::curlHttpPost($url, self::json_encode($data));
+
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode'])) {
@@ -50,10 +49,9 @@ class GzhMsgArticle extends GzhBase
             $data['media_id'] = $media_id;
         if (!isset($data['index']))
             $data['index'] = $index;
-        $result = HelperCurl::curlHttpPost(
-            self::URL_API_PREFIX . '/material/update_news?access_token=' . $this->access_token,
-            self::json_encode($data)
-        );
+        $url = self::URL_API_PREFIX . '/material/update_news?access_token=' . $this->access_token;
+        $result = HelperCurl::curlHttpPost($url, self::json_encode($data));
+
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode'])) {
@@ -83,10 +81,9 @@ class GzhMsgArticle extends GzhBase
         // #TODO 暂不确定此接口是否需要让视频文件走http协议
         // 如果要获取的素材是视频文件时，不能使用https协议，必须更换成http协议
         // $url_prefix = $is_video?str_replace('https','http',self::URL_API_PREFIX):self::URL_API_PREFIX;
-        $result = HelperCurl::curlHttpPost(
-            self::URL_API_PREFIX . '/material/get_material?access_token=' . $this->access_token,
-            self::json_encode($data)
-        );
+        $url = self::URL_API_PREFIX . '/material/get_material?access_token=' . $this->access_token;
+        $result = HelperCurl::curlHttpPost($url, self::json_encode($data));
+
         if ($result) {
             if (is_string($result)) {
                 $json = json_decode($result, true);
@@ -114,10 +111,9 @@ class GzhMsgArticle extends GzhBase
         $data = array(
             'media_id' => $media_id
         );
-        $result = HelperCurl::curlHttpPost(
-            self::URL_API_PREFIX . '/material/del_material?access_token=' . $this->access_token,
-            self::json_encode($data)
-        );
+        $url = self::URL_API_PREFIX . '/material/del_material?access_token=' . $this->access_token;
+        $result = HelperCurl::curlHttpPost($url, self::json_encode($data));
+
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode'])) {
@@ -152,10 +148,9 @@ class GzhMsgArticle extends GzhBase
             'offset' => $offset,
             'count' => $count
         );
-        $result = HelperCurl::curlHttpPost(
-            self::URL_API_PREFIX . '/material/batchget_material?access_token=' . $this->access_token,
-            self::json_encode($data)
-        );
+        $url = self::URL_API_PREFIX . '/material/batchget_material?access_token=' . $this->access_token;
+        $result = HelperCurl::curlHttpPost($url, self::json_encode($data));
+
         if ($result) {
             $json = json_decode($result, true);
             if (isset($json['errcode'])) {
@@ -183,9 +178,9 @@ class GzhMsgArticle extends GzhBase
     {
         if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = HelperCurl::curlHttpGet(
-            self::URL_API_PREFIX . '/material/get_materialcount?access_token=' . $this->access_token
-        );
+
+        $url = self::URL_API_PREFIX . '/material/get_materialcount?access_token=' . $this->access_token;
+        $result = HelperCurl::curlHttpGet($url);
         if ($result) {
             $json = json_decode($result, true);
             if (isset($json['errcode'])) {
@@ -207,10 +202,9 @@ class GzhMsgArticle extends GzhBase
     {
         if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = HelperCurl::curlHttpPost(
-            self::URL_API_PREFIX . '/media/uploadnews?access_token=' . $this->access_token,
-            self::json_encode($data)
-        );
+        $url = self::URL_API_PREFIX . '/media/uploadnews?access_token=' . $this->access_token;
+        $result = HelperCurl::curlHttpPost($url, self::json_encode($data));
+
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode'])) {

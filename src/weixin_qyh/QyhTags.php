@@ -26,10 +26,9 @@ class GzhTags extends QyhBase
     {
         if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = HelperCurl::curlHttpPost(
-            self::URL_API_PREFIX .  '/tag/create?access_token=' . $this->access_token,
-            self::json_encode($data)
-        );
+        $url = self::URL_API_PREFIX .  '/tag/create?access_token=' . $this->access_token;
+        $result = HelperCurl::curlHttpPost($url, self::json_encode($data));
+
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode']) || $json['errcode'] != 0) {
@@ -59,10 +58,9 @@ class GzhTags extends QyhBase
     {
         if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = HelperCurl::curlHttpPost(
-            self::URL_API_PREFIX . '/tag/update?access_token=' . $this->access_token,
-            self::json_encode($data)
-        );
+        $url = self::URL_API_PREFIX . '/tag/update?access_token=' . $this->access_token;
+        $result = HelperCurl::curlHttpPost($url, self::json_encode($data));
+
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode']) || $json['errcode'] != 0) {
@@ -88,9 +86,10 @@ class GzhTags extends QyhBase
     {
         if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = HelperCurl::curlHttpGet(
-            self::URL_API_PREFIX .  '/tag/delete?access_token=' . $this->access_token . '&tagid=' . $tagid
-        );
+
+        $url = self::URL_API_PREFIX .  '/tag/delete?access_token=' . $this->access_token . '&tagid=' . $tagid;
+        $result = HelperCurl::curlHttpGet($url);
+
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode']) || $json['errcode'] != 0) {
@@ -122,9 +121,10 @@ class GzhTags extends QyhBase
     {
         if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = HelperCurl::curlHttpGet(
-            self::URL_API_PREFIX . '/tag/get?access_token=' . $this->access_token . '&tagid=' . $tagid
-        );
+
+        $url = self::URL_API_PREFIX . '/tag/get?access_token=' . $this->access_token . '&tagid=' . $tagid;
+        $result = HelperCurl::curlHttpGet($url);
+
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode']) || $json['errcode'] != 0) {
@@ -159,10 +159,9 @@ class GzhTags extends QyhBase
     {
         if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = HelperCurl::curlHttpPost(
-            self::URL_API_PREFIX . '/tag/addtagusers?access_token=' . $this->access_token,
-            self::json_encode($data)
-        );
+        $url = self::URL_API_PREFIX . '/tag/addtagusers?access_token=' . $this->access_token;
+        $result = HelperCurl::curlHttpPost($url, self::json_encode($data));
+
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode']) || $json['errcode'] != 0) {
@@ -197,10 +196,10 @@ class GzhTags extends QyhBase
     {
         if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = HelperCurl::curlHttpPost(
-            self::URL_API_PREFIX . '/tag/deltagusers?access_token=' . $this->access_token,
-            self::json_encode($data)
-        );
+
+        $url = self::URL_API_PREFIX . '/tag/deltagusers?access_token=' . $this->access_token;
+        $result = HelperCurl::curlHttpPost($url, self::json_encode($data));
+
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode']) || $json['errcode'] != 0) {
@@ -229,9 +228,10 @@ class GzhTags extends QyhBase
     {
         if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = HelperCurl::curlHttpGet(
-            self::URL_API_PREFIX . '/tag/list?access_token=' . $this->access_token
-        );
+
+        $url = self::URL_API_PREFIX . '/tag/list?access_token=' . $this->access_token;
+        $result = HelperCurl::curlHttpGet($url);
+
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode'])) {

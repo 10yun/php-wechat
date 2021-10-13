@@ -21,8 +21,8 @@ class GzhPush extends GzhCommon
     public function wxSendTemplate($jsonData)
     {
         $wxAccToken = $this->wxAccessToken();
-        $url = self::URL_API_PREFIX . "/message/template/send?access_token=" . $wxAccToken;
-        $result = HelperCurl::wxHttpsRequest($url, $jsonData);
+        $url = self::URL_API_PREFIX . "/message/template/send?access_token={$wxAccToken}";
+        $result = HelperCurl::curlHttpPost($url, $jsonData);
         return $result;
     }
 
@@ -52,8 +52,8 @@ class GzhPush extends GzhCommon
         $jsonData = json_encode($data);
 
         $wxAccToken = $this->wxAccessToken();
-        $url = self::URL_API_PREFIX . "/template/api_set_industry?access_token=" . $wxAccToken;
-        $result = HelperCurl::wxHttpsRequest($url, $jsonData);
+        $url = self::URL_API_PREFIX . "/template/api_set_industry?access_token={$wxAccToken}";
+        $result = HelperCurl::curlHttpPost($url, $jsonData);
         return $result;
     }
     /****************************************************
@@ -69,8 +69,8 @@ class GzhPush extends GzhCommon
         );
         $jsonData = json_encode($data);
         $wxAccToken = $this->wxAccessToken();
-        $url = self::URL_API_PREFIX . "/template/api_add_template?access_token=" . $wxAccToken;
-        $result = HelperCurl::wxHttpsRequest($url, $jsonData);
+        $url = self::URL_API_PREFIX . "/template/api_add_template?access_token={$wxAccToken}";
+        $result = HelperCurl::curlHttpPost($url, $jsonData);
         $jsoninfo = json_decode($result, true);
         return $jsoninfo;
     }
@@ -81,8 +81,8 @@ class GzhPush extends GzhCommon
     public function wxTemplateGet($access_token)
     {
         $wxAccToken = $this->wxAccessToken();
-        $url = self::URL_API_PREFIX . "/template/get_all_private_template?access_token=" . $wxAccToken;
-        $result = HelperCurl::wxHttpsRequest($url);
+        $url = self::URL_API_PREFIX . "/template/get_all_private_template?access_token={$wxAccToken}";
+        $result = HelperCurl::curlHttpGet($url);
         $jsoninfo = json_decode($result, true);
         return $jsoninfo;
     }
@@ -98,8 +98,8 @@ class GzhPush extends GzhCommon
             'template_id' => $template_id
         );
         $jsonData = json_encode($data);
-        $url = self::URL_API_PREFIX . "/template/del_private_template?access_token=" . $wxAccToken;
-        $result = HelperCurl::wxHttpsRequest($url, $jsonData);
+        $url = self::URL_API_PREFIX . "/template/del_private_template?access_token={$wxAccToken}";
+        $result = HelperCurl::curlHttpPost($url, $jsonData);
         return $result;
     }
 
@@ -109,8 +109,8 @@ class GzhPush extends GzhCommon
     public function wxTemplateGetIndustry()
     {
         $wxAccToken = $this->wxAccessToken();
-        $url = self::URL_API_PREFIX . "/template/get_industry?access_token=" . $wxAccToken;
-        $result = HelperCurl::wxHttpsRequest($url);
+        $url = self::URL_API_PREFIX . "/template/get_industry?access_token={$wxAccToken}";
+        $result = HelperCurl::curlHttpGet($url);
         return $result;
     }
 }

@@ -34,8 +34,10 @@ namespace shiyunSdk\wechatSdk;
 use shiyunSdk\wechatSdk\libs\Snoopy;
 use shiyunSdk\wechatSdk\WxInit;
 
-class Wechatext extends WxInit
+class MpSdk extends WxInit
 {
+    const URL_MP_PREFIX  = 'https://mp.weixin.qq.com/cgi-bin/';
+
     private $cookie;
     private $_cookiename;
     private $_cookieexpired = 3600;
@@ -51,7 +53,26 @@ class Wechatext extends WxInit
         $this->_datapath = isset($options['datapath']) ? $options['datapath'] : $this->_datapath;
 
         $this->_cookiename = $this->_datapath . $this->_account;
-        $this->cookie = $this->getCookie($this->_cookiename);
+        $loginCache = HelperCache::getCache($this->_cookiename);
+
+        if ($loginCache) {
+            $login = json_decode($loginCache, true);
+            $send_snoopy = new Snoopy;
+            $send_snoopy->rawheaders['Cookie'] = $login['cookie'];
+            $send_snoopy->maxredirs = 0;
+            $url = self::URL_MP_PREFIX . "/home?t=home/index&lang=zh_CN&token=" . $login['token'];
+            $send_snoopy->fetch($url);
+            $header = $send_snoopy->headers;
+            $this->log('header:' . print_r($send_snoopy->headers, true));
+            if (strstr($header[3], 'EXPIRED')) {
+                $this->cookie = $this->login();
+            } else {
+                $this->_token = $login['token'];
+                $this->cookie = $login['cookie'];
+            }
+        } else {
+            $this->cookie = $this->login();
+        }
     }
 
     /**
@@ -68,9 +89,9 @@ class Wechatext extends WxInit
         $post['token'] = $this->_token;
         $post['content'] = $content;
         $post['ajax'] = 1;
-        $send_snoopy->referer = "https://mp.weixin.qq.com/cgi-bin/singlesendpage?t=message/send&action=index&tofakeid=$id&token={$this->_token}&lang=zh_CN";
+        $send_snoopy->referer = self::URL_MP_PREFIX . "/singlesendpage?t=message/send&action=index&tofakeid=$id&token={$this->_token}&lang=zh_CN";
         $send_snoopy->rawheaders['Cookie'] = $this->cookie;
-        $submit = "https://mp.weixin.qq.com/cgi-bin/singlesend?t=ajax-response";
+        $submit = self::URL_MP_PREFIX . "/singlesend?t=ajax-response";
         $send_snoopy->submit($submit, $post);
         $this->log($send_snoopy->results);
         return $send_snoopy->results;
@@ -101,9 +122,9 @@ class Wechatext extends WxInit
         $post['synctxnews'] = 0;
         $post['synctxweibo'] = 0;
         $post['t'] = 'ajax-response';
-        $send_snoopy->referer = "https://mp.weixin.qq.com/cgi-bin/masssendpage?t=mass/send&token={$this->_token}&lang=zh_CN";
+        $send_snoopy->referer = self::URL_MP_PREFIX . "/masssendpage?t=mass/send&token={$this->_token}&lang=zh_CN";
         $send_snoopy->rawheaders['Cookie'] = $this->cookie;
-        $submit = "https://mp.weixin.qq.com/cgi-bin/masssend";
+        $submit = self::URL_MP_PREFIX . "/masssend";
         $send_snoopy->submit($submit, $post);
         $this->log($send_snoopy->results);
         return $send_snoopy->results;
@@ -134,9 +155,9 @@ class Wechatext extends WxInit
         $post['synctxnews'] = 0;
         $post['synctxweibo'] = 0;
         $post['t'] = 'ajax-response';
-        $send_snoopy->referer = "https://mp.weixin.qq.com/cgi-bin/masssendpage?t=mass/send&token={$this->_token}&lang=zh_CN";
+        $send_snoopy->referer = self::URL_MP_PREFIX . "/masssendpage?t=mass/send&token={$this->_token}&lang=zh_CN";
         $send_snoopy->rawheaders['Cookie'] = $this->cookie;
-        $submit = "https://mp.weixin.qq.com/cgi-bin/masssend";
+        $submit = self::URL_MP_PREFIX . "/masssend";
         $send_snoopy->submit($submit, $post);
         $this->log($send_snoopy->results);
         return $send_snoopy->results;
@@ -153,9 +174,9 @@ class Wechatext extends WxInit
     {
         $send_snoopy = new Snoopy;
         $t = time() . strval(mt_rand(100, 999));
-        $send_snoopy->referer = "https://mp.weixin.qq.com/cgi-bin/contactmanage?t=user/index&pagesize=" . $pagesize . "&pageidx=" . $page . "&type=0&groupid=0&lang=zh_CN&token=" . $this->_token;
+        $send_snoopy->referer = self::URL_MP_PREFIX . "/contactmanage?t=user/index&pagesize=" . $pagesize . "&pageidx=" . $page . "&type=0&groupid=0&lang=zh_CN&token=" . $this->_token;
         $send_snoopy->rawheaders['Cookie'] = $this->cookie;
-        $submit = "https://mp.weixin.qq.com/cgi-bin/contactmanage?t=user/index&pagesize=" . $pagesize . "&pageidx=" . $page . "&type=0&groupid=$groupid&lang=zh_CN&f=json&token=" . $this->_token;
+        $submit = self::URL_MP_PREFIX . "/contactmanage?t=user/index&pagesize=" . $pagesize . "&pageidx=" . $page . "&type=0&groupid=$groupid&lang=zh_CN&f=json&token=" . $this->_token;
         $send_snoopy->fetch($submit);
         $result = $send_snoopy->results;
         $this->log('userlist:' . $result);
@@ -176,9 +197,9 @@ class Wechatext extends WxInit
     {
         $send_snoopy = new Snoopy;
         $t = time() . strval(mt_rand(100, 999));
-        $send_snoopy->referer = "https://mp.weixin.qq.com/cgi-bin/contactmanage?t=user/index&pagesize=10&pageidx=0&type=0&groupid=0&lang=zh_CN&token=" . $this->_token;
+        $send_snoopy->referer = self::URL_MP_PREFIX . "/contactmanage?t=user/index&pagesize=10&pageidx=0&type=0&groupid=0&lang=zh_CN&token=" . $this->_token;
         $send_snoopy->rawheaders['Cookie'] = $this->cookie;
-        $submit = "https://mp.weixin.qq.com/cgi-bin/contactmanage?t=user/index&pagesize=10&pageidx=0&type=0&groupid=0&lang=zh_CN&f=json&token=" . $this->_token;
+        $submit = self::URL_MP_PREFIX . "/contactmanage?t=user/index&pagesize=10&pageidx=0&type=0&groupid=0&lang=zh_CN&f=json&token=" . $this->_token;
         $send_snoopy->fetch($submit);
         $result = $send_snoopy->results;
         $this->log('userlist:' . $result);
@@ -203,9 +224,9 @@ class Wechatext extends WxInit
         $t = time() . strval(mt_rand(100, 999));
         $type = 10;
         $begin = $page * $pagesize;
-        $send_snoopy->referer = "https://mp.weixin.qq.com/cgi-bin/masssendpage?t=mass/send&token=" . $this->_token . "&lang=zh_CN";
+        $send_snoopy->referer = self::URL_MP_PREFIX . "/masssendpage?t=mass/send&token=" . $this->_token . "&lang=zh_CN";
         $send_snoopy->rawheaders['Cookie'] = $this->cookie;
-        $submit = "https://mp.weixin.qq.com/cgi-bin/appmsg?token=" . $this->_token . "&lang=zh_CN&type=$type&action=list&begin=$begin&count=$pagesize&f=json&random=0." . $t;
+        $submit = self::URL_MP_PREFIX . "/appmsg?token=" . $this->_token . "&lang=zh_CN&type=$type&action=list&begin=$begin&count=$pagesize&f=json&random=0." . $t;
         $send_snoopy->fetch($submit);
         $result = $send_snoopy->results;
         $this->log('newslist:' . $result);
@@ -225,9 +246,9 @@ class Wechatext extends WxInit
     {
         $send_snoopy = new Snoopy;
         $t = time() . strval(mt_rand(100, 999));
-        $send_snoopy->referer = "https://mp.weixin.qq.com/cgi-bin/masssendpage?t=mass/send&token=" . $this->_token . "&lang=zh_CN";
+        $send_snoopy->referer = self::URL_MP_PREFIX . "/masssendpage?t=mass/send&token=" . $this->_token . "&lang=zh_CN";
         $send_snoopy->rawheaders['Cookie'] = $this->cookie;
-        $submit = "https://mp.weixin.qq.com/cgi-bin/singlesendpage?t=message/send&action=index&tofakeid=" . $fakeid . "&token=" . $this->_token . "&lang=zh_CN&f=json&random=" . $t;
+        $submit = self::URL_MP_PREFIX . "/singlesendpage?t=message/send&action=index&tofakeid=" . $fakeid . "&token=" . $this->_token . "&lang=zh_CN&f=json&random=" . $t;
         $send_snoopy->fetch($submit);
         $result = $send_snoopy->results;
         $this->log('DialogMsg:' . $result);
@@ -254,9 +275,9 @@ class Wechatext extends WxInit
         $post['appmsgid'] = $msgid;
         $post['error'] = 'false';
         $post['ajax'] = 1;
-        $send_snoopy->referer = "https://mp.weixin.qq.com/cgi-bin/singlemsgpage?fromfakeid={$id}&msgid=&source=&count=20&t=wxm-singlechat&lang=zh_CN";
+        $send_snoopy->referer = self::URL_MP_PREFIX . "/singlemsgpage?fromfakeid={$id}&msgid=&source=&count=20&t=wxm-singlechat&lang=zh_CN";
         $send_snoopy->rawheaders['Cookie'] = $this->cookie;
-        $submit = "https://mp.weixin.qq.com/cgi-bin/singlesend?t=ajax-response";
+        $submit = self::URL_MP_PREFIX . "/singlesend?t=ajax-response";
         $send_snoopy->submit($submit, $post);
         $this->log($send_snoopy->results);
         return $send_snoopy->results;
@@ -301,7 +322,7 @@ class Wechatext extends WxInit
         $send_snoopy = new Snoopy;
         $send_snoopy->referer = 'https://mp.weixin.qq.com/cgi-bin/operate_appmsg?lang=zh_CN&sub=edit&t=wxm-appmsgs-edit-new&type=10&subtype=3&token=' . $this->_token;
 
-        $submit = "https://mp.weixin.qq.com/cgi-bin/operate_appmsg?lang=zh_CN&t=ajax-response&sub=create&token=" . $this->_token;
+        $submit = self::URL_MP_PREFIX . "/operate_appmsg?lang=zh_CN&t=ajax-response&sub=create&token=" . $this->_token;
         $send_snoopy->rawheaders['Cookie'] = $this->cookie;
 
         $send_snoopy->set_submit_normal();
@@ -353,9 +374,9 @@ class Wechatext extends WxInit
         $post['fileid'] = $fid;
         $post['error'] = 'false';
         $post['ajax'] = 1;
-        $send_snoopy->referer = "https://mp.weixin.qq.com/cgi-bin/singlemsgpage?fromfakeid={$id}&msgid=&source=&count=20&t=wxm-singlechat&lang=zh_CN";
+        $send_snoopy->referer = self::URL_MP_PREFIX . "/singlemsgpage?fromfakeid={$id}&msgid=&source=&count=20&t=wxm-singlechat&lang=zh_CN";
         $send_snoopy->rawheaders['Cookie'] = $this->cookie;
-        $submit = "https://mp.weixin.qq.com/cgi-bin/singlesend?t=ajax-response";
+        $submit = self::URL_MP_PREFIX . "/singlesend?t=ajax-response";
         $send_snoopy->submit($submit, $post);
         $result = $send_snoopy->results;
         $this->log('sendfile:' . $result);
@@ -378,9 +399,9 @@ class Wechatext extends WxInit
         $send_snoopy = new Snoopy;
         $t = time() . strval(mt_rand(100, 999));
         $begin = $page * $pagesize;
-        $send_snoopy->referer = "https://mp.weixin.qq.com/cgi-bin/masssendpage?t=mass/send&token=" . $this->_token . "&lang=zh_CN";
+        $send_snoopy->referer = self::URL_MP_PREFIX . "/masssendpage?t=mass/send&token=" . $this->_token . "&lang=zh_CN";
         $send_snoopy->rawheaders['Cookie'] = $this->cookie;
-        $submit = "https://mp.weixin.qq.com/cgi-bin/filepage?token=" . $this->_token . "&lang=zh_CN&type=$type&random=0." . $t . "&begin=$begin&count=$pagesize&f=json";
+        $submit = self::URL_MP_PREFIX . "/filepage?token=" . $this->_token . "&lang=zh_CN&type=$type&random=0." . $t . "&begin=$begin&count=$pagesize&f=json";
         $send_snoopy->fetch($submit);
         $result = $send_snoopy->results;
         $this->log('filelist:' . $result);
@@ -437,7 +458,7 @@ class Wechatext extends WxInit
     public function sendPreview($account, $title, $summary, $content, $photoid, $srcurl = '')
     {
         $send_snoopy = new Snoopy;
-        $submit = "https://mp.weixin.qq.com/cgi-bin/operate_appmsg?sub=preview&t=ajax-appmsg-preview";
+        $submit = self::URL_MP_PREFIX . "/operate_appmsg?sub=preview&t=ajax-appmsg-preview";
         $send_snoopy->set_submit_normal();
         $send_snoopy->rawheaders['Cookie'] = $this->cookie;
         $send_snoopy->referer = 'https://mp.weixin.qq.com/cgi-bin/operate_appmsg?sub=edit&t=wxm-appmsgs-edit-new&type=10&subtype=3&lang=zh_CN';
@@ -471,8 +492,8 @@ class Wechatext extends WxInit
         $send_snoopy = new Snoopy;
         $send_snoopy->rawheaders['Cookie'] = $this->cookie;
         $t = time() . strval(mt_rand(100, 999));
-        $send_snoopy->referer = "https://mp.weixin.qq.com/cgi-bin/getmessage?t=wxm-message&lang=zh_CN&count=50&token=" . $this->_token;
-        $submit = "https://mp.weixin.qq.com/cgi-bin/getcontactinfo";
+        $send_snoopy->referer = self::URL_MP_PREFIX . "/getmessage?t=wxm-message&lang=zh_CN&count=50&token=" . $this->_token;
+        $submit = self::URL_MP_PREFIX . "/getcontactinfo";
         $post = array('ajax' => 1, 'lang' => 'zh_CN', 'random' => '0.' . $t, 'token' => $this->_token, 't' => 'ajax-getcontactinfo', 'fakeid' => $id);
         $send_snoopy->submit($submit, $post);
         $this->log($send_snoopy->results);
@@ -493,7 +514,7 @@ class Wechatext extends WxInit
     {
         $send_snoopy = new Snoopy;
         $send_snoopy->rawheaders['Cookie'] = $this->cookie;
-        $send_snoopy->referer = "https://mp.weixin.qq.com/cgi-bin/getmessage?t=wxm-message&lang=zh_CN&count=50&token=" . $this->_token;
+        $send_snoopy->referer = self::URL_MP_PREFIX . "/getmessage?t=wxm-message&lang=zh_CN&count=50&token=" . $this->_token;
         $url = "https://mp.weixin.qq.com/misc/getheadimg?fakeid=$fakeid&token=" . $this->_token . "&lang=zh_CN";
         $send_snoopy->fetch($url);
         $result = $send_snoopy->results;
@@ -513,8 +534,8 @@ class Wechatext extends WxInit
     {
         $send_snoopy = new Snoopy;
         $send_snoopy->rawheaders['Cookie'] = $this->cookie;
-        $send_snoopy->referer = "https://mp.weixin.qq.com/cgi-bin/getmessage?t=wxm-message&lang=zh_CN&count=50&token=" . $this->_token;
-        $submit = "https://mp.weixin.qq.com/cgi-bin/getnewmsgnum?t=ajax-getmsgnum&lastmsgid=" . $lastid;
+        $send_snoopy->referer = self::URL_MP_PREFIX . "/getmessage?t=wxm-message&lang=zh_CN&count=50&token=" . $this->_token;
+        $submit = self::URL_MP_PREFIX . "/getnewmsgnum?t=ajax-getmsgnum&lastmsgid=" . $lastid;
         $post = array('ajax' => 1, 'token' => $this->_token);
         $send_snoopy->submit($submit, $post);
         $this->log($send_snoopy->results);
@@ -533,8 +554,8 @@ class Wechatext extends WxInit
     {
         $send_snoopy = new Snoopy;
         $send_snoopy->rawheaders['Cookie'] = $this->cookie;
-        $send_snoopy->referer = "https://mp.weixin.qq.com/cgi-bin/message?t=message/list&count=20&day=7&lang=zh_CN&token=" . $this->_token;
-        $submit = "https://mp.weixin.qq.com/cgi-bin/message?t=message/list&f=json&count=20&day=7&lang=zh_CN&token=" . $this->_token;
+        $send_snoopy->referer = self::URL_MP_PREFIX . "/message?t=message/list&count=20&day=7&lang=zh_CN&token=" . $this->_token;
+        $submit = self::URL_MP_PREFIX . "/message?t=message/list&f=json&count=20&day=7&lang=zh_CN&token=" . $this->_token;
         $send_snoopy->fetch($submit);
         $this->log($send_snoopy->results);
         $result = $send_snoopy->results;
@@ -561,10 +582,10 @@ class Wechatext extends WxInit
     {
         $send_snoopy = new Snoopy;
         $send_snoopy->rawheaders['Cookie'] = $this->cookie;
-        $send_snoopy->referer = "https://mp.weixin.qq.com/cgi-bin/message?t=message/list&lang=zh_CN&count=50&token=" . $this->_token;
+        $send_snoopy->referer = self::URL_MP_PREFIX . "/message?t=message/list&lang=zh_CN&count=50&token=" . $this->_token;
         $lastid = $lastid === 0 ? '' : $lastid;
         $addstar = $star ? '&action=star' : '';
-        $submit = "https://mp.weixin.qq.com/cgi-bin/message?t=message/list&f=json&lang=zh_CN{$addstar}&count=$perpage&timeline=$today&day=$day&frommsgid=$lastid&offset=$offset&token=" . $this->_token;
+        $submit = self::URL_MP_PREFIX . "/message?t=message/list&f=json&lang=zh_CN{$addstar}&count=$perpage&timeline=$today&day=$day&frommsgid=$lastid&offset=$offset&token=" . $this->_token;
         $send_snoopy->fetch($submit);
         $this->log($send_snoopy->results);
         $result = $send_snoopy->results;
@@ -587,8 +608,8 @@ class Wechatext extends WxInit
     {
         $send_snoopy = new Snoopy;
         $send_snoopy->rawheaders['Cookie'] = $this->cookie;
-        $send_snoopy->referer = "https://mp.weixin.qq.com/cgi-bin/getmessage?t=wxm-message&lang=zh_CN&count=50&token=" . $this->_token;
-        $url = "https://mp.weixin.qq.com/cgi-bin/getimgdata?token=" . $this->_token . "&msgid=$msgid&mode=$mode&source=&fileId=0";
+        $send_snoopy->referer = self::URL_MP_PREFIX . "/getmessage?t=wxm-message&lang=zh_CN&count=50&token=" . $this->_token;
+        $url = self::URL_MP_PREFIX . "/getimgdata?token=" . $this->_token . "&msgid=$msgid&mode=$mode&source=&fileId=0";
         $send_snoopy->fetch($url);
         $result = $send_snoopy->results;
         $this->log('msg image:' . $msgid . ';length:' . strlen($result));
@@ -607,8 +628,8 @@ class Wechatext extends WxInit
     {
         $send_snoopy = new Snoopy;
         $send_snoopy->rawheaders['Cookie'] = $this->cookie;
-        $send_snoopy->referer = "https://mp.weixin.qq.com/cgi-bin/getmessage?t=wxm-message&lang=zh_CN&count=50&token=" . $this->_token;
-        $url = "https://mp.weixin.qq.com/cgi-bin/getvoicedata?token=" . $this->_token . "&msgid=$msgid&fileId=0";
+        $send_snoopy->referer = self::URL_MP_PREFIX . "/getmessage?t=wxm-message&lang=zh_CN&count=50&token=" . $this->_token;
+        $url = self::URL_MP_PREFIX . "/getvoicedata?token=" . $this->_token . "&msgid=$msgid&fileId=0";
         $send_snoopy->fetch($url);
         $result = $send_snoopy->results;
         $this->log('msg voice:' . $msgid . ';length:' . strlen($result));
@@ -703,7 +724,7 @@ class Wechatext extends WxInit
     public function login()
     {
         $snoopy = new Snoopy;
-        $submit = "https://mp.weixin.qq.com/cgi-bin/login?lang=zh_CN";
+        $submit = self::URL_MP_PREFIX . "/login?lang=zh_CN";
         $post["username"] = $this->_account;
         $post["pwd"] = md5($this->_password);
         $post["f"] = "json";
@@ -730,47 +751,8 @@ class Wechatext extends WxInit
             $this->log('token:' . $this->_token);
         }
         $cookies = '{"cookie":"' . $cookie . '","token":"' . $this->_token . '"}';
-        $this->saveCookie($this->_cookiename, $cookies);
+        HelperCache::setCache($this->_cookiename, $cookies);
         return $cookie;
-    }
-
-    /**
-     * 把cookie写入缓存
-     * @param  string $filename 缓存文件名
-     * @param  string $content  文件内容
-     * @return bool
-     */
-    public function saveCookie($filename, $content)
-    {
-        return S($filename, $content, $this->_cookieexpired);
-    }
-
-    /**
-     * 读取cookie缓存内容
-     * @param  string $filename 缓存文件名
-     * @return string cookie
-     */
-    public function getCookie($filename)
-    {
-        $data = S($filename);
-        if ($data) {
-            $login = json_decode($data, true);
-            $send_snoopy = new Snoopy;
-            $send_snoopy->rawheaders['Cookie'] = $login['cookie'];
-            $send_snoopy->maxredirs = 0;
-            $url = "https://mp.weixin.qq.com/cgi-bin/home?t=home/index&lang=zh_CN&token=" . $login['token'];
-            $send_snoopy->fetch($url);
-            $header = $send_snoopy->headers;
-            $this->log('header:' . print_r($send_snoopy->headers, true));
-            if (strstr($header[3], 'EXPIRED')) {
-                return $this->login();
-            } else {
-                $this->_token = $login['token'];
-                return $login['cookie'];
-            }
-        } else {
-            return $this->login();
-        }
     }
 
     /**
@@ -782,7 +764,7 @@ class Wechatext extends WxInit
         if (!$this->cookie || !$this->_token) return false;
         $send_snoopy = new Snoopy;
         $post = array('ajax' => 1, 'token' => $this->_token);
-        $submit = "https://mp.weixin.qq.com/cgi-bin/getregions?id=1017&t=ajax-getregions&lang=zh_CN";
+        $submit = self::URL_MP_PREFIX . "/getregions?id=1017&t=ajax-getregions&lang=zh_CN";
         $send_snoopy->rawheaders['Cookie'] = $this->cookie;
         $send_snoopy->submit($submit, $post);
         $result = $send_snoopy->results;

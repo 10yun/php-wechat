@@ -27,10 +27,9 @@ class GzhCard extends GzhBase
         );
         if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = HelperCurl::curlHttpPost(
-            self::URL_API_BASE_PREFIX .  '/card/code/decrypt?access_token=' . $this->access_token,
-            self::json_encode($data)
-        );
+        $url = self::URL_API_BASE_PREFIX .  '/card/code/decrypt?access_token=' . $this->access_token;
+        $result = HelperCurl::curlHttpPost($url, self::json_encode($data));
+
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode'])) {
@@ -51,10 +50,9 @@ class GzhCard extends GzhBase
     {
         if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = HelperCurl::curlHttpPost(
-            self::URL_API_BASE_PREFIX . '/card/create?access_token=' . $this->access_token,
-            self::json_encode($data)
-        );
+        $url = self::URL_API_BASE_PREFIX . '/card/create?access_token=' . $this->access_token;
+        $result = HelperCurl::curlHttpPost($url, self::json_encode($data));
+
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode'])) {
@@ -77,10 +75,10 @@ class GzhCard extends GzhBase
     {
         if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = HelperCurl::curlHttpPost(
-            self::URL_API_BASE_PREFIX . '/card/update?access_token=' . $this->access_token,
-            self::json_encode($data)
-        );
+
+        $url = self::URL_API_BASE_PREFIX . '/card/update?access_token=' . $this->access_token;
+        $result = HelperCurl::curlHttpPost($url, self::json_encode($data));
+
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode'])) {
@@ -107,10 +105,8 @@ class GzhCard extends GzhBase
         );
         if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = HelperCurl::curlHttpPost(
-            self::URL_API_BASE_PREFIX . '/card/delete?access_token=' . $this->access_token,
-            self::json_encode($data)
-        );
+        $url = self::URL_API_BASE_PREFIX . '/card/delete?access_token=' . $this->access_token;
+        $result = HelperCurl::curlHttpPost($url, self::json_encode($data));
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode'])) {
@@ -135,10 +131,9 @@ class GzhCard extends GzhBase
         );
         if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = HelperCurl::curlHttpPost(
-            self::URL_API_BASE_PREFIX . '/card/get?access_token=' . $this->access_token,
-            self::json_encode($data)
-        );
+        $url = self::URL_API_BASE_PREFIX . '/card/get?access_token=' . $this->access_token;
+        $result = HelperCurl::curlHttpPost($url, self::json_encode($data));
+
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode'])) {
@@ -160,9 +155,9 @@ class GzhCard extends GzhBase
     {
         if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = HelperCurl::curlHttpGet(
-            self::URL_API_BASE_PREFIX . '/card/getcolors?access_token=' . $this->access_token
-        );
+
+        $url = self::URL_API_BASE_PREFIX . '/card/getcolors?access_token=' . $this->access_token;
+        $result = HelperCurl::curlHttpGet($url);
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode'])) {
@@ -191,10 +186,10 @@ class GzhCard extends GzhBase
         );
         if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = HelperCurl::curlHttpPost(
-            self::URL_API_BASE_PREFIX . '/card/location/batchget?access_token=' . $this->access_token,
-            self::json_encode($data)
-        );
+
+        $url = self::URL_API_BASE_PREFIX . '/card/location/batchget?access_token=' . $this->access_token;
+        $result = HelperCurl::curlHttpPost($url, self::json_encode($data));
+
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode'])) {
@@ -217,10 +212,10 @@ class GzhCard extends GzhBase
     {
         if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = HelperCurl::curlHttpPost(
-            self::URL_API_BASE_PREFIX . '/card/location/batchadd?access_token=' . $this->access_token,
-            self::json_encode($data)
-        );
+
+        $url = self::URL_API_BASE_PREFIX . '/card/location/batchadd?access_token=' . $this->access_token;
+        $result = HelperCurl::curlHttpPost($url, self::json_encode($data));
+
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode'])) {
@@ -268,10 +263,10 @@ class GzhCard extends GzhBase
         );
         if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = HelperCurl::curlHttpPost(
-            self::URL_API_BASE_PREFIX . '/card/qrcode/create?access_token=' . $this->access_token,
-            self::json_encode($data)
-        );
+
+        $url = self::URL_API_BASE_PREFIX . '/card/qrcode/create?access_token=' . $this->access_token;
+        $result = HelperCurl::curlHttpPost($url, self::json_encode($data));
+
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode'])) {
@@ -307,10 +302,11 @@ class GzhCard extends GzhBase
             $data['card_id'] = $card_id;
         if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = HelperCurl::curlHttpPost(
-            self::URL_API_BASE_PREFIX . '/card/code/consume?access_token=' . $this->access_token,
-            self::json_encode($data)
-        );
+
+        $url = self::URL_API_BASE_PREFIX . '/card/code/consume?access_token=' . $this->access_token;
+        $result = HelperCurl::curlHttpPost($url, self::json_encode($data));
+
+
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode'])) {
@@ -344,10 +340,10 @@ class GzhCard extends GzhBase
         );
         if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = HelperCurl::curlHttpPost(
-            self::URL_API_BASE_PREFIX . '/card/code/get?access_token=' . $this->access_token,
-            self::json_encode($data)
-        );
+
+        $url = self::URL_API_BASE_PREFIX . '/card/code/get?access_token=' . $this->access_token;
+        $result = HelperCurl::curlHttpPost($url, self::json_encode($data));
+
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode'])) {
@@ -382,10 +378,10 @@ class GzhCard extends GzhBase
         );
         if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = HelperCurl::curlHttpPost(
-            self::URL_API_BASE_PREFIX . '/card/batchget?access_token=' . $this->access_token,
-            self::json_encode($data)
-        );
+
+        $url = self::URL_API_BASE_PREFIX . '/card/batchget?access_token=' . $this->access_token;
+        $result = HelperCurl::curlHttpPost($url, self::json_encode($data));
+
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode'])) {
@@ -416,10 +412,9 @@ class GzhCard extends GzhBase
         );
         if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = HelperCurl::curlHttpPost(
-            self::URL_API_BASE_PREFIX .  '/card/code/update?access_token=' . $this->access_token,
-            self::json_encode($data)
-        );
+
+        $url = self::URL_API_BASE_PREFIX .  '/card/code/update?access_token=' . $this->access_token;
+        $result = HelperCurl::curlHttpPost($url, self::json_encode($data));
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode'])) {
@@ -448,10 +443,10 @@ class GzhCard extends GzhBase
             $data['card_id'] = $card_id;
         if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = HelperCurl::curlHttpPost(
-            self::URL_API_BASE_PREFIX . '/card/code/unavailable?access_token=' . $this->access_token,
-            self::json_encode($data)
-        );
+
+        $url = self::URL_API_BASE_PREFIX . '/card/code/unavailable?access_token=' . $this->access_token;
+        $result = HelperCurl::curlHttpPost($url, self::json_encode($data));
+
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode'])) {
@@ -473,10 +468,10 @@ class GzhCard extends GzhBase
     {
         if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = HelperCurl::curlHttpPost(
-            self::URL_API_BASE_PREFIX . '/card/modifystock?access_token=' . $this->access_token,
-            self::json_encode($data)
-        );
+
+        $url = self::URL_API_BASE_PREFIX . '/card/modifystock?access_token=' . $this->access_token;
+        $result = HelperCurl::curlHttpPost($url, self::json_encode($data));
+
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode'])) {
@@ -498,10 +493,8 @@ class GzhCard extends GzhBase
     {
         if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = HelperCurl::curlHttpPost(
-            self::URL_API_BASE_PREFIX . '/card/membercard/activate?access_token=' . $this->access_token,
-            self::json_encode($data)
-        );
+        $url = self::URL_API_BASE_PREFIX . '/card/membercard/activate?access_token=' . $this->access_token;
+        $result = HelperCurl::curlHttpPost($url,  self::json_encode($data));
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode'])) {
@@ -525,10 +518,10 @@ class GzhCard extends GzhBase
     {
         if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = HelperCurl::curlHttpPost(
-            self::URL_API_BASE_PREFIX .  '/card/membercard/updateuser?access_token=' . $this->access_token,
-            self::json_encode($data)
-        );
+
+        $url =  self::URL_API_BASE_PREFIX .  '/card/membercard/updateuser?access_token=' . $this->access_token;
+        $result = HelperCurl::curlHttpPost($url,  self::json_encode($data));
+
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode'])) {
@@ -555,10 +548,10 @@ class GzhCard extends GzhBase
             $data['username'] = $user;
         if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = HelperCurl::curlHttpPost(
-            self::URL_API_BASE_PREFIX . '/card/testwhitelist/set?access_token=' . $this->access_token,
-            self::json_encode($data)
-        );
+
+        $url = self::URL_API_BASE_PREFIX . '/card/testwhitelist/set?access_token=' . $this->access_token;
+        $result = HelperCurl::curlHttpPost($url,  self::json_encode($data));
+
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode'])) {
@@ -587,10 +580,10 @@ class GzhCard extends GzhBase
             $data['card_id'] = $card_id;
         if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = HelperCurl::curlHttpPost(
-            self::URL_API_BASE_PREFIX .  '/card/luckymoney/updateuserbalance?access_token=' . $this->access_token,
-            self::json_encode($data)
-        );
+
+        $url = self::URL_API_BASE_PREFIX .  '/card/luckymoney/updateuserbalance?access_token=' . $this->access_token;
+        $result = HelperCurl::curlHttpPost($url,  self::json_encode($data));
+
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode'])) {

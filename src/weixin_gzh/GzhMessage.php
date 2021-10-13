@@ -30,10 +30,10 @@ class GzhMessage extends GzhBase
     {
         if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = HelperCurl::curlHttpPost(
-            self::URL_API_PREFIX . '/message/mass/send?access_token=' . $this->access_token,
-            self::json_encode($data)
-        );
+
+        $url = self::URL_API_PREFIX . '/message/mass/send?access_token=' . $this->access_token;
+        $result = HelperCurl::curlHttpPost($url, self::json_encode($data));
+
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode'])) {
@@ -67,10 +67,8 @@ class GzhMessage extends GzhBase
     {
         if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = HelperCurl::curlHttpPost(
-            self::URL_API_PREFIX . '/message/mass/sendall?access_token=' . $this->access_token,
-            self::json_encode($data)
-        );
+        $url = self::URL_API_PREFIX . '/message/mass/sendall?access_token=' . $this->access_token;
+        $result = HelperCurl::curlHttpPost($url, self::json_encode($data));
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode'])) {
@@ -92,12 +90,12 @@ class GzhMessage extends GzhBase
     {
         if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = HelperCurl::curlHttpPost(
-            self::URL_API_PREFIX . '/message/mass/delete?access_token=' . $this->access_token,
-            self::json_encode(array(
-                'msg_id' => $msg_id
-            ))
+
+        $data = array(
+            'msg_id' => $msg_id
         );
+        $url = self::URL_API_PREFIX . '/message/mass/delete?access_token=' . $this->access_token;
+        $result = HelperCurl::curlHttpPost($url, self::json_encode($data));
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode'])) {
@@ -128,10 +126,9 @@ class GzhMessage extends GzhBase
     {
         if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = HelperCurl::curlHttpPost(
-            self::URL_API_PREFIX . '/message/mass/preview?access_token=' . $this->access_token,
-            self::json_encode($data)
-        );
+        $url = self::URL_API_PREFIX . '/message/mass/preview?access_token=' . $this->access_token;
+        $result = HelperCurl::curlHttpPost($url, self::json_encode($data));
+
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode'])) {
@@ -157,12 +154,13 @@ class GzhMessage extends GzhBase
     {
         if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = HelperCurl::curlHttpPost(
-            self::URL_API_PREFIX . '/message/mass/get?access_token=' . $this->access_token,
-            self::json_encode(array(
-                'msg_id' => $msg_id
-            ))
+
+        $data = array(
+            'msg_id' => $msg_id
         );
+        $url = self::URL_API_PREFIX . '/message/mass/get?access_token=' . $this->access_token;
+        $result = HelperCurl::curlHttpPost($url, self::json_encode($data));
+
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode'])) {

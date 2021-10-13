@@ -23,11 +23,9 @@ class GzhMsgMedia extends QyhBase
     {
         if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = HelperCurl::curlHttpPost(
-            self::URL_API_PREFIX . self::MEDIA_UPLOAD . 'access_token=' . $this->access_token . '&type=' . $type,
-            $data,
-            true
-        );
+        $url = self::URL_API_PREFIX . self::MEDIA_UPLOAD . 'access_token=' . $this->access_token . '&type=' . $type;
+        $result = HelperCurl::curlHttpPost($url, $data, true);
+
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode'])) {
@@ -49,9 +47,9 @@ class GzhMsgMedia extends QyhBase
     {
         if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = HelperCurl::curlHttpGet(
-            'https://api.weixin.qq.com/cgi-bin/media/get?access_token=' . $this->access_token . '&media_id=' . $media_id
-        );
+
+        $url = self::URL_API_PREFIX . "/media/get?access_token={$this->access_token}&media_id={$media_id}";
+        $result = HelperCurl::curlHttpGet($url);
         if ($result) {
             $json = json_decode($result, true);
             if (isset($json['errcode'])) {

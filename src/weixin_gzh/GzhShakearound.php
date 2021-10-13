@@ -21,8 +21,8 @@ class GzhShakearound extends GzhCommon
     public function wxDeviceApply($jsonData)
     {
         $wxAccToken = $this->wxAccessToken();
-        $url = "https://api.weixin.qq.com/shakearound/device/applyid?access_token=" . $wxAccToken;
-        $result = HelperCurl::wxHttpsRequest($url, $jsonData);
+        $url = self::URL_API_BASE_PREFIX . "/shakearound/device/applyid?access_token={$wxAccToken}";
+        $result = HelperCurl::curlHttpPost($url, $jsonData);
         $jsoninfo = json_decode($result, true);
         return $jsoninfo;
     }
@@ -33,8 +33,8 @@ class GzhShakearound extends GzhCommon
     public function wxDeviceUpdate($jsonData)
     {
         $wxAccToken = $this->wxAccessToken();
-        $url = "https://api.weixin.qq.com/shakearound/device/update?access_token=" . $wxAccToken;
-        $result = HelperCurl::wxHttpsRequest($url, $jsonData);
+        $url = self::URL_API_BASE_PREFIX . "/shakearound/device/update?access_token={$wxAccToken}";
+        $result = HelperCurl::curlHttpPost($url, $jsonData);
         $jsoninfo = json_decode($result, true);
         return $jsoninfo;
     }
@@ -45,8 +45,8 @@ class GzhShakearound extends GzhCommon
     public function wxDeviceBindLocation($jsonData)
     {
         $wxAccToken = $this->wxAccessToken();
-        $url = "https://api.weixin.qq.com/shakearound/device/bindlocation?access_token=" . $wxAccToken;
-        $result = HelperCurl::wxHttpsRequest($url, $jsonData);
+        $url = self::URL_API_BASE_PREFIX . "/shakearound/device/bindlocation?access_token={$wxAccToken}";
+        $result = HelperCurl::curlHttpPost($url, $jsonData);
         $jsoninfo = json_decode($result, true);
         return $jsoninfo;
     }
@@ -57,8 +57,8 @@ class GzhShakearound extends GzhCommon
     public function wxDeviceSearch($jsonData)
     {
         $wxAccToken = $this->wxAccessToken();
-        $url = "https://api.weixin.qq.com/shakearound/device/search?access_token=" . $wxAccToken;
-        $result = HelperCurl::wxHttpsRequest($url, $jsonData);
+        $url = self::URL_API_BASE_PREFIX . "/shakearound/device/search?access_token={$wxAccToken}";
+        $result = HelperCurl::curlHttpPost($url, $jsonData);
         $jsoninfo = json_decode($result, true);
         return $jsoninfo;
     }
@@ -69,8 +69,8 @@ class GzhShakearound extends GzhCommon
     public function wxPageAdd($jsonData)
     {
         $wxAccToken = $this->wxAccessToken();
-        $url = "https://api.weixin.qq.com/shakearound/page/add?access_token=" . $wxAccToken;
-        $result = HelperCurl::wxHttpsRequest($url, $jsonData);
+        $url = self::URL_API_BASE_PREFIX . "/shakearound/page/add?access_token={$wxAccToken}";
+        $result = HelperCurl::curlHttpPost($url, $jsonData);
         $jsoninfo = json_decode($result, true);
         return $jsoninfo;
     }
@@ -81,8 +81,8 @@ class GzhShakearound extends GzhCommon
     public function wxPageUpdate($jsonData)
     {
         $wxAccToken = $this->wxAccessToken();
-        $url = "https://api.weixin.qq.com/shakearound/page/update?access_token=" . $wxAccToken;
-        $result = HelperCurl::wxHttpsRequest($url, $jsonData);
+        $url = self::URL_API_BASE_PREFIX . "/shakearound/page/update?access_token={$wxAccToken}";
+        $result = HelperCurl::curlHttpPost($url, $jsonData);
         $jsoninfo = json_decode($result, true);
         return $jsoninfo;
     }
@@ -93,8 +93,8 @@ class GzhShakearound extends GzhCommon
     public function wxPageSearch($jsonData)
     {
         $wxAccToken = $this->wxAccessToken();
-        $url = "https://api.weixin.qq.com/shakearound/page/search?access_token=" . $wxAccToken;
-        $result = HelperCurl::wxHttpsRequest($url, $jsonData);
+        $url = self::URL_API_BASE_PREFIX . "/shakearound/page/search?access_token={$wxAccToken}";
+        $result = HelperCurl::curlHttpPost($url, $jsonData);
         $jsoninfo = json_decode($result, true);
         return $jsoninfo;
     }
@@ -105,8 +105,8 @@ class GzhShakearound extends GzhCommon
     public function wxPageDelete($jsonData)
     {
         $wxAccToken = $this->wxAccessToken();
-        $url = "https://api.weixin.qq.com/shakearound/page/delete?access_token=" . $wxAccToken;
-        $result = HelperCurl::wxHttpsRequest($url, $jsonData);
+        $url = self::URL_API_BASE_PREFIX . "/shakearound/page/delete?access_token={$wxAccToken}";
+        $result = HelperCurl::curlHttpPost($url, $jsonData);
         $jsoninfo = json_decode($result, true);
         return $jsoninfo;
     }
@@ -119,8 +119,8 @@ class GzhShakearound extends GzhCommon
         $wxAccToken = $this->wxAccessToken();
         // $data['access_token'] = $wxAccToken;
         $data['media'] = '@D:\\workspace\\htdocs\\yky_test\\logo.jpg';
-        $url = "https://api.weixin.qq.com/shakearound/material/add?access_token=" . $wxAccToken;
-        $result = HelperCurl::wxHttpsRequest($url, $data);
+        $url = self::URL_API_BASE_PREFIX . "/shakearound/material/add?access_token={$wxAccToken}";
+        $result = HelperCurl::curlHttpPost($url, $data);
         $jsoninfo = json_decode($result, true);
         return $jsoninfo;
     }
@@ -131,8 +131,8 @@ class GzhShakearound extends GzhCommon
     public function wxDeviceBindPage($jsonData)
     {
         $wxAccToken = $this->wxAccessToken();
-        $url = "https://api.weixin.qq.com/shakearound/device/bindpage?access_token=" . $wxAccToken;
-        $result = HelperCurl::wxHttpsRequest($url, $jsonData);
+        $url = self::URL_API_BASE_PREFIX . "/shakearound/device/bindpage?access_token={$wxAccToken}";
+        $result = HelperCurl::curlHttpPost($url, $jsonData);
         $jsoninfo = json_decode($result, true);
         return $jsoninfo;
     }
@@ -143,8 +143,8 @@ class GzhShakearound extends GzhCommon
     public function wxGetShakeInfo($jsonData)
     {
         $wxAccToken = $this->wxAccessToken();
-        $url = "https://api.weixin.qq.com/shakearound/user/getshakeinfo?access_token=" . $wxAccToken;
-        $result = HelperCurl::wxHttpsRequest($url, $jsonData);
+        $url = self::URL_API_BASE_PREFIX . "/shakearound/user/getshakeinfo?access_token={$wxAccToken}";
+        $result = HelperCurl::curlHttpPost($url, $jsonData);
         $jsoninfo = json_decode($result, true);
         return $jsoninfo;
     }
@@ -155,8 +155,8 @@ class GzhShakearound extends GzhCommon
     public function wxGetShakeStatistics($jsonData)
     {
         $wxAccToken = $this->wxAccessToken();
-        $url = "https://api.weixin.qq.com/shakearound/statistics/device?access_token=" . $wxAccToken;
-        $result = HelperCurl::wxHttpsRequest($url, $jsonData);
+        $url = self::URL_API_BASE_PREFIX . "/shakearound/statistics/device?access_token={$wxAccToken}";
+        $result = HelperCurl::curlHttpPost($url, $jsonData);
         $jsoninfo = json_decode($result, true);
         return $jsoninfo;
     }

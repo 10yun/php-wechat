@@ -14,10 +14,10 @@ class WxOauth extends WxInit
      */
     public function getOauthRefreshToken($refresh_token)
     {
-        $result = HelperCurl::curlHttpGet(
-            'https://api.weixin.qq.com/sns/oauth2/refresh_token?appid='
-                . $this->_appID . '&grant_type=refresh_token&refresh_token=' . $refresh_token
-        );
+        $url = self::URL_API_BASE_PREFIX . '/sns/oauth2/refresh_token?appid=' . $this->_appID
+            . '&grant_type=refresh_token&refresh_token=' . $refresh_token;
+        $result = HelperCurl::curlHttpGet($url);
+
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode'])) {
@@ -40,9 +40,8 @@ class WxOauth extends WxInit
      */
     public function getOauthUserinfo($access_token, $openid)
     {
-        $result = HelperCurl::curlHttpGet(
-            'https://api.weixin.qq.com/sns/userinfo?access_token=' . $access_token . '&openid=' . $openid
-        );
+        $url = self::URL_API_BASE_PREFIX . '/sns/userinfo?access_token=' . $access_token . '&openid=' . $openid;
+        $result = HelperCurl::curlHttpGet($url);
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode'])) {
@@ -63,9 +62,8 @@ class WxOauth extends WxInit
      */
     public function getOauthAuth($access_token, $openid)
     {
-        $result = HelperCurl::curlHttpGet(
-            'https://api.weixin.qq.com/sns/auth?access_token=' . $access_token . '&openid=' . $openid
-        );
+        $url = self::URL_API_BASE_PREFIX . '/sns/auth?access_token=' . $access_token . '&openid=' . $openid;
+        $result = HelperCurl::curlHttpGet($url);
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode'])) {
@@ -132,12 +130,12 @@ class WxOauth extends WxInit
         if (!$code) {
             return false;
         }
-        $url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=" . $this->_appID
+        $url = self::URL_API_BASE_PREFIX . "/sns/oauth2/access_token?appid=" . $this->_appID
             . "&secret=" . $this->_appSecret
             . "&code=" . $code
             . "&grant_type=authorization_code";
 
-        $result = HelperCurl::wxHttpsRequest($url);
+        $result = HelperCurl::curlHttpGet($url);
         // $result = HelperCurl::curlHttpGet($url);
 
         if ($result) {
@@ -161,8 +159,8 @@ class WxOauth extends WxInit
      ****************************************************/
     public function wxOauthUser($OauthAT, $openId)
     {
-        $url = "https://api.weixin.qq.com/sns/userinfo?access_token=" . $OauthAT . "&openid=" . $openId . "&lang=zh_CN";
-        $result = HelperCurl::wxHttpsRequest($url);
+        $url = $url = self::URL_API_BASE_PREFIX . "/sns/userinfo?access_token=" . $OauthAT . "&openid=" . $openId . "&lang=zh_CN";
+        $result = HelperCurl::curlHttpGet($url);
         $jsoninfo = json_decode($result, true);
         return $jsoninfo;
     }

@@ -132,4 +132,33 @@ class HelperCache
         // fwrite($fp, json_encode($data));
         fclose($fp);
     }
+
+
+
+    /**
+     * 把cookie写入缓存
+     * @param  string $filename 缓存文件名
+     * @param  string $content  文件内容
+     * @return bool
+     */
+    public function saveCookie($filename, $content)
+    {
+        return S($filename, $content, $this->_cookieexpired);
+    }
+
+    /**
+     * 读取cookie缓存内容
+     * @param  string $filename 缓存文件名
+     * @return string cookie
+     */
+    public function getCookie($filename)
+    {
+        $data = S($filename);
+        if ($data) {
+            $login = json_decode($data, true);
+            return $cacheData;
+        } else {
+            return false;
+        }
+    }
 }

@@ -15,9 +15,9 @@ class GzhUserGroup extends GzhBase
     {
         if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = HelperCurl::curlHttpGet(
-            self::URL_API_PREFIX .  '/groups/get?access_token=' . $this->access_token
-        );
+
+        $url = self::URL_API_PREFIX .  '/groups/get?access_token=' . $this->access_token;
+        $result = HelperCurl::curlHttpGet($url);
         if ($result) {
             $json = json_decode($result, true);
             if (isset($json['errcode'])) {
@@ -42,10 +42,9 @@ class GzhUserGroup extends GzhBase
         $data = array(
             'openid' => $openid
         );
-        $result = HelperCurl::curlHttpPost(
-            self::URL_API_PREFIX . '/groups/getid?access_token=' . $this->access_token,
-            self::json_encode($data)
-        );
+        $url = self::URL_API_PREFIX . '/groups/getid?access_token=' . $this->access_token;
+        $result = HelperCurl::curlHttpPost($url, self::json_encode($data));
+
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode'])) {
@@ -72,10 +71,9 @@ class GzhUserGroup extends GzhBase
                 'name' => $name
             )
         );
-        $result = HelperCurl::curlHttpPost(
-            self::URL_API_PREFIX . '/groups/create?access_token=' . $this->access_token,
-            self::json_encode($data)
-        );
+        $url = self::URL_API_PREFIX . '/groups/create?access_token=' . $this->access_token;
+        $result = HelperCurl::curlHttpPost($url, self::json_encode($data));
+
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode'])) {
@@ -104,10 +102,9 @@ class GzhUserGroup extends GzhBase
                 'name' => $name
             )
         );
-        $result = HelperCurl::curlHttpPost(
-            self::URL_API_PREFIX . '/groups/update?access_token=' . $this->access_token,
-            self::json_encode($data)
-        );
+        $url = self::URL_API_PREFIX . '/groups/update?access_token=' . $this->access_token;
+        $result = HelperCurl::curlHttpPost($url, self::json_encode($data));
+
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode'])) {
@@ -134,10 +131,9 @@ class GzhUserGroup extends GzhBase
             'openid' => $openid,
             'to_groupid' => $groupid
         );
-        $result = HelperCurl::curlHttpPost(
-            self::URL_API_PREFIX . '/groups/members/update?access_token=' . $this->access_token,
-            self::json_encode($data)
-        );
+        $url = self::URL_API_PREFIX . '/groups/members/update?access_token=' . $this->access_token;
+        $result = HelperCurl::curlHttpPost($url, self::json_encode($data));
+
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode'])) {
@@ -164,10 +160,9 @@ class GzhUserGroup extends GzhBase
             'openid_list' => $openid_list,
             'to_groupid' => $groupid
         );
-        $result = HelperCurl::curlHttpPost(
-            self::URL_API_PREFIX .  '/groups/members/batchupdate?access_token=' . $this->access_token,
-            self::json_encode($data)
-        );
+        $url = self::URL_API_PREFIX .  '/groups/members/batchupdate?access_token=' . $this->access_token;
+        $result = HelperCurl::curlHttpPost($url, self::json_encode($data));
+
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode'])) {

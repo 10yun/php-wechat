@@ -30,7 +30,7 @@ class GzhBase extends WxInit
     private $_appID;
     private $appsecret;
     private $access_token;
-    protected $token_cache_sign = 'wechat_access_token';
+    protected $cache_data_sign = 'wechat_access_token';
     private $jsapi_ticket;
     private $postxml;
     private $_msg;
@@ -208,9 +208,10 @@ class GzhBase extends WxInit
     {
         if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = HelperCurl::curlHttpGet(
-            'https://api.weixin.qq.com/cgi-bin/getcallbackip?access_token=' . $this->access_token
-        );
+
+        $url = self::URL_API_PREFIX . "/getcallbackip?access_token={$this->access_token}";
+        $result = HelperCurl::curlHttpGet($url);
+
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || isset($json['errcode'])) {
@@ -243,10 +244,9 @@ class GzhBase extends WxInit
     {
         if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = HelperCurl::curlHttpPost(
-            self::URL_UPLOAD_MEDIA .  '/media/uploadvideo?access_token=' . $this->access_token,
-            self::json_encode($data)
-        );
+
+        $url = self::URL_UPLOAD_MEDIA .  '/media/uploadvideo?access_token=' . $this->access_token;
+        $result = HelperCurl::curlHttpPost($url, self::json_encode($data));
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode'])) {
@@ -286,10 +286,9 @@ class GzhBase extends WxInit
         if ($type == 1) {
             unset($data['expire_seconds']);
         }
-        $result = HelperCurl::curlHttpPost(
-            'https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=' . $this->access_token,
-            self::json_encode($data)
-        );
+        $url = self::URL_API_PREFIX . "/qrcode/create?access_token={$this->access_token}";
+        $result = HelperCurl::curlHttpPost($url, self::json_encode($data));
+
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode'])) {
@@ -325,10 +324,8 @@ class GzhBase extends WxInit
             'action' => 'long2short',
             'long_url' => $long_url
         );
-        $result = HelperCurl::curlHttpPost(
-            self::URL_API_PREFIX . 'https://api.weixin.qq.com/cgi-bin/shorturl?access_token=' . $this->access_token,
-            self::json_encode($data)
-        );
+        $url = self::URL_API_PREFIX . 'https://api.weixin.qq.com/cgi-bin/shorturl?access_token=' . $this->access_token;
+        $result = HelperCurl::curlHttpPost($url,  self::json_encode($data));
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode'])) {
@@ -389,10 +386,8 @@ class GzhBase extends WxInit
             'begin_date' => $begin_date,
             'end_date' => $end_date ? $end_date : $begin_date
         );
-        $result = HelperCurl::curlHttpPost(
-            self::URL_API_BASE_PREFIX . $DATACUBE_URL_ARR[$type][$subtype] . 'access_token=' . $this->access_token,
-            self::json_encode($data)
-        );
+        $url = self::URL_API_BASE_PREFIX . $DATACUBE_URL_ARR[$type][$subtype] . 'access_token=' . $this->access_token;
+        $result = HelperCurl::curlHttpPost($url, self::json_encode($data));
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode'])) {
@@ -436,10 +431,10 @@ class GzhBase extends WxInit
         } elseif ($region) {
             $data['region'] = $region;
         }
-        $result = HelperCurl::curlHttpPost(
-            self::URL_API_BASE_PREFIX .  '/semantic/semproxy/search?access_token=' . $this->access_token,
-            self::json_encode($data)
-        );
+
+        $url = self::URL_API_BASE_PREFIX .  '/semantic/semproxy/search?access_token=' . $this->access_token;
+        $result = HelperCurl::curlHttpPost($url, self::json_encode($data));
+
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode'])) {

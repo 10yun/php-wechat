@@ -36,7 +36,7 @@ class QyhBase extends WxInit
     private $appid; // 也就是企业号的CorpID
     private $appsecret;
     private $access_token;
-    protected $token_cache_sign = 'qywechat_access_token';
+    protected $cache_data_sign = 'qywechat_access_token';
     private $agentid; // 应用id AgentID
     private $postxml;
     private $agentidxml; // 接收的应用id AgentID
@@ -277,10 +277,10 @@ class QyhBase extends WxInit
     {
         if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = HelperCurl::curlHttpPost(
-            self::URL_API_PREFIX .  '/message/send?access_token=' . $this->access_token,
-            self::json_encode($data)
-        );
+
+        $url = self::URL_API_PREFIX .  '/message/send?access_token=' . $this->access_token;
+        $result = HelperCurl::curlHttpPost($url, self::json_encode($data));
+
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode']) || $json['errcode'] != 0) {
@@ -311,9 +311,9 @@ class QyhBase extends WxInit
     {
         if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = HelperCurl::curlHttpGet(
-            self::URL_API_PREFIX . '/user/authsucc?access_token=' . $this->access_token . '&userid=' . $userid
-        );
+
+        $url = self::URL_API_PREFIX . '/user/authsucc?access_token=' . $this->access_token . '&userid=' . $userid;
+        $result = HelperCurl::curlHttpGet($url);
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode']) || $json['errcode'] != 0) {

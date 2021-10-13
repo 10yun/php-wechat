@@ -18,10 +18,11 @@ class GzhService2 extends GzhBase
     {
         if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = HelperCurl::curlHttpPost(
-            self::URL_API_PREFIX . '/message/custom/send?access_token=' . $this->access_token,
-            self::json_encode($data)
-        );
+
+        $url = self::URL_API_PREFIX . '/message/custom/send?access_token=' . $this->access_token;
+        $result = HelperCurl::curlHttpPost($url, self::json_encode($data));
+
+
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode'])) {
@@ -44,10 +45,9 @@ class GzhService2 extends GzhBase
     {
         if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = HelperCurl::curlHttpPost(
-            self::URL_API_PREFIX . '/customservice/getrecord?access_token=' . $this->access_token,
-            self::json_encode($data)
-        );
+        $url = self::URL_API_PREFIX . '/customservice/getrecord?access_token=' . $this->access_token;
+        $result = HelperCurl::curlHttpPost($url, self::json_encode($data));
+
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode'])) {
@@ -91,9 +91,9 @@ class GzhService2 extends GzhBase
     {
         if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = HelperCurl::curlHttpGet(
-            self::URL_API_PREFIX . '/customservice/getkflist?access_token=' . $this->access_token
-        );
+
+        $url = self::URL_API_PREFIX . '/customservice/getkflist?access_token=' . $this->access_token;
+        $result = HelperCurl::curlHttpGet($url);
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode'])) {
@@ -125,9 +125,10 @@ class GzhService2 extends GzhBase
     {
         if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = HelperCurl::curlHttpGet(
-            self::URL_API_PREFIX . '/customservice/getonlinekflist?access_token=' . $this->access_token
-        );
+
+        $url = self::URL_API_PREFIX . '/customservice/getonlinekflist?access_token=' . $this->access_token;
+        $result = HelperCurl::curlHttpGet($url);
+
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode'])) {
@@ -162,10 +163,9 @@ class GzhService2 extends GzhBase
             $data["text"] = $text;
         if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = HelperCurl::curlHttpPost(
-            self::URL_API_BASE_PREFIX .  '/customservice/kfsession/create?access_token=' . $this->access_token,
-            self::json_encode($data)
-        );
+        $url = self::URL_API_BASE_PREFIX .  '/customservice/kfsession/create?access_token=' . $this->access_token;
+        $result = HelperCurl::curlHttpPost($url, self::json_encode($data));
+
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode'])) {
@@ -200,10 +200,9 @@ class GzhService2 extends GzhBase
             $data["text"] = $text;
         if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = HelperCurl::curlHttpPost(
-            self::URL_API_BASE_PREFIX . '/customservice/kfsession/close?access_token=' . $this->access_token,
-            self::json_encode($data)
-        );
+        $url = self::URL_API_BASE_PREFIX . '/customservice/kfsession/close?access_token=' . $this->access_token;
+        $result = HelperCurl::curlHttpPost($url, self::json_encode($data));
+
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode'])) {
@@ -231,9 +230,10 @@ class GzhService2 extends GzhBase
     {
         if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = HelperCurl::curlHttpGet(
-            self::URL_API_BASE_PREFIX . '/customservice/kfsession/getsession?access_token=' . $this->access_token . '&openid=' . $openid
-        );
+
+        $url = self::URL_API_BASE_PREFIX . '/customservice/kfsession/getsession?access_token=' . $this->access_token . '&openid=' . $openid;
+        $result = HelperCurl::curlHttpGet($url);
+
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode'])) {
@@ -267,9 +267,9 @@ class GzhService2 extends GzhBase
     {
         if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = HelperCurl::curlHttpGet(
-            self::URL_API_BASE_PREFIX . '/customservice/kfsession/getsessionlist?access_token=' . $this->access_token . '&kf_account=' . $kf_account
-        );
+
+        $url = self::URL_API_BASE_PREFIX . '/customservice/kfsession/getsessionlist?access_token=' . $this->access_token . '&kf_account=' . $kf_account;
+        $result = HelperCurl::curlHttpGet($url);
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode'])) {
@@ -306,9 +306,10 @@ class GzhService2 extends GzhBase
     {
         if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = HelperCurl::curlHttpGet(
-            self::URL_API_BASE_PREFIX . '/customservice/kfsession/getwaitcase?access_token=' . $this->access_token
-        );
+
+        $url = self::URL_API_BASE_PREFIX . '/customservice/kfsession/getwaitcase?access_token=' . $this->access_token;
+        $result = HelperCurl::curlHttpGet($url);
+
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode'])) {
@@ -343,10 +344,9 @@ class GzhService2 extends GzhBase
         );
         if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = HelperCurl::curlHttpPost(
-            self::URL_API_BASE_PREFIX .  '/customservice/kfaccount/add?access_token=' . $this->access_token,
-            self::json_encode($data)
-        );
+        $url = self::URL_API_BASE_PREFIX .  '/customservice/kfaccount/add?access_token=' . $this->access_token;
+        $result = HelperCurl::curlHttpPost($url, self::json_encode($data));
+
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode'])) {
@@ -381,10 +381,9 @@ class GzhService2 extends GzhBase
         );
         if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = HelperCurl::curlHttpPost(
-            self::URL_API_BASE_PREFIX . '/customservice/kfaccount/update?access_token=' . $this->access_token,
-            self::json_encode($data)
-        );
+        $url = self::URL_API_BASE_PREFIX . '/customservice/kfaccount/update?access_token=' . $this->access_token;
+        $result = HelperCurl::curlHttpPost($url, self::json_encode($data));
+
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode'])) {
@@ -412,9 +411,8 @@ class GzhService2 extends GzhBase
     {
         if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = HelperCurl::curlHttpGet(
-            self::URL_API_BASE_PREFIX .  '/customservice/kfaccount/del?access_token=' . $this->access_token . '&kf_account=' . $account
-        );
+        $url = self::URL_API_BASE_PREFIX .  '/customservice/kfaccount/del?access_token=' . $this->access_token . '&kf_account=' . $account;
+        $result = HelperCurl::curlHttpGet($url);
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode'])) {
@@ -443,13 +441,14 @@ class GzhService2 extends GzhBase
     {
         if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = HelperCurl::curlHttpPost(
-            self::URL_API_BASE_PREFIX . '/customservice/kfaccount/uploadheadimg?access_token=' . $this->access_token . '&kf_account=' . $account,
-            array(
-                'media' => '@' . $imgfile
-            ),
-            true
+
+
+        $data = array(
+            'media' => '@' . $imgfile
         );
+        $url = self::URL_API_BASE_PREFIX . '/customservice/kfaccount/uploadheadimg?access_token=' . $this->access_token . '&kf_account=' . $account;
+        $result = HelperCurl::curlHttpPost($url, $data, true);
+
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode'])) {

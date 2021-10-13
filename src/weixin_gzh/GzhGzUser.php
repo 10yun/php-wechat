@@ -18,9 +18,9 @@ class GzhGzUser extends GzhBase
     {
         if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = HelperCurl::curlHttpGet(
-            'https://api.weixin.qq.com/cgi-bin/user/get?access_token=' . $this->access_token . '&next_openid=' . $next_openid
-        );
+
+        $url = self::URL_API_PREFIX . "/user/get?access_token={$this->access_token}" . '&next_openid=' . $next_openid;
+        $result = HelperCurl::curlHttpGet($url);
         if ($result) {
             $json = json_decode($result, true);
             if (isset($json['errcode'])) {
@@ -43,9 +43,10 @@ class GzhGzUser extends GzhBase
     {
         if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = HelperCurl::curlHttpGet(
-            'https://api.weixin.qq.com/cgi-bin/user/info?access_token=' . $this->access_token . '&openid=' . $openid
-        );
+
+        $url = self::URL_API_PREFIX . "/user/info?access_token={$this->access_token}" . '&openid=' . $openid;
+        $result = HelperCurl::curlHttpGet($url);
+
         if ($result) {
             $json = json_decode($result, true);
             if (isset($json['errcode'])) {
@@ -72,10 +73,11 @@ class GzhGzUser extends GzhBase
             'openid' => $openid,
             'remark' => $remark
         );
-        $result = HelperCurl::curlHttpPost(
-            self::URL_API_PREFIX . 'https://api.weixin.qq.com/cgi-bin/user/info/updateremark?access_token=' . $this->access_token,
-            self::json_encode($data)
-        );
+
+        $url = self::URL_API_PREFIX . "/user/info/updateremark?access_token={$this->access_token}";
+        $result = HelperCurl::curlHttpPost($url, self::json_encode($data));
+
+
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode'])) {

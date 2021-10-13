@@ -29,7 +29,6 @@ class WechatCard extends WechatCommon
         } else {
             $timestamp = time();
         }
-
         $arrays = array(
             $this->_appSecret,
             $timestamp,
@@ -103,8 +102,8 @@ class WechatCard extends WechatCommon
         $wxAccToken = $this->wxAccessToken();
         // $data['access_token'] = $wxAccToken;
         $data['buffer'] = '@D:\\workspace\\htdocs\\yky_test\\logo.jpg';
-        $url = self::URL_API_PREFIX . "/media/uploadimg?access_token=" . $wxAccToken;
-        $result = HelperCurl::wxHttpsRequest($url, $data);
+        $url = self::URL_API_PREFIX . "/media/uploadimg?access_token={$wxAccToken}";
+        $result = HelperCurl::curlHttpPost($url, $data);
         $jsoninfo = json_decode($result, true);
         return $jsoninfo;
         // array(1) { ["url"]=> string(121) "http://mmbiz.qpic.cn/mmbiz/ibuYxPHqeXePNTW4ATKyias1Cf3zTKiars9PFPzF1k5icvXD7xW0kXUAxHDzkEPd9micCMCN0dcTJfW6Tnm93MiaAfRQ/0" }
@@ -116,8 +115,8 @@ class WechatCard extends WechatCommon
     public function wxCardColor()
     {
         $wxAccToken = $this->wxAccessToken();
-        $url = "https://api.weixin.qq.com/card/getcolors?access_token=" . $wxAccToken;
-        $result = HelperCurl::wxHttpsRequest($url);
+        $url = self::URL_API_BASE_PREFIX . "/card/getcolors?access_token={$wxAccToken}";
+        $result = HelperCurl::curlHttpGet($url);
         $jsoninfo = json_decode($result, true);
         return $jsoninfo;
     }
@@ -132,8 +131,8 @@ class WechatCard extends WechatCommon
             'count' => intval($count)
         ));
         $wxAccToken = $this->wxAccessToken();
-        $url = "https://api.weixin.qq.com/card/location/batchget?access_token=" . $wxAccToken;
-        $result = HelperCurl::wxHttpsRequest($url, $jsonData);
+        $url = self::URL_API_BASE_PREFIX . "/card/location/batchget?access_token={$wxAccToken}";
+        $result = HelperCurl::curlHttpPost($url, $jsonData);
         $jsoninfo = json_decode($result, true);
         return $jsoninfo;
     }
@@ -144,8 +143,8 @@ class WechatCard extends WechatCommon
     public function wxCardCreated($jsonData)
     {
         $wxAccToken = $this->wxAccessToken();
-        $url = "https://api.weixin.qq.com/card/create?access_token=" . $wxAccToken;
-        $result = HelperCurl::wxHttpsRequest($url, $jsonData);
+        $url = self::URL_API_BASE_PREFIX . "/card/create?access_token={$wxAccToken}";
+        $result = HelperCurl::curlHttpPost($url, $jsonData);
         $jsoninfo = json_decode($result, true);
         return $jsoninfo;
     }
@@ -156,8 +155,8 @@ class WechatCard extends WechatCommon
     public function wxCardGetInfo($jsonData)
     {
         $wxAccToken = $this->wxAccessToken();
-        $url = "https://api.weixin.qq.com/card/get?access_token=" . $wxAccToken;
-        $result = HelperCurl::wxHttpsRequest($url, $jsonData);
+        $url = self::URL_API_BASE_PREFIX . "/card/get?access_token={$wxAccToken}";
+        $result = HelperCurl::curlHttpPost($url, $jsonData);
         $jsoninfo = json_decode($result, true);
         return $jsoninfo;
     }
@@ -168,8 +167,8 @@ class WechatCard extends WechatCommon
     public function wxCardWhiteList($jsonData)
     {
         $wxAccToken = $this->wxAccessToken();
-        $url = "https://api.weixin.qq.com/card/testwhitelist/set?access_token=" . $wxAccToken;
-        $result = HelperCurl::wxHttpsRequest($url, $jsonData);
+        $url = self::URL_API_BASE_PREFIX . "/card/testwhitelist/set?access_token={$wxAccToken}";
+        $result = HelperCurl::curlHttpPost($url, $jsonData);
         $jsoninfo = json_decode($result, true);
         return $jsoninfo;
     }
@@ -180,8 +179,8 @@ class WechatCard extends WechatCommon
     public function wxCardConsume($jsonData)
     {
         $wxAccToken = $this->wxAccessToken();
-        $url = "https://api.weixin.qq.com/card/code/consume?access_token=" . $wxAccToken;
-        $result = HelperCurl::wxHttpsRequest($url, $jsonData);
+        $url = self::URL_API_BASE_PREFIX . "/card/code/consume?access_token={$wxAccToken}";
+        $result = HelperCurl::curlHttpPost($url, $jsonData);
         $jsoninfo = json_decode($result, true);
         return $jsoninfo;
     }
@@ -192,8 +191,8 @@ class WechatCard extends WechatCommon
     public function wxCardDelete($jsonData)
     {
         $wxAccToken = $this->wxAccessToken();
-        $url = "https://api.weixin.qq.com/card/delete?access_token=" . $wxAccToken;
-        $result = HelperCurl::wxHttpsRequest($url, $jsonData);
+        $url = self::URL_API_BASE_PREFIX . "/card/delete?access_token={$wxAccToken}";
+        $result = HelperCurl::curlHttpPost($url, $jsonData);
         $jsoninfo = json_decode($result, true);
         return $jsoninfo;
     }
@@ -204,8 +203,8 @@ class WechatCard extends WechatCommon
     public function wxCardDecryptCode($jsonData)
     {
         $wxAccToken = $this->wxAccessToken();
-        $url = "https://api.weixin.qq.com/card/code/decrypt?access_token=" . $wxAccToken;
-        $result = HelperCurl::wxHttpsRequest($url, $jsonData);
+        $url = self::URL_API_BASE_PREFIX . "/card/code/decrypt?access_token={$wxAccToken}";
+        $result = HelperCurl::curlHttpPost($url, $jsonData);
         $jsoninfo = json_decode($result, true);
         return $jsoninfo;
     }
@@ -226,8 +225,8 @@ class WechatCard extends WechatCommon
         ));
 
         $wxAccToken = $this->wxAccessToken();
-        $url = "https://api.weixin.qq.com/card/modifystock?access_token=" . $wxAccToken;
-        $result = HelperCurl::wxHttpsRequest($url, $jsonData);
+        $url = self::URL_API_BASE_PREFIX . "/card/modifystock?access_token={$wxAccToken}";
+        $result = HelperCurl::curlHttpPost($url, $jsonData);
         $jsoninfo = json_decode($result, true);
         return $jsoninfo;
     }
@@ -243,8 +242,8 @@ class WechatCard extends WechatCommon
         ));
 
         $wxAccToken = $this->wxAccessToken();
-        $url = "https://api.weixin.qq.com/card/code/get?access_token=" . $wxAccToken;
-        $result = HelperCurl::wxHttpsRequest($url, $jsonData);
+        $url = self::URL_API_BASE_PREFIX . "/card/code/get?access_token={$wxAccToken}";
+        $result = HelperCurl::curlHttpPost($url, $jsonData);
         $jsoninfo = json_decode($result, true);
         return $jsoninfo;
     }

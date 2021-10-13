@@ -63,8 +63,8 @@ class XcxService extends WechatCommon
      */
     public function xcxGetBaseParam($APPID, $AppSecret, $code)
     {
-        $url = "https://api.weixin.qq.com/sns/jscode2session?appid=" . $APPID . "&secret=" . $AppSecret . "&js_code=" . $code . "&grant_type=authorization_code";
-        $result = HelperCurl::wxHttpsRequest($url);
+        $url = self::URL_API_BASE_PREFIX . "/sns/jscode2session?appid=" . $APPID . "&secret=" . $AppSecret . "&js_code=" . $code . "&grant_type=authorization_code";
+        $result = HelperCurl::curlHttpGet($url);
         $jsoninfo = json_decode($result, true);
         return $jsoninfo;
     }
@@ -100,7 +100,7 @@ class XcxService extends WechatCommon
         $data['scene'] = $scene ?: 'default';
         $jsonData = json_encode($data);
         $wxAccToken = $this->wxAccessToken();
-        $url = "https://api.weixin.qq.com/wxa/getwxacodeunlimit?access_token=" . $wxAccToken;
-        return HelperCurl::wxHttpsRequest($url, $jsonData);
+        $url = self::URL_API_BASE_PREFIX . "/wxa/getwxacodeunlimit?access_token={$wxAccToken}";
+        return HelperCurl::curlHttpPost($url, $jsonData);
     }
 }

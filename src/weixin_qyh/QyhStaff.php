@@ -32,10 +32,9 @@ class GzhQyStaff extends QyhBase
     {
         if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = HelperCurl::curlHttpPost(
-            self::URL_API_PREFIX .  '/user/create?access_token=' . $this->access_token,
-            self::json_encode($data)
-        );
+        $url = self::URL_API_PREFIX .  '/user/create?access_token=' . $this->access_token;
+        $result = HelperCurl::curlHttpPost($url, self::json_encode($data));
+
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode']) || $json['errcode'] != 0) {
@@ -72,10 +71,9 @@ class GzhQyStaff extends QyhBase
     {
         if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = HelperCurl::curlHttpPost(
-            self::URL_API_PREFIX . '/user/update?access_token=' . $this->access_token,
-            self::json_encode($data)
-        );
+        $url = self::URL_API_PREFIX . '/user/update?access_token=' . $this->access_token;
+        $result = HelperCurl::curlHttpPost($url, self::json_encode($data));
+
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode']) || $json['errcode'] != 0) {
@@ -101,9 +99,8 @@ class GzhQyStaff extends QyhBase
     {
         if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = HelperCurl::curlHttpGet(
-            self::URL_API_PREFIX .  '/user/delete?access_token=' . $this->access_token . '&userid=' . $userid
-        );
+        $url = self::URL_API_PREFIX .  '/user/delete?access_token=' . $this->access_token . '&userid=' . $userid;
+        $result = HelperCurl::curlHttpGet($url);
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode']) || $json['errcode'] != 0) {
@@ -140,9 +137,10 @@ class GzhQyStaff extends QyhBase
     {
         if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = HelperCurl::curlHttpGet(
-            self::URL_API_PREFIX . '/user/get?access_token=' . $this->access_token . '&userid=' . $userid
-        );
+
+        $url = self::URL_API_PREFIX . '/user/get?access_token=' . $this->access_token . '&userid=' . $userid;
+        $result = HelperCurl::curlHttpGet($url);
+
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode']) || $json['errcode'] != 0) {
@@ -176,9 +174,10 @@ class GzhQyStaff extends QyhBase
     {
         if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = HelperCurl::curlHttpGet(
-            self::URL_API_PREFIX .  '/user/simplelist?access_token=' . $this->access_token . '&department_id=' . $department_id . '&fetch_child=' . $fetch_child . '&status=' . $status
-        );
+
+        $url = self::URL_API_PREFIX .  '/user/simplelist?access_token=' . $this->access_token . '&department_id=' . $department_id . '&fetch_child=' . $fetch_child . '&status=' . $status;
+        $result = HelperCurl::curlHttpGet($url);
+
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode']) || $json['errcode'] != 0) {
@@ -209,9 +208,10 @@ class GzhQyStaff extends QyhBase
             $agentid = $this->agentid;
         if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = HelperCurl::curlHttpGet(
-            self::URL_API_PREFIX .  '/user/getuserinfo?access_token=' . $this->access_token . '&code=' . $code . '&agentid' . $agentid
-        );
+
+        $url = self::URL_API_PREFIX .  '/user/getuserinfo?access_token=' . $this->access_token . '&code=' . $code . '&agentid' . $agentid;
+        $result = HelperCurl::curlHttpGet($url);
+
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode']) || $json['errcode'] != 0) {

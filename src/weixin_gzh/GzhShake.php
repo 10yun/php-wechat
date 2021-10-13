@@ -51,10 +51,9 @@ class GzhShake extends GzhBase
     {
         if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = HelperCurl::curlHttpPost(
-            self::URL_API_BASE_PREFIX . '/shakearound/device/applyid?access_token=' . $this->access_token,
-            self::json_encode($data)
-        );
+        $url = self::URL_API_BASE_PREFIX . '/shakearound/device/applyid?access_token=' . $this->access_token;
+        $result = HelperCurl::curlHttpPost($url, self::json_encode($data));
+
         $this->log($result);
         if ($result) {
             $json = json_decode($result, true);
@@ -95,10 +94,9 @@ class GzhShake extends GzhBase
     {
         if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = HelperCurl::curlHttpPost(
-            self::URL_API_BASE_PREFIX .  '/shakearound/device/update?access_token=' . $this->access_token,
-            self::json_encode($data)
-        );
+        $url = self::URL_API_BASE_PREFIX .  '/shakearound/device/update?access_token=' . $this->access_token;
+        $result = HelperCurl::curlHttpPost($url, self::json_encode($data));
+
         $this->log($result);
         if ($result) {
             $json = json_decode($result, true);
@@ -187,10 +185,9 @@ class GzhShake extends GzhBase
     {
         if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = HelperCurl::curlHttpPost(
-            self::URL_API_BASE_PREFIX . '/shakearound/device/search?access_token=' . $this->access_token,
-            self::json_encode($data)
-        );
+        $url = self::URL_API_BASE_PREFIX . '/shakearound/device/search?access_token=' . $this->access_token;
+        $result = HelperCurl::curlHttpPost($url, self::json_encode($data));
+
         $this->log($result);
         if ($result) {
             $json = json_decode($result, true);
@@ -246,10 +243,9 @@ class GzhShake extends GzhBase
             'device_identifier' => $device_identifier,
             'poi_id' => $poi_id
         );
-        $result = HelperCurl::curlHttpPost(
-            self::URL_API_BASE_PREFIX . '/shakearound/device/bindlocation?access_token=' . $this->access_token,
-            self::json_encode($data)
-        );
+        $url = self::URL_API_BASE_PREFIX . '/shakearound/device/bindlocation?access_token=' . $this->access_token;
+        $result = HelperCurl::curlHttpPost($url, self::json_encode($data));
+
         $this->log($result);
         if ($result) {
             $json = json_decode($result, true);
@@ -312,10 +308,9 @@ class GzhShake extends GzhBase
             'bind' => $bind,
             'append' => $append
         );
-        $result = HelperCurl::curlHttpPost(
-            self::URL_API_BASE_PREFIX . '/shakearound/device/bindpage?access_token=' . $this->access_token,
-            self::json_encode($data)
-        );
+        $url = self::URL_API_BASE_PREFIX . '/shakearound/device/bindpage?access_token=' . $this->access_token;
+        $result = HelperCurl::curlHttpPost($url, self::json_encode($data));
+
         $this->log($result);
         if ($result) {
             $json = json_decode($result, true);
@@ -349,11 +344,9 @@ class GzhShake extends GzhBase
     {
         if (!$this->access_token && !$this->wxAccessToken())
             return false;
-        $result = HelperCurl::curlHttpPost(
-            self::URL_API_PREFIX . '/shakearound/material/add?access_token=' . $this->access_token,
-            $data,
-            true
-        );
+        $url = self::URL_API_PREFIX . '/shakearound/material/add?access_token=' . $this->access_token;
+        $result = HelperCurl::curlHttpPost($url, $data, true);
+
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode'])) {
@@ -398,10 +391,9 @@ class GzhShake extends GzhBase
             "page_url" => $page_url,
             "comment" => $comment
         );
-        $result = HelperCurl::curlHttpPost(
-            self::URL_API_BASE_PREFIX . '/shakearound/page/add?access_token=' . $this->access_token,
-            self::json_encode($data)
-        );
+        $url = self::URL_API_BASE_PREFIX . '/shakearound/page/add?access_token=' . $this->access_token;
+        $result = HelperCurl::curlHttpPost($url, self::json_encode($data));
+
         $this->log($result);
         if ($result) {
             $json = json_decode($result, true);
@@ -449,10 +441,9 @@ class GzhShake extends GzhBase
             "page_url" => $page_url,
             "comment" => $comment
         );
-        $result = HelperCurl::curlHttpPost(
-            self::URL_API_BASE_PREFIX . '/shakearound/page/update?access_token=' . $this->access_token,
-            self::json_encode($data)
-        );
+        $url = self::URL_API_BASE_PREFIX . '/shakearound/page/update?access_token=' . $this->access_token;
+        $result = HelperCurl::curlHttpPost($url, self::json_encode($data));
+
         $this->log($result);
         if ($result) {
             $json = json_decode($result, true);
@@ -537,10 +528,9 @@ class GzhShake extends GzhBase
                 'count' => $count
             );
         }
-        $result = HelperCurl::curlHttpPost(
-            self::URL_API_BASE_PREFIX . '/shakearound/page/search?access_token=' . $this->access_token,
-            self::json_encode($data)
-        );
+        $url = self::URL_API_BASE_PREFIX . '/shakearound/page/search?access_token=' . $this->access_token;
+        $result = HelperCurl::curlHttpPost($url, self::json_encode($data));
+
         $this->log($result);
         if ($result) {
             $json = json_decode($result, true);
@@ -581,10 +571,9 @@ class GzhShake extends GzhBase
         $data = array(
             'page_ids' => $page_ids
         );
-        $result = HelperCurl::curlHttpPost(
-            self::URL_API_BASE_PREFIX . '/shakearound/page/delete?access_token=' . $this->access_token,
-            self::json_encode($data)
-        );
+        $url = self::URL_API_BASE_PREFIX . '/shakearound/page/delete?access_token=' . $this->access_token;
+        $result = HelperCurl::curlHttpPost($url, self::json_encode($data));
+
         $this->log($result);
         if ($result) {
             $json = json_decode($result, true);
@@ -636,10 +625,9 @@ class GzhShake extends GzhBase
         $data = array(
             'ticket' => $ticket
         );
-        $result = HelperCurl::curlHttpPost(
-            self::URL_API_BASE_PREFIX .   '/shakearound/user/getshakeinfo?access_token=' . $this->access_token,
-            self::json_encode($data)
-        );
+        $url = self::URL_API_BASE_PREFIX .   '/shakearound/user/getshakeinfo?access_token=' . $this->access_token;
+        $result = HelperCurl::curlHttpPost($url, self::json_encode($data));
+
         $this->log($result);
         if ($result) {
             $json = json_decode($result, true);
@@ -718,10 +706,9 @@ class GzhShake extends GzhBase
             'begin_date' => $begin_date,
             'end_date' => $end_date
         );
-        $result = HelperCurl::curlHttpPost(
-            self::URL_API_BASE_PREFIX . '/shakearound/statistics/device?access_token=' . $this->access_token,
-            self::json_encode($data)
-        );
+        $url = self::URL_API_BASE_PREFIX . '/shakearound/statistics/device?access_token=' . $this->access_token;
+        $result = HelperCurl::curlHttpPost($url, self::json_encode($data));
+
         $this->log($result);
         if ($result) {
             $json = json_decode($result, true);
@@ -781,10 +768,9 @@ class GzhShake extends GzhBase
             'begin_date' => $begin_date,
             'end_date' => $end_date
         );
-        $result = HelperCurl::curlHttpPost(
-            self::URL_API_BASE_PREFIX . '/shakearound/statistics/page?access_token=' . $this->access_token,
-            self::json_encode($data)
-        );
+        $url = self::URL_API_BASE_PREFIX . '/shakearound/statistics/page?access_token=' . $this->access_token;
+        $result = HelperCurl::curlHttpPost($url, self::json_encode($data));
+
         $this->log($result);
         if ($result) {
             $json = json_decode($result, true);

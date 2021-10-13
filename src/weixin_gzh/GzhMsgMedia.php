@@ -20,11 +20,9 @@ class GzhMsgMedia extends GzhBase
         if (!$this->access_token && !$this->wxAccessToken())
             return false;
         // 原先的上传多媒体文件接口使用 self::URL_UPLOAD_MEDIA 前缀
-        $result = HelperCurl::curlHttpPost(
-            self::URL_API_PREFIX .  '/media/upload?access_token=' . $this->access_token . '&type=' . $type,
-            $data,
-            true
-        );
+        $url =  self::URL_API_PREFIX .  '/media/upload?access_token=' . $this->access_token . '&type=' . $type;
+        $result = HelperCurl::curlHttpPost($url, $data, true);
+
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode'])) {
@@ -50,9 +48,8 @@ class GzhMsgMedia extends GzhBase
         // 原先的上传多媒体文件接口使用 self::URL_UPLOAD_MEDIA 前缀
         // 如果要获取的素材是视频文件时，不能使用https协议，必须更换成http协议
         $url_prefix = $is_video ? str_replace('https', 'http', self::URL_API_PREFIX) : self::URL_API_PREFIX;
-        $result = HelperCurl::curlHttpGet(
-            $url_prefix . '/media/get?access_token=' . $this->access_token . '&media_id=' . $media_id
-        );
+        $url = $url_prefix . "/media/get?access_token={$this->access_token}"  . '&media_id=' . $media_id;
+        $result = HelperCurl::curlHttpGet($url);
         if ($result) {
             if (is_string($result)) {
                 $json = json_decode($result, true);
@@ -88,11 +85,9 @@ class GzhMsgMedia extends GzhBase
         // 当上传视频文件时，附加视频文件信息
         if ($is_video)
             $data['description'] = self::json_encode($video_info);
-        $result = HelperCurl::curlHttpPost(
-            self::URL_API_PREFIX . '/material/add_material?access_token=' . $this->access_token . '&type=' . $type,
-            $data,
-            true
-        );
+        $url =  self::URL_API_PREFIX . '/material/add_material?access_token=' . $this->access_token . '&type=' . $type;
+        $result = HelperCurl::curlHttpPost($url, $data, true);
+
         if ($result) {
             $json = json_decode($result, true);
             if (!$json || !empty($json['errcode'])) {

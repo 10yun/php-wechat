@@ -56,6 +56,11 @@ class WechatCommon
         $this->_appSecret = $str;
         return $this;
     }
+    public function getToken()
+    {
+        $this->wxAccessToken();
+        return $this;
+    }
     /**
      * 获取access_token
      * 【请勿时时调用】;上层应用通过该接口来获取wxAccessToken,
@@ -74,8 +79,7 @@ class WechatCommon
         if (empty($this->_appID) && empty($this->_appSecret)) {
             return $this->access_token;
         }
-        $cache_name = $this->token_cache_sign . $this->_appID;
-
+        $cache_name = $this->cache_data_sign . $this->_appID;
         $cache_arr = HelperCache::getCache($cache_name);
         if ($cache_arr['access_token']) {
             return $cache_arr['access_token'];
@@ -84,7 +88,7 @@ class WechatCommon
         // $url = self::URL_API_PREFIX ."/gettoken?corpid={$this->_appID}&corpsecret={$this->_appSecret}";
 
         $url = self::URL_API_PREFIX . "/token?grant_type=client_credential&appid={$this->_appID}&secret={$this->_appSecret}";
-        $result = HelperCurl::wxHttpsRequest($url);
+        $result = HelperCurl::curlHttpGet($url);
 
         if ($result) {
             $jsonInfo = json_decode($result, true);
@@ -109,8 +113,8 @@ class WechatCommon
     public function wxGetUser($openId)
     {
         $wxAccToken = $this->wxAccessToken();
-        $url = self::URL_API_PREFIX . "/user/info?access_token=" . $wxAccToken . "&openid=" . $openId . "&lang=zh_CN";
-        $result = HelperCurl::wxHttpsRequest($url);
+        $url = self::URL_API_PREFIX . "/user/info?access_token={$wxAccToken}&openid=" . $openId . "&lang=zh_CN";
+        $result = HelperCurl::curlHttpGet($url);
         $jsoninfo = json_decode($result, true);
         return $jsoninfo;
     }
@@ -121,8 +125,8 @@ class WechatCommon
     public function wxQrCodeTicket($jsonData)
     {
         $wxAccToken = $this->wxAccessToken();
-        $url = self::URL_API_PREFIX . "/qrcode/create?access_token=" . $wxAccToken;
-        $result = HelperCurl::wxHttpsRequest($url, $jsonData);
+        $url = self::URL_API_PREFIX . "/qrcode/create?access_token={$wxAccToken}";
+        $result = HelperCurl::curlHttpPost($url, $jsonData);
         return $result;
     }
 
