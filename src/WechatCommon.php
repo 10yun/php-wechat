@@ -20,8 +20,6 @@ class WechatCommon
     const URL_API_BASE_PREFIX = 'https://api.weixin.qq.com'; // 以下API接口URL需要使用此前缀
     const URL_API_PREFIX = 'https://api.weixin.qq.com/cgi-bin';
 
-    // openID
-    const mchid = ""; // 商户号
 
     // 原始ID 申请公共号时系统给你的唯一编号，有此 i
     protected $_WX_ID = ''; // 微信号 original
@@ -139,22 +137,7 @@ class WechatCommon
         return $url;
     }
 
-    /*******************************************************
-     *      微信商户订单号 - 最长28位字符串
-     *******************************************************/
-    public function wxMchBillno($mchid = NULL)
-    {
-        if (is_null($mchid)) {
-            if (self::mchid == "" || is_null(self::mchid)) {
-                $mchid = time();
-            } else {
-                $mchid = self::mchid;
-            }
-        } else {
-            $mchid = substr(addslashes($mchid), 0, 10);
-        }
-        return date("Ymd", time()) . time() . $mchid;
-    }
+
 
     /*******************************************************
      *      微信格式化数组变成参数格式 - 支持url加密

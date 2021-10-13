@@ -11,7 +11,7 @@ use shiyunSdk\wechatSdk\libs\HelperCache;
 /**
  * App优化 
  */
-class WxJssdk extends WechatCommon
+class WxJsSdk extends WechatCommon
 {
     private $_appID;
     private $_appSecret;

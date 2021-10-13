@@ -3,11 +3,10 @@
 namespace shiyunSdk\wechatSdk;
 
 use shiyunSdk\wechatSdk\common\TraitWxLog;
-use shiyunSdk\wechatSdk\common\TraitWxToken;
 
 class WxInit extends WechatCommon
 {
-    use TraitWxLog, TraitWxToken;
+    use TraitWxLog;
 
     public $debug = false;
     public $logcallback;
