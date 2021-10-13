@@ -1,7 +1,10 @@
 # php-wechat
 微信相关组件
 
+**依赖**
 
+
+## 常用api
 
 - 微信公众号
   - [自定义菜单](./docs/api_menu.md)
