@@ -5,7 +5,6 @@ namespace shiyunSdk\wechatSdk;
 use think\facade\Cache;
 
 use shiyunSdk\wechatSdk\libs\HelperCurl;
-use shiyunSdk\wechatSdk\libs\HelperStr;
 use shiyunSdk\wechatSdk\libs\HelperCache;
 
 /**
@@ -59,7 +58,7 @@ class WxJsSdk extends WechatCommon
             $timestamp = time();
         }
         if (empty($noncestr)) {
-            $nonceStr = HelperStr::createNonceStr(16);
+            $nonceStr = HelperRandom::doNumLetter(16);
         }
 
         $signPackage = array(

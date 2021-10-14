@@ -4,7 +4,6 @@ namespace shiyunSdk\wechatGzh;
 
 use shiyunSdk\wechatSdk\WechatCommon;
 use shiyunSdk\wechatSdk\libs\HelperCurl;
-use shiyunSdk\wechatSdk\libs\HelperStr;
 
 /**
  * 【ctocode】      微信 - 卡券类
@@ -75,7 +74,7 @@ class WechatCard extends WechatCommon
         // $api_ticket = $this->wxVerifyJsApiTicket();
         $resultArray = array();
         $timestamp = time();
-        $nonceStr = HelperStr::createNoncestr(16);
+        $nonceStr = HelperRandom::doNumLetter(16);
         // $strings =
         $arrays = array(
             $this->_appID,

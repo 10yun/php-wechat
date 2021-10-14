@@ -2,8 +2,7 @@
 
 namespace shiyunSdk\wechatPay;
 
-use shiyunSdk\wechatSdk\libs\HelperStr;
-use shiyunSdk\wechatSdk\libs\HelperXml;
+use shiyunUtils\libs\LibXml;
 
 
 /**
@@ -69,7 +68,7 @@ class WxPaySdk
     {
         $url = 'https://api.mch.weixin.qq.com/pay/unifiedorder';
         $this->postXml($url); // 追入获取链接
-        $this->result = HelperXml::xmlToArray($this->response);
+        $this->result = \shiyunUtils\libs\LibXml::xmlToArr($this->response);
         $prepay_id = $this->result["prepay_id"];
         return $prepay_id;
     }
@@ -93,8 +92,8 @@ class WxPaySdk
         $timeStamp = time();
         $wOpt['appId'] = $this->_appID;
         $wOpt['timeStamp'] = "$timeStamp";
-        // $wOpt["nonceStr"] = HelperStr::createNoncestr(32);
-        $wOpt['nonceStr'] = HelperStr::createNoncestr(8);
+        // $wOpt["nonceStr"] = HelperRandom::doNumLetter(32);
+        $wOpt['nonceStr'] = HelperRandom::doNumLetter(8);
         $wOpt['package'] = 'prepay_id=' . $this->prepay_id;
         $wOpt['signType'] = 'MD5';
         ksort($wOpt, SORT_STRING);
@@ -135,6 +134,26 @@ class WxPaySdk
         // echo "【result】 ".$result_."</br>";
         return $result_;
     }
+    /**
+     * 	作用：格式化参数，签名过程需要使用
+     */
+    function formatBizQueryParaMap($paraMap, $urlencode)
+    {
+        $buff = "";
+        ksort($paraMap);
+        foreach ($paraMap as $k => $v) {
+            if ($urlencode) {
+                $v = urlencode($v);
+            }
+            // $buff .= strtolower($k) . "=" . $v . "&";
+            $buff .= $k . "=" . $v . "&";
+        }
+        $reqPar = '';
+        if (strlen($buff) > 0) {
+            $reqPar = substr($buff, 0, strlen($buff) - 1);
+        }
+        return $reqPar;
+    }
     function checkSign()
     {
         $tmpData = $this->data;
@@ -154,9 +173,21 @@ class WxPaySdk
      */
     function setParameter($parameter, $parameterValue)
     {
-        $str_1 = HelperStr::trimString($parameter);
-        $str_2 = HelperStr::trimString($parameterValue);
+        $str_1 = $this->trimString($parameter);
+        $str_2 = $this->trimString($parameterValue);
         $this->parameters[$str_1] = $str_2;
+    }
+    // 取出
+    public static function trimString($value)
+    {
+        $ret = null;
+        if (null != $value) {
+            $ret = $value;
+            if (strlen($ret) == 0) {
+                $ret = null;
+            }
+        }
+        return $ret;
     }
     /**
      * 	作用：设置标配的请求参数，生成签名，生成接口参数xml
@@ -165,10 +196,10 @@ class WxPaySdk
     {
         $this->parameters["appid"] = $this->_appID; // 公众账号ID
         $this->parameters["mch_id"] = $this->mchid; // 商户号
-        $this->parameters["nonce_str"] = HelperStr::createNoncestr(32); // 随机字符串
+        $this->parameters["nonce_str"] = HelperRandom::doNumLetter(32); // 随机字符串
         $this->parameters["spbill_create_ip"] = $_SERVER['REMOTE_ADDR']; // 终端ip
         $this->parameters["sign"] = $this->getSign($this->parameters); // 签名
-        return HelperXml::arrayToXml($this->parameters);
+        return LibXml::arrToXml($this->parameters);
     }
 
     /**
@@ -176,7 +207,7 @@ class WxPaySdk
      */
     function createXml2()
     {
-        return HelperXml::arrayToXml($this->parameters);
+        return LibXml::arrToXml($this->parameters);
     }
     /**
      * 将xml数据返回微信
