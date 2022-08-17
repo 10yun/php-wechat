@@ -1,8 +1,8 @@
 <?php
 
-namespace shiyunSdk\wechatGzh;
+namespace shiyunSdk\weixin_gzh;
 
-use shiyunSdk\wechatSdk\libs\HelperCurl;
+use shiyunWechat\libs\HelperCurl;
 
 /**
  * 【ctocode】      微信 - 消息接收和推送等功能类

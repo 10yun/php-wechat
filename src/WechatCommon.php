@@ -1,9 +1,9 @@
 <?php
 
-namespace shiyunSdk\wechatSdk;
+namespace shiyunWechat;
 
-use shiyunSdk\wechatSdk\libs\HelperCurl;
-use shiyunSdk\wechatSdk\libs\HelperCache;
+use shiyunWechat\libs\HelperCurl;
+use shiyunWechat\libs\HelperCache;
 
 /**
  * 【ctocode】      微信 - 常用类

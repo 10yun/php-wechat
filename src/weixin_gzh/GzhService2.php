@@ -1,8 +1,8 @@
 <?php
 
-namespace shiyunSdk\wechatGzh;
+namespace shiyunSdk\weixin_gzh;
 
-use shiyunSdk\wechatSdk\libs\HelperCurl;
+use shiyunWechat\libs\HelperCurl;
 
 class GzhService2 extends GzhBase
 {

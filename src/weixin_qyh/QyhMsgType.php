@@ -1,8 +1,6 @@
 <?php
 
-namespace shiyunSdk\wechatQyh;
-
-use shiyunSdk\wechatQyh\QyhBase;
+namespace shiyunSdk\weixin_qyh;
 
 class QyhMsgType extends QyhBase
 {

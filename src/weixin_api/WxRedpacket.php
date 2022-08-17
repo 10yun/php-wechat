@@ -2,7 +2,7 @@
 
 namespace shiyunSdk\wechatApi;
 
-use shiyunSdk\wechatSdk\WechatCommon;
+use shiyunWechat\WechatCommon;
 
 /**
  * 【ctocode】      微信 - 红包类

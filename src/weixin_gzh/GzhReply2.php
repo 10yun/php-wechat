@@ -1,8 +1,8 @@
 <?php
 
-namespace shiyunSdk\wechatGzh;
+namespace shiyunSdk\weixin_gzh;
 
-use shiyunSdk\wechatSdk\libs\Prpcrypt;
+use shiyunWechat\libs\Prpcrypt;
 
 class GzhReply extends GzhBase
 {

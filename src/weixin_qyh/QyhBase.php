@@ -1,5 +1,13 @@
 <?php
 
+namespace shiyunSdk\weixin_qyh;
+
+use shiyunWechat\WxInit;
+use shiyunWechat\libs\HelperCurl;
+use shiyunWechat\libs\HelperCache;
+use shiyunWechat\libs\HelperLog;
+use shiyunWechat\libs\Prpcrypt;
+
 /**
  *	微信公众平台企业号PHP-SDK, 官方API类库
  *  @author  binsee <binsee@163.com>
@@ -17,14 +25,6 @@
  *		);
  *
  */
-
-namespace shiyunSdk\wechatQyh;
-
-use shiyunSdk\wechatSdk\WxInit;
-use shiyunSdk\wechatSdk\libs\HelperCurl;
-use shiyunSdk\wechatSdk\libs\HelperCache;
-use shiyunSdk\wechatSdk\libs\HelperLog;
-use shiyunSdk\wechatSdk\libs\Prpcrypt;
 
 class QyhBase extends WxInit
 {

@@ -1,11 +1,11 @@
 <?php
 
-namespace shiyunSdk\wechatSdk;
+namespace shiyunWechat;
 
 use think\facade\Cache;
 
-use shiyunSdk\wechatSdk\libs\HelperCurl;
-use shiyunSdk\wechatSdk\libs\HelperCache;
+use shiyunWechat\libs\HelperCurl;
+use shiyunWechat\libs\HelperCache;
 
 /**
  * App优化 

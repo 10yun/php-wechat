@@ -1,8 +1,7 @@
 <?php
 
-namespace shiyunSdk\wechatQyh;
+namespace shiyunSdk\weixin_qyh;
 
-use shiyunSdk\wechatQyh\QyhBase;
 
 /**
  * 

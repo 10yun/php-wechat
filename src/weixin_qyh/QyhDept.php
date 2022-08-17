@@ -1,9 +1,8 @@
 <?php
 
-namespace shiyunSdk\wechatQyh;
+namespace shiyunSdk\weixin_qyh;
 
-use shiyunSdk\wechatQyh\QyhBase;
-use shiyunSdk\wechatSdk\libs\HelperCurl;
+use shiyunWechat\libs\HelperCurl;
 
 class GzhQyDept extends QyhBase
 {

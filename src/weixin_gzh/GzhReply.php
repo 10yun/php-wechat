@@ -1,6 +1,6 @@
 <?php
 
-namespace shiyunSdk\wechatGzh;
+namespace shiyunSdk\weixin_gzh;
 
 /**
  * 【ctocode】      微信 - 微信自动回复类

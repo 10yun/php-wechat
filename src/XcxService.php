@@ -1,8 +1,8 @@
 <?php
 
-namespace shiyunSdk\wechatSdk;
+namespace shiyunWechat;
 
-use shiyunSdk\wechatSdk\libs\HelperCurl;
+use shiyunWechat\libs\HelperCurl;
 
 /**.
  * Author: ctocode-zhw

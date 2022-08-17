@@ -1,6 +1,6 @@
 <?php
 
-namespace shiyunSdk\wechatSdk;
+namespace shiyunWechat;
 
 
 /**

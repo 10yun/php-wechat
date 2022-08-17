@@ -1,6 +1,6 @@
 <?php
 
-namespace shiyunSdk\wechatPay;
+namespace shiyunSdk\weixin_pay;
 
 use shiyunUtils\libs\LibXml;
 

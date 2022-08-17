@@ -1,6 +1,6 @@
 <?php
 
-namespace shiyunSdk\wechatXcx;
+namespace shiyunSdk\weixin_xcx;
 
 class XcxBase
 {

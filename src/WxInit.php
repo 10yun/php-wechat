@@ -1,8 +1,8 @@
 <?php
 
-namespace shiyunSdk\wechatSdk;
+namespace shiyunWechat;
 
-use shiyunSdk\wechatSdk\common\TraitWxLog;
+use shiyunWechat\common\TraitWxLog;
 
 class WxInit extends WechatCommon
 {

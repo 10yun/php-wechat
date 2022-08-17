@@ -23,11 +23,7 @@
     },
     "autoload": {
         "psr-4": {
-            "shiyunSdk\\wechatSdk\\": "src/",
-            "shiyunSdk\\wechatGzh\\": "src/weixin_gzh/",
-            "shiyunSdk\\wechatPay\\": "src/weixin_pay/",
-            "shiyunSdk\\wechatQyh\\": "src/weixin_qyh/",
-            "shiyunSdk\\wechatXcx\\": "src/weixin_xcx/"
+            "shiyunWechat\\": "src/"
         }
     }
 }

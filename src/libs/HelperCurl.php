@@ -1,6 +1,6 @@
 <?php
 
-namespace shiyunSdk\wechatSdk\libs;
+namespace shiyunWechat\libs;
 
 /**
  * 微信通用 curl 常用方法

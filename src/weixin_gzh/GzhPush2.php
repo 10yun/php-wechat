@@ -1,11 +1,12 @@
 <?php
 
-namespace shiyunSdk\wechatGzh;
+namespace shiyunSdk\weixin_gzh;
+
+use shiyunWechat\libs\HelperCurl;
 // 1.官方微信接口（全接口） - 微信小店接口/JSAPI
 // http://www.oschina.net/code/snippet_2276613_47422
 // 微信入口绑定，微信事件处理，微信API全部操作包含在这些文件中。 微信小店。
 // 2.
-use shiyunSdk\wechatSdk\libs\HelperCurl;
 
 /*
  * 调用方式简单说明：

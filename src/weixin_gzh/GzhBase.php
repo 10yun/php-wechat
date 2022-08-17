@@ -1,18 +1,18 @@
 <?php
 
+
+namespace shiyunSdk\weixin_gzh;
+
+use shiyunWechat\WxInit;
+use shiyunWechat\libs\HelperCurl;
+use shiyunWechat\libs\HelperCache;
+
 /**
  *    微信公众平台PHP-SDK, 官方API部分
  * @author  dodge <dodgepudding@gmail.com>
  * @link https://github.com/dodgepudding/wechat-php-sdk
  * @version 1.2
  **/
-
-namespace shiyunSdk\wechatGzh;
-
-use shiyunSdk\wechatSdk\WxInit;
-use shiyunSdk\wechatSdk\libs\HelperCurl;
-use shiyunSdk\wechatSdk\libs\HelperCache;
-
 class GzhBase extends WxInit
 {
     const URL_API_BASE_PREFIX = 'https://api.weixin.qq.com'; // 以下API接口URL需要使用此前缀

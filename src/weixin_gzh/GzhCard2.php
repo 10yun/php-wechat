@@ -1,9 +1,10 @@
 <?php
 
-namespace shiyunSdk\wechatGzh;
+namespace shiyunSdk\weixin_gzh;
 
-use shiyunSdk\wechatSdk\WechatCommon;
-use shiyunSdk\wechatSdk\libs\HelperCurl;
+
+use shiyunWechat\WechatCommon;
+use shiyunWechat\libs\HelperCurl;
 
 /**
  * 【ctocode】      微信 - 卡券类

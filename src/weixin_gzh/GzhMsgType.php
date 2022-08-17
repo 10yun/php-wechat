@@ -1,6 +1,6 @@
 <?php
 
-namespace shiyunSdk\wechatGzh;
+namespace shiyunSdk\weixin_gzh;
 
 class GzhMsgType extends GzhBase
 {

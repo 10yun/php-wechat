@@ -1,9 +1,9 @@
 <?php
 
-namespace shiyunSdk\wechatSdk;
+namespace shiyunWechat;
 
-use shiyunSdk\wechatSdk\libs\Snoopy;
-use shiyunSdk\wechatSdk\libs\HelperCache;
+use shiyunWechat\libs\Snoopy;
+use shiyunWechat\libs\HelperCache;
 
 /**
  *	微信公众平台PHP-SDK

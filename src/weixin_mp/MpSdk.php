@@ -29,10 +29,10 @@
  *  
  */
 
-namespace shiyunSdk\wechatSdk;
+namespace shiyunWechat;
 
-use shiyunSdk\wechatSdk\libs\Snoopy;
-use shiyunSdk\wechatSdk\WxInit;
+use shiyunWechat\libs\Snoopy;
+use shiyunWechat\WxInit;
 
 class MpSdk extends WxInit
 {

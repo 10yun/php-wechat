@@ -1,6 +1,6 @@
 <?php
 
-namespace shiyunSdk\wechatSdk\common;
+namespace shiyunWechat\common;
 
 
 trait TraitBaseRev

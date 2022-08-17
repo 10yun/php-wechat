@@ -1,6 +1,6 @@
 <?php
     require_once 'lib.inc.php';
-    $wx = new \shiyunSdk\wechatSdk\WxJsSdk();
+    $wx = new \shiyunWechat\WxJsSdk();
      
     if(!isset($_GET['code'])){
         header("location:https://open.weixin.qq.com/connect/oauth2/authorize?appid=".WxApi::appId."&redirect_uri=http://".$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF']."&response_type=code&scope=snsapi_base&state=1#wechat_redirect");

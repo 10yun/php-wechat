@@ -1,9 +1,9 @@
 <?php
 
-namespace shiyunSdk\wechatSdk;
+namespace shiyunWechat;
 
-use shiyunSdk\wechatSdk\libs\HelperCurl;
-use shiyunSdk\wechatSdk\libs\HelperLog;
+use shiyunWechat\libs\HelperCurl;
+use shiyunWechat\libs\HelperLog;
 
 /**
  * TODO 统一服务消息
