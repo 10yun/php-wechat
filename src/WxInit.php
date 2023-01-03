@@ -14,6 +14,7 @@ class WxInit extends WechatCommon
 
     public function __construct($options)
     {
+        parent::__construct($options);
         $this->debug = isset($options['debug']) ? $options['debug'] : false;
         $this->_logcallback = isset($options['logcallback']) ? $options['logcallback'] : false;
     }

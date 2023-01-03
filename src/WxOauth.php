@@ -136,8 +136,6 @@ class WxOauth extends WxInit
             . "&grant_type=authorization_code";
 
         $result = HelperCurl::curlHttpGet($url);
-        // $result = HelperCurl::curlHttpGet($url);
-
         if ($result) {
             $jsonInfo = json_decode($result, true);
             // print_r($result);
