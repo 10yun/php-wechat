@@ -19,14 +19,13 @@ class WxOauth extends WxInit
         $result = HelperCurl::curlHttpGet($url);
 
         if ($result) {
-            $json = json_decode($result, true);
-            if (!$json || !empty($json['errcode'])) {
-                $this->errCode = $json['errcode'];
-                $this->errMsg = $json['errmsg'];
+            $jsonInfo = json_decode($result, true);
+            if (!$jsonInfo || !empty($jsonInfo['errcode'])) {
+                $this->errorMessage = $jsonInfo;
                 return false;
             }
-            $this->access_token = $json['access_token'];
-            return $json;
+            $this->access_token = $jsonInfo['access_token'];
+            return $jsonInfo;
         }
         return false;
     }
@@ -43,13 +42,12 @@ class WxOauth extends WxInit
         $url = self::URL_API_BASE_PREFIX . '/sns/userinfo?access_token=' . $access_token . '&openid=' . $openid;
         $result = HelperCurl::curlHttpGet($url);
         if ($result) {
-            $json = json_decode($result, true);
-            if (!$json || !empty($json['errcode'])) {
-                $this->errCode = $json['errcode'];
-                $this->errMsg = $json['errmsg'];
+            $jsonInfo = json_decode($result, true);
+            if (!$jsonInfo || !empty($jsonInfo['errcode'])) {
+                $this->errorMessage = $jsonInfo;
                 return false;
             }
-            return $json;
+            return $jsonInfo;
         }
         return false;
     }
@@ -65,12 +63,11 @@ class WxOauth extends WxInit
         $url = self::URL_API_BASE_PREFIX . '/sns/auth?access_token=' . $access_token . '&openid=' . $openid;
         $result = HelperCurl::curlHttpGet($url);
         if ($result) {
-            $json = json_decode($result, true);
-            if (!$json || !empty($json['errcode'])) {
-                $this->errCode = $json['errcode'];
-                $this->errMsg = $json['errmsg'];
+            $jsonInfo = json_decode($result, true);
+            if (!$jsonInfo || !empty($jsonInfo['errcode'])) {
+                $this->errorMessage = $jsonInfo;
                 return false;
-            } else if ($json['errcode'] == 0)
+            } else if ($jsonInfo['errcode'] == 0)
                 return true;
         }
         return false;
@@ -138,12 +135,8 @@ class WxOauth extends WxInit
         $result = HelperCurl::curlHttpGet($url);
         if ($result) {
             $jsonInfo = json_decode($result, true);
-            // print_r($result);
-            $jsonInfo = json_decode($result, true);
-
             if (!$jsonInfo || !empty($jsonInfo['errcode'])) {
-                $this->errCode = $jsonInfo['errcode'];
-                $this->errMsg = $jsonInfo['errmsg'];
+                $this->errorMessage = $jsonInfo;
                 return false;
             }
             $this->access_token = $jsonInfo['access_token'];

@@ -8,6 +8,7 @@ class WxInit extends WechatCommon
 {
     use TraitWxLog;
 
+
     public $debug = false;
     public $logcallback;
     protected $_logcallback;
@@ -17,5 +18,12 @@ class WxInit extends WechatCommon
         parent::__construct($options);
         $this->debug = isset($options['debug']) ? $options['debug'] : false;
         $this->_logcallback = isset($options['logcallback']) ? $options['logcallback'] : false;
+    }
+
+    protected $errorMessage = [];
+
+    public function getError()
+    {
+        return $this->errorMessage;
     }
 }

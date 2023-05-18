@@ -25,7 +25,7 @@ class HelperCache
             'data' => $where
         ));
         $set = json_decode($apiResultData, true);
-        if ($set['status'] == 200) {
+        if ($set) {
             return true;
         } else {
             return false;
