@@ -1,58 +1,53 @@
 <?php
 
-namespace shiyunSdk\weixin_qyh;
+namespace shiyunWechat\weixin_qyh;
 
-use shiyunWechat\WxInit;
+use shiyunWechat\WechatCommon;
+use shiyunWechat\WechatConst;
 use shiyunWechat\libs\HelperCurl;
 use shiyunWechat\libs\HelperCache;
-use shiyunWechat\libs\HelperLog;
 use shiyunWechat\libs\Prpcrypt;
 
 /**
  *	微信公众平台企业号PHP-SDK, 官方API类库
- *  @author  binsee <binsee@163.com>
- *  @link https://github.com/binsee/wechat-php-sdk
  *  @version 1.0
  *  usage:
  *   $options = array(
  *			'token'=>'tokenaccesskey', //填写应用接口的Token
  *			'encodingaeskey'=>'encodingaeskey', //填写加密用的EncodingAESKey
  *			'appid'=>'wxdk1234567890', //填写高级调用功能的app id
- *			'appsecret'=>'xxxxxxxxxxxxxxxxxxx', //填写高级调用功能的密钥
+ *			'_appSecret'=>'xxxxxxxxxxxxxxxxxxx', //填写高级调用功能的密钥
  *			'agentid'=>'1', //应用的id
  *			'debug'=>false, //调试开关
  *			'_logcallback'=>'logg', //调试输出方法，需要有一个string类型的参数
  *		);
  *
  */
-
-class QyhBase extends WxInit
+class QyhBase extends WechatCommon
 {
-    const URL_API_PREFIX = 'https://qyapi.weixin.qq.com/cgi-bin';
-    const URL_OAUTH_PREFIX = 'https://open.weixin.qq.com/connect/oauth2';
 
     private $token;
     private $encodingAesKey;
-    private $appid; // 也就是企业号的CorpID
-    private $appsecret;
+    private $_appID; // 也就是企业号的CorpID
+    private $_appSecret;
     private $access_token;
-    protected $cache_data_sign = 'qywechat_access_token';
-    private $agentid; // 应用id AgentID
+    protected $_token_cache_key = 'qywechat_access_token';
+    private $agentID; // 应用id agentID
     private $postxml;
     private $agentidxml; // 接收的应用id AgentID
     private $_msg;
     private $_sendmsg; // 主动发送消息的内容
-    public $errCode = 40001;
-    public $errMsg = "no access";
 
-    public function __construct($options)
+
+    public function setAgentID($agentID = '')
     {
-        parent::__construct($options);
-        $this->token = isset($options['token']) ? $options['token'] : '';
-        $this->encodingAesKey = isset($options['encodingaeskey']) ? $options['encodingaeskey'] : '';
-        $this->_appID = isset($options['appid']) ? $options['appid'] : '';
-        $this->appsecret = isset($options['appsecret']) ? $options['appsecret'] : '';
-        $this->agentid = isset($options['agentid']) ? $options['agentid'] : '';
+        $this->agentID = $agentID;
+        return $this;
+    }
+    public function setEncodingAesKey($key = '')
+    {
+        $this->encodingAesKey = $key;
+        return $this;
     }
     /**
      * For weixin server validation
@@ -88,7 +83,6 @@ class QyhBase extends WxInit
         if ($_SERVER['REQUEST_METHOD'] == "POST") {
             $postStr = file_get_contents("php://input");
             $array = (array) simplexml_load_string($postStr, 'SimpleXMLElement', LIBXML_NOCDATA);
-            HelperLog::setLog($postStr);
             if (isset($array['Encrypt'])) {
                 $encryptStr = $array['Encrypt'];
                 $this->agentidxml = isset($array['AgentID']) ? $array['AgentID'] : '';
@@ -182,26 +176,6 @@ class QyhBase extends WxInit
 
 
     /**
-     * 设置发送消息
-     * @param array $msg 消息数组
-     * @param bool $append 是否在原消息数组追加
-     */
-    public function Message($msg = '', $append = false)
-    {
-        if (is_null($msg)) {
-            $this->_msg = array();
-        } elseif (is_array($msg)) {
-            if ($append)
-                $this->_msg = array_merge($this->_msg, $msg);
-            else
-                $this->_msg = $msg;
-            return $this->_msg;
-        } else {
-            return $this->_msg;
-        }
-    }
-
-    /**
      * 主动发送信息接口
      * @param array $data 	结构体为:
      * array(
@@ -215,25 +189,20 @@ class QyhBase extends WxInit
      *         "text" => array(
      *                 "content" => "Holiday Request For Pony(http://xxxxx)"
      *         ),
-     * 
      *         "image" => array(
      *                 "media_id" => "MEDIA_ID"
      *         ),
-     * 
      *         "voice" => array(
      *                 "media_id" => "MEDIA_ID"
      *         ),
-     * 
      *         " video" => array(
      *                 "media_id" => "MEDIA_ID",
      *                 "title" => "Title",
      *                 "description" => "Description"
      *         ),
-     * 
      *         "file" => array(
      *                 "media_id" => "MEDIA_ID"
      *         ),
-     * 
      *         "news" => array(			//不支持保密
      *                 "articles" => array(    //articles  图文消息，一个图文消息支持1到10个图文
      *                     array(
@@ -245,7 +214,6 @@ class QyhBase extends WxInit
      *                     ),
      *                 )
      *         ),
-     * 
      *         "mpnews" => array(
      *                 "articles" => array(    //articles  图文消息，一个图文消息支持1到10个图文
      *                     array(
@@ -275,22 +243,11 @@ class QyhBase extends WxInit
      */
     public function sendMessage($data)
     {
-        if (!$this->access_token && !$this->wxAccessToken())
-            return false;
+        $wxAccToken = $this->wxAccessToken();
 
-        $url = self::URL_API_PREFIX .  '/message/send?access_token=' . $this->access_token;
+        $url = WechatConst::URL_QY_CGI_PREFIX .  '/message/send?access_token=' . $wxAccToken;
         $result = HelperCurl::curlHttpPost($url, self::json_encode($data));
-
-        if ($result) {
-            $json = json_decode($result, true);
-            if (!$json || !empty($json['errcode']) || $json['errcode'] != 0) {
-                $this->errCode = $json['errcode'];
-                $this->errMsg = $json['errmsg'];
-                return false;
-            }
-            return $json;
-        }
-        return false;
+        return $result;
     }
 
     /**
@@ -309,20 +266,11 @@ class QyhBase extends WxInit
      */
     public function authSucc($userid)
     {
-        if (!$this->access_token && !$this->wxAccessToken())
-            return false;
-
-        $url = self::URL_API_PREFIX . '/user/authsucc?access_token=' . $this->access_token . '&userid=' . $userid;
-        $result = HelperCurl::curlHttpGet($url);
-        if ($result) {
-            $json = json_decode($result, true);
-            if (!$json || !empty($json['errcode']) || $json['errcode'] != 0) {
-                $this->errCode = $json['errcode'];
-                $this->errMsg = $json['errmsg'];
-                return false;
-            }
-            return $json;
-        }
-        return false;
+        $wxAccToken = $this->wxAccessToken();
+        $result = HelperCurl::curlHttpParamGet(WechatConst::URL_QY_CGI_PREFIX . '/user/authsucc', [
+            'access_token' => $wxAccToken,
+            'userid' => $userid,
+        ]);
+        return $result;
     }
 }

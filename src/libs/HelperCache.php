@@ -7,12 +7,12 @@ class HelperCache
     public $cacheType = 'file'; // 缓存类型
     /**
      * 设置缓存，按需重载
-     * @param string $cachename
+     * @param string $cacheName
      * @param mixed $value
      * @param int $expired
      * @return boolean
      */
-    public static function setCache($cachename, $value, $expired)
+    public static function setCache($cacheName, $value, $expired)
     {
         // TODO: set cache implementation
         $where = array();
@@ -30,7 +30,6 @@ class HelperCache
         } else {
             return false;
         }
-
         switch ($this->cacheType) {
             case 'cache':
                 Cache::set('jsapi_ticket', $value, 110); // jsapi_ticket有效期2小时，提前10分钟获取
@@ -43,7 +42,7 @@ class HelperCache
                 ));
             case 'file':
                 // ==== 文件存储方式
-                self::set_php_file("/{$cachename}.php", json_encode($value));
+                self::set_php_file("/{$cacheName}.php", json_encode($value));
                 break;
 
             default:;
@@ -53,10 +52,10 @@ class HelperCache
 
     /**
      * 获取缓存，按需重载
-     * @param string $cachename
+     * @param string $cacheName
      * @return mixed
      */
-    public static function getCache($cachename)
+    public static function getCache($cacheName)
     {
         // TODO: get cache implementation
         $apiResultData = ctoHttpCurl(_URL_API_ . "wx/opt", array(
@@ -72,7 +71,7 @@ class HelperCache
 
         switch ($this->cacheType) {
             case 'cache':
-                $data = Cache::get($cachename);
+                $data = Cache::get($cacheName);
                 break;
             case 'curl':
                 $cacheData = ctoHttpCurl(_URL_API_ . "wx/opt", array(
@@ -83,7 +82,7 @@ class HelperCache
                 break;
             case 'file':
                 // ==== 文件存储方式
-                $cacheData = trim(substr(file_get_contents(__DIR__ . "/{$cachename}.php"), 15));
+                $cacheData = trim(substr(file_get_contents(__DIR__ . "/{$cacheName}.php"), 15));
                 $data = json_decode($cacheData);
                 break;
             default:;
@@ -94,17 +93,14 @@ class HelperCache
 
     /**
      * 清除缓存，按需重载
-     * @param string $cachename
+     * @param string $cacheName
      * @return boolean
      */
-    public static function removeCache($cachename)
+    public static function removeCache($cacheName)
     {
         // TODO: remove cache implementation
         return false;
     }
-
-
-
     private function setFileCache()
     {
         // access_token 应该全局存储与更新，以下代码以写入到文件中做示例
@@ -114,7 +110,6 @@ class HelperCache
             $access_token = $jsonInfo->access_token;
             return $access_token;
         }
-
         $access_token = $res->access_token;
         if ($access_token) {
             $jsonInfo->expire_time = time() + 7000;
@@ -132,9 +127,6 @@ class HelperCache
         // fwrite($fp, json_encode($data));
         fclose($fp);
     }
-
-
-
     /**
      * 把cookie写入缓存
      * @param  string $filename 缓存文件名
@@ -143,9 +135,8 @@ class HelperCache
      */
     public function saveCookie($filename, $content)
     {
-        return S($filename, $content, $this->_cookieexpired);
+        // return S($filename, $content, $this->_cookieexpired);
     }
-
     /**
      * 读取cookie缓存内容
      * @param  string $filename 缓存文件名
@@ -153,7 +144,7 @@ class HelperCache
      */
     public function getCookie($filename)
     {
-        $data = S($filename);
+        // $data = S($filename);
         if ($data) {
             $login = json_decode($data, true);
             return $cacheData;

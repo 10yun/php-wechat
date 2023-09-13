@@ -2,16 +2,24 @@
 
 namespace shiyunWechat\libs;
 
+use shiyunWechat\exception\WeixinException;
+use Exception;
+
 /**
  * 微信通用 curl 常用方法
  *
  */
+class LibsCurlException extends Exception
+{
+}
 class HelperCurl
 {
-    /****************************************************
-     *  微信提交API方法，返回微信指定JSON
-     *  通用请求微信接口 [ 微信通讯 Communication ]
-     ****************************************************/
+    /**
+     * --------------------
+     * 微信提交API方法，返回微信指定JSON
+     * 通用请求微信接口 [ 微信通讯 Communication ]
+     * --------------------
+     */
     public static function wxHttpsRequest($url, $data = null)
     {
         $chObj = curl_init();
@@ -26,17 +34,43 @@ class HelperCurl
         curl_setopt($chObj, CURLOPT_RETURNTRANSFER, 1);
         // curl_setopt ( $ch, CURLOPT_CONNECTTIMEOUT, 10 );
 
-        $output = curl_exec($chObj);
-        $is_errno = curl_errno($chObj);
-        if ($is_errno) {
-            return 'Errno' . $is_errno;
+        /**
+         * 执行请求并获取响应
+         */
+        $curlResponse = curl_exec($chObj);
+        $curlInfo = curl_getinfo($chObj);
+        if ($curlResponse === false || $curlInfo['http_code'] != 200) {
+            $curlError = curl_error($chObj);
+            throw new Exception($curlError);
         }
         curl_close($chObj);
-        return $output;
+        if (is_string($curlResponse) && (new self)->isJson($curlResponse)) {
+            return json_decode($curlResponse, true);
+        }
+        return $curlResponse;
     }
 
-
-
+    public static function curlHttpParamGet($url, $param = [])
+    {
+        $url_join = $url . '?' . http_build_query($param);
+        $curlResult = self::curlHttpGet($url_join);
+        if (is_string($curlResult)) {
+            // 尝试解析 JSON 数据
+            $jsonData = json_decode($curlResult, true);
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                // JSON 无效
+                return $curlResult;
+            } else {
+                // JSON 数据有效
+                if (!$jsonData || isset($jsonData['errcode'])) {
+                    throw new WeixinException($jsonData['errmsg'], $jsonData['errcode']);
+                }
+                return $jsonData;
+            }
+        } else {
+            return $curlResult;
+        }
+    }
     public static function curlHttpGet($url)
     {
         $chObj = curl_init();
@@ -57,21 +91,20 @@ class HelperCurl
         curl_setopt($chObj, CURLOPT_SSL_VERIFYHOST, false);
         curl_setopt($chObj, CURLOPT_SSL_VERIFYPEER, false);
 
-        $res = curl_exec($chObj);
-
-        $aStatus = curl_getinfo($chObj);
-
-        // if (curl_errno($chObj)) {
-        //     print_r(curl_error($chObj));
-        // }
-        curl_close($chObj);
-
-        // return json_decode($result, true);
-        if (intval($aStatus["http_code"]) == 200) {
-            return $res;
-        } else {
-            return false;
+        /**
+         * 执行请求并获取响应
+         */
+        $curlResponse = curl_exec($chObj);
+        $curlInfo = curl_getinfo($chObj);
+        if ($curlResponse === false || $curlInfo['http_code'] != 200) {
+            $curlError = curl_error($chObj);
+            throw new Exception($curlError);
         }
+        curl_close($chObj);
+        if (is_string($curlResponse) && (new self)->isJson($curlResponse)) {
+            return json_decode($curlResponse, true);
+        }
+        return $curlResponse;
     }
 
     /**
@@ -112,26 +145,28 @@ class HelperCurl
         // 设置发送数据
         curl_setopt($chObj, CURLOPT_POSTFIELDS, $strPOST);
 
-        //
         // curl_setopt($chObj, CURLOPT_HTTPHEADER, array(
         //     'Content-Type: application/json'
         // ));
 
-        $sContent = curl_exec($chObj);
-        $result = curl_exec($chObj);
-        $aStatus = curl_getinfo($chObj);
-
-        // if (curl_errno($chObj)) {
-        //     print curl_error($chObj);
-        // }
-        curl_close($chObj);
-
-        // return $result;
-        // return json_decode($result, true);
-        if (intval($aStatus["http_code"]) == 200) {
-            return $sContent;
-        } else {
-            return false;
+        /**
+         * 执行请求并获取响应
+         */
+        $curlResponse = curl_exec($chObj);
+        $curlInfo = curl_getinfo($chObj);
+        if ($curlResponse === false || $curlInfo['http_code'] != 200) {
+            $curlError = curl_error($chObj);
+            throw new Exception($curlError);
         }
+        curl_close($chObj);
+        if (is_string($curlResponse) && (new self)->isJson($curlResponse)) {
+            return json_decode($curlResponse, true);
+        }
+        return $curlResponse;
+    }
+    private function isJson($string)
+    {
+        json_decode($string, true);
+        return json_last_error() === JSON_ERROR_NONE;
     }
 }

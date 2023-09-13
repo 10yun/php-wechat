@@ -20,6 +20,10 @@ class ErrorCode
     public static $EncodeBase64Error = 40009;
     public static $DecodeBase64Error = 40010;
     public static $GenReturnXmlError = 40011;
+
+    // public $errCode = 40001;
+    // public $errMsg = "no access";
+
     public static $errCode = array(
         '0' => '处理成功',
         '40001' => '校验签名失败',

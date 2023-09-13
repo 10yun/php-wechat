@@ -1,6 +1,6 @@
 <?php
 
-namespace shiyunSdk\weixin_pay;
+namespace shiyunWechat\weixin_pay;
 
 use shiyunUtils\libs\LibXml;
 
@@ -14,8 +14,8 @@ class WxPaySdk
     private $mchid; // 微信支付商户号
     private $mchkey; // 微信支付商户KEY
     private $openid; // 微信支付用户号
-    private $appid;
-    private $appsecret;
+    private $_appID;
+    private $_appSecret;
     private $out_trade_no;
     private $total_fee; // 总金额
     private $notify_url; // ND地址
@@ -52,7 +52,7 @@ class WxPaySdk
         $this->mchkey = isset($options['mchkey']) ? $options['mchkey'] : '';
         $this->openid = isset($options['openid']) ? $options['openid'] : '';
         $this->_appID = isset($options['appid']) ? $options['appid'] : '';
-        $this->appsecret = isset($options['appsecret']) ? $options['appsecret'] : '';
+        $this->_appSecret = isset($options['appsecret']) ? $options['appsecret'] : '';
         // $this->access_token = isset($options['access_token'])?$options['access_token']:'';
         $this->out_trade_no = isset($options['out_trade_no']) ? $options['out_trade_no'] : '';
         $this->total_fee = isset($options['total_fee']) ? $options['total_fee'] : '';
