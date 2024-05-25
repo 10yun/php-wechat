@@ -44,7 +44,7 @@ class HelperCurl
             throw new Exception($curlError);
         }
         curl_close($chObj);
-        if (is_string($curlResponse) && (new self)->isJson($curlResponse)) {
+        if (is_string($curlResponse) && json_validate($curlResponse)) {
             return json_decode($curlResponse, true);
         }
         return $curlResponse;
@@ -56,16 +56,16 @@ class HelperCurl
         $curlResult = self::curlHttpGet($url_join);
         if (is_string($curlResult)) {
             // 尝试解析 JSON 数据
-            $jsonData = json_decode($curlResult, true);
-            if (json_last_error() !== JSON_ERROR_NONE) {
-                // JSON 无效
-                return $curlResult;
-            } else {
+            if (json_validate($curlResult)) {
                 // JSON 数据有效
+                $jsonData = json_decode($curlResult, true);
                 if (!$jsonData || isset($jsonData['errcode'])) {
                     throw new WeixinException($jsonData['errmsg'], $jsonData['errcode']);
                 }
                 return $jsonData;
+            } else {
+                // JSON 无效
+                return $curlResult;
             }
         } else {
             return $curlResult;
@@ -101,7 +101,7 @@ class HelperCurl
             throw new Exception($curlError);
         }
         curl_close($chObj);
-        if (is_string($curlResponse) && (new self)->isJson($curlResponse)) {
+        if (is_string($curlResponse) && json_validate($curlResponse)) {
             return json_decode($curlResponse, true);
         }
         return $curlResponse;
@@ -159,14 +159,9 @@ class HelperCurl
             throw new Exception($curlError);
         }
         curl_close($chObj);
-        if (is_string($curlResponse) && (new self)->isJson($curlResponse)) {
+        if (is_string($curlResponse) && json_validate($curlResponse)) {
             return json_decode($curlResponse, true);
         }
         return $curlResponse;
-    }
-    private function isJson($string)
-    {
-        json_decode($string, true);
-        return json_last_error() === JSON_ERROR_NONE;
     }
 }

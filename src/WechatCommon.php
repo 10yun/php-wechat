@@ -80,6 +80,12 @@ class WechatCommon
         }
         return $result;
     }
+    public function wxLogAdd($info = '')
+    {
+        \shiyunUtils\libs\LibsLogger::getInstance()
+            ->setGroup('weixin_gzh')
+            ->writeDebug($info);
+    }
     /**
      * 获取access_token
      * 【请勿时时调用】;上层应用通过该接口来获取wxAccessToken,
@@ -119,6 +125,8 @@ class WechatCommon
                 frameCacheSet('CACHE_STORES_REDIS', $cacheKey, $access_token, 7200 - 200);
             }
         }
+
+        $this->wxLogAdd($access_token);
         // 将$access_token存缓存，设置有效期
         $this->access_token = $access_token;
         return $this->access_token;

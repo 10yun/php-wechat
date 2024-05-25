@@ -44,6 +44,9 @@ class GzhPush2
         $this->_password = isset($options['password']) ? $options['password'] : '';
         $this->login();
     }
+    protected function showMessage($status, $errCode, $msg = '')
+    {
+    }
     // 登录
     private function login()
     {
@@ -56,88 +59,46 @@ class GzhPush2
         $this->referer = WechatConst::URL_MP_BASE_PREFIX;
         $this->getHeader = 1;
         $result = explode("\n", HelperCurl::curlHttpPost($url, $sendData));
+
+
+        $EnumStatus = [
+            "-1" => "系统错误",
+            "-2" => "帐号或密码错误",
+            // -3=>"密码错误",
+            -4 => "不存在该帐户",
+            -5 => "访问受限",
+            -6 => "需要输入验证码",
+            -7 => "此帐号已绑定私人微信号，不可用于公众平台登录",
+            -8 => "邮箱已存在",
+            -32 => "验证码输入错误",
+            -200 => "因频繁提交虚假资料，该帐号被拒绝登录",
+            -94 => "请使用邮箱登陆",
+            10 => "该公众会议号已经过期，无法再登录使用",
+        ];
+
         foreach ($result as $key => $value) {
             $value = trim($value);
             if (preg_match('/token=(\d+)/i', $value, $match)) { // 获取token
                 $this->token = trim($match[1]);
             }
             if (preg_match('/"ret":(.*)/i', $value, $match)) { // 获取token
-                switch ($match[1]) {
-                    case -1:
-                        die(json_encode(array(
-                            'status' => 1,
-                            'errCode' => $match[1],
-                            'msg' => "系统错误"
-                        )));
-                    case -2:
-                        die(json_encode(array(
-                            'status' => 1,
-                            'errCode' => $match[1],
-                            'msg' => "帐号或密码错误"
-                        )));
-                    case -3:
-                        die(urldecode(json_encode(array(
-                            'status' => 1,
-                            'errCode' => $match[1],
-                            'msg' => urlencode("密码错误")
-                        ))));
-                    case -4:
-                        die(json_encode(array(
-                            'status' => 1,
-                            'errCode' => $match[1],
-                            'msg' => "不存在该帐户"
-                        )));
-                    case -5:
-                        die(json_encode(array(
-                            'status' => 1,
-                            'errCode' => $match[1],
-                            'msg' => "访问受限"
-                        )));
-                    case -6:
-                        die(json_encode(array(
-                            'status' => 1,
-                            'errCode' => $match[1],
-                            'msg' => "需要输入验证码"
-                        )));
-                    case -7:
-                        die(json_encode(array(
-                            'status' => 1,
-                            'errCode' => $match[1],
-                            'msg' => "此帐号已绑定私人微信号，不可用于公众平台登录"
-                        )));
-                    case -8:
-                        die(json_encode(array(
-                            'status' => 1,
-                            'errCode' => $match[1],
-                            'msg' => "邮箱已存在"
-                        )));
-                    case -32:
-                        die(json_encode(array(
-                            'status' => 1,
-                            'errCode' => $match[1],
-                            'msg' => "验证码输入错误"
-                        )));
-                    case -200:
-                        die(json_encode(array(
-                            'status' => 1,
-                            'errCode' => $match[1],
-                            'msg' => "因频繁提交虚假资料，该帐号被拒绝登录"
-                        )));
-                    case -94:
-                        die(json_encode(array(
-                            'status' => 1,
-                            'errCode' => $match[1],
-                            'msg' => "请使用邮箱登陆"
-                        )));
-                    case 10:
-                        die(json_encode(array(
-                            'status' => 1,
-                            'errCode' => $match[1],
-                            'msg' => "该公众会议号已经过期，无法再登录使用"
-                        )));
-                    case 0:
-                        $this->userFakeid = $this->getUserFakeid();
-                        break;
+                $errCode = $match[1];
+                if ($errCode == 0) {
+                    $this->userFakeid = $this->getUserFakeid();
+                } else if ($errCode == -3) {
+                    die(urldecode(json_encode(array(
+                        'status' => 1,
+                        'errCode' => $errCode,
+                        'msg' => urlencode("密码错误")
+                    ))));
+                } else  if (!empty($EnumStatus[$errCode])) {
+                    $errMsg = $EnumStatus[$errCode];
+                    die(json_encode(array(
+                        'status' => 1,
+                        'errCode' => $errCode,
+                        'msg' => $errMsg
+                    )));
+                    // $this->showMessage()
                 }
             }
             if (preg_match('/^set-cookie:[\s]+([^=]+)=([^;]+)/i', $value, $match)) { // 获取cookie

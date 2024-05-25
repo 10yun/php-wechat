@@ -15,8 +15,6 @@ class WechatFactory
      * 单例实例
      */
     protected static $instance;
-    // 存储单例
-    protected array $instances = [];
     /**
      * 获取当前容器的实例（单例）
      * @access public
