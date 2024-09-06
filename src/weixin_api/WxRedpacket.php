@@ -13,6 +13,4 @@ use shiyunWechat\WechatCommon;
  * @link         网站地址   https://www.10yun.com
  * @contact      联系方式   QQ:343196936
  */
-class WxRedpacket extends WechatCommon
-{
-}
+class WxRedpacket extends WechatCommon {}

@@ -17,7 +17,6 @@ use shiyunWechat\libs\HelperCache;
  */
 class WechatCommon
 {
-
     // 原始ID 申请公共号时系统给你的唯一编号，有此 i
     protected $_originalID = ''; // 微信号 original
     protected $_appID = ''; // 开通 api 服务时，系统给你的唯一编号
