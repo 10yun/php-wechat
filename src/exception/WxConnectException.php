@@ -9,9 +9,9 @@ use Exception;
  */
 class WxConnectException extends Exception
 {
+    // 可以自定义异常类的构造函数
     public function __construct($message, $code = 0, Exception $previous = null)
     {
-        // 可以自定义异常类的构造函数
         parent::__construct($message, $code, $previous);
     }
 }
